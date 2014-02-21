@@ -1,4 +1,6 @@
-team-manager
+Team Manager
 ============
 
-Helps manage team logistical information
+Helps manage team logistical information.
+
+Software Development Project at CMU.
