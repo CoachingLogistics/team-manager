@@ -9,4 +9,4 @@ var PlayerSchema = new Schema({
   date_of_birth: Date
 });
 
-mongoose.model('Article', PlayerSchema);
+mongoose.model('Player', PlayerSchema);
