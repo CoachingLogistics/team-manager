@@ -92,4 +92,46 @@ describe('Player', function(){	//context, so we can see where tests happen in co
         });
     });
 
+		// tests the name method
+		describe('#full_name', function() {
+			it('test5: should have a name method that gets the name in first last format', function(done) {
+				var john_smith = new Player({'first_name': 'John', 'last_name': 'Smith', 'date_of_birth': '6/25/1992'});
+				john_smith.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.full_name).equal('John Smith');
+					done();
+				});
+			});
+			// testing on another object to ensure full_name doesn't return John Smith every time lol
+			it('test6: should have a name method that gets the name in first last format for every player model', function(done) {
+				var ed_gruberman = new Player({'first_name': 'Ed', 'last_name': 'Gruberman', 'date_of_birth': '6/25/1992'});
+				ed_gruberman.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.full_name).equal('Ed Gruberman');
+					done();
+				});
+			});
+		});
+
+		//tests the official name method
+		describe('#official_name', function() {
+			it('test7: should have a name method that returns in last, first format', function(done) {
+				var john_smith = new Player({'first_name': 'John', 'last_name': 'Smith', 'date_of_birth': '6/25/1992'});
+				john_smith.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.official_name).equal('Smith, John');
+					done();
+				});
+			});
+
+			it('test7: should have a name method that returns in last, first format for every player model', function(done) {
+				var ed_gruberman = new Player({'first_name': 'Ed', 'last_name': 'Gruberman', 'date_of_birth': '6/25/1992'});
+				ed_gruberman.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.official_name).equal('Gruberman, Ed');
+					done();
+				});
+			});
+		});
+
 });
