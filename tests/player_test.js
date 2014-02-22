@@ -54,6 +54,7 @@ describe('Player', function(){	//context, so we can see where tests happen in co
 
         //finally, the tests
         it('test1: should have required properties', function(done){
+        	var player_object = new Player(testPlayer)
             player_object.save(function(err, returned){
                 // dont do this: if (err) throw err; - use a test
                 should.not.exist(err);
@@ -63,6 +64,31 @@ describe('Player', function(){	//context, so we can see where tests happen in co
                 returned.should.have.property('date_of_birth', testDate);
                 done();
             });
+        });
+        // shouldn't work if the first_name is blank
+        it('test2: should not allow a user to be created without a first name', function(done){
+        	var no_first_name = new Player({'first_name': '', 'last_name': 'Smith', 'date_of_birth': '6/25/1992'});
+        	no_first_name.save(function(err, returned){
+        		// this should result in an error
+        		should.exist(err);
+        		done();
+        	});
+        });
+        // shouldn't work if the last_name is blank
+        it('test3: should not allow a user to be created without a last name', function(done){
+        	var no_last_name = new Player({'first_name': 'John', 'last_name': '', 'date_of_birth': '6/25/1992'});
+        	no_last_name.save(function(err, returned){
+        		should.exist(err);
+        		done();
+        	});
+        });
+        // should allow a blank DOB
+        it('test4: should allow a user to be created without a date of birth', function(done) {
+        	var no_dob = new Player({'first_name': 'John', 'last_name': 'Smith', 'date_of_birth': ''});
+        	no_dob.save(function(err, returned) {
+        		should.not.exist(err);
+        		done();
+        	});
         });
     });
 
