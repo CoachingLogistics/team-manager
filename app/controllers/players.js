@@ -30,10 +30,11 @@ exports.new_player = function(req, res) {
 exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
+	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var player = new Player({
 		first_name: req.body.first_name,
 		last_name: req.body.last_name,
-		date_of_birth: req.body.dob
+		date_of_birth: new Date(date_string)
 	});
 	player.save(function(err, created_object) {
 		if(err) {
@@ -57,7 +58,44 @@ exports.show = function(req, res) {
 			return res.redirect('/');
 		}
 		else {
-				res.render('player/show', {'player': p});
+			res.render('player/show', {'player': p});
 		}
+	});
+}
+
+/*
+ * Player edit page
+ */
+exports.edit = function(req, res) {
+	Player.findById(req.params.id, function(err, p) {
+		if(err) {
+			return res.redirect('/');
+		}
+		else {
+			var month_name;
+			if(p.date_of_birth) {
+				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+				month_name = monthNames[p.date_of_birth.getMonth()];
+			}
+			return res.render('player/edit', {'player': p, 'month': month_name});
+		}
+	})
+}
+
+/*
+ * Attempts to update a player
+ */
+exports.update = function(req, res) {
+	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
+	var d = new Date(date_string);
+	Player.update({_id: req.params.id}, {'$set':{
+		'first_name': req.body.first_name,
+		'last_name': req.body.last_name,
+		'date_of_birth': d
+	}}, function(err, player){
+		if(err){
+			return res.redirect('/players/' + req.params.id + '/edit');
+		}
+    	return res.redirect('/players/' + req.params.id);
 	});
 }
