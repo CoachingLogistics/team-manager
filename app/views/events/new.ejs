@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body>
+<h1> NEW EVENT </h1>
+	<form action="/events/new" method="post">
+		<label>Team:</label>
+        <input type="text" name="team_id"  id="team_id"/>
+
+        <label>Event Date:</label>
+        <input type="date" name="event_date"  id="event_date"/>
+
+
+		<label>Time:</label>
+        <input type="time" name="event_time"  id="event_time"/>
+
+		<label>Location:</label>
+        <input type="text" name="location"  id="location"/>
+		
+		<label>Event Type:</label>
+        <input type="text" name="event_type"  id="event_type"/>
+
+        <input type="submit" value="Create Event"/>
+
+	</form>
+</body>
+</html>
