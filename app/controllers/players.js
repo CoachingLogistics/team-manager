@@ -11,7 +11,8 @@ var mongoose = require('mongoose'),
  */
 exports.index = function(req, res) {
 	Player.find(function(err, players) {
-		res.render("players/index", {
+		res.render("play
+			ers/index", {
 			'players': players
 		});
 	});

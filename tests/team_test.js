@@ -6,6 +6,7 @@
 
  var app = require("../app");
  var request = require("supertest");
+ var agent = request.agent(app);
 
  var team_model = require('../app/models/team');
  var mongoose = require('mongoose');
@@ -70,5 +71,28 @@ describe('Team', function(){	//context, so we can see where tests happen in cons
             });
         });
     });
+
+    describe('#validators', function(){
+        var bad;
+        // you can use beforeEach in each nested describe
+        beforeEach(function(done){
+            bad = new Team(testTeam);
+            bad.save(done);
+        });
+
+        it('team name must not be empty', function(){
+        	bad.name = "";
+            bad.validate(function(err, returned){
+                err.should.be.ok;//as in, there is an error
+            }).should.throw();
+        });
+
+        it('sport cannot be empty', function(){
+        	bad.sport = "";
+            bad.validate(function(err, returned){
+                err.should.be.ok;
+            }); 
+        });
+    });//validators
 
 });
