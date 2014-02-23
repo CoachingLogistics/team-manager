@@ -99,3 +99,17 @@ exports.update = function(req, res) {
     	return res.redirect('/players/' + req.params.id);
 	});
 }
+
+/*
+ * attempts to delete player
+ */
+exports.delete = function(req, res) {
+	Player.remove({_id: req.params.id}, function(err, docs) {
+		if(err) {
+			return res.redirect('/players/' + req.params.id);
+		}
+		else {
+			return res.redirect('/players');
+		}
+	});
+}
