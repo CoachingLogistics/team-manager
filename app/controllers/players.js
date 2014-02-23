@@ -20,14 +20,14 @@ exports.index = function(req, res) {
 /*
  * renders a page for a new player
  */
-exports.new_category = function(req, res) {
+exports.new_player = function(req, res) {
 	res.render("players/new");
 }
 
 /*
  * attemps to insert a new player
  */
-exports.create_category = function(req, res) {
+exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
 	var player = new Player({

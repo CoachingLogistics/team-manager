@@ -41,20 +41,20 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 
 	beforeEach(function(done){	//clears the database and creates testing objects
         
-        User.remove(done);//clear out db
- 
-        testUser = {
-            first_name    : 'Ned',
-            last_name    : 'Flanders',
-            email    : 'flanders@gmail.com',
-            password: "secret", 
-            phone: "8089882688"
-        };
+      User.remove(done);//clear out db
+
+      testUser = {
+	      first_name    : 'Ned',
+	      last_name    : 'Flanders',
+	      email    : 'flanders@gmail.com',
+	      password: "secret", 
+	      phone: "8089882688"
+      };
     });
 
     after(function(done){
-        //clear out db
-        User.remove(done);
+      //clear out db
+      User.remove(done);
     });
 
 
@@ -62,86 +62,86 @@ describe('User', function(){	//context, so we can see where tests happen in cons
     //testing environment 
 
     describe('#save()', function(){
-        var ned;
-        // you can use beforeEach in each nested describe
-        beforeEach(function(done){
-            ned = new User(testUser);
-            ned.save(done);	//if you need to link models, do it in this function callback
-        });
+	    var ned;
+	    // you can use beforeEach in each nested describe
+	    beforeEach(function(done){
+	      ned = new User(testUser);
+	      ned.save(done);	//if you need to link models, do it in this function callback
+	    });
 
-        //finally, the tests
-        it('should have required properties', function(done){
-            ned.save(function(err, returned){
-                // dont do this: if (err) throw err; - use a test
-                should.not.exist(err);
-                returned.should.have.property('first_name', 'Ned');
-                returned.should.have.property('last_name', 'Flanders');
-                returned.should.have.property('email', 'flanders@gmail.com');
-                returned.should.have.property('phone', "8089882688");
+	    //finally, the tests
+	    it('should have required properties', function(done){
+	      ned.save(function(err, returned){
+	        // dont do this: if (err) throw err; - use a test
+	        should.not.exist(err);
+	        returned.should.have.property('first_name', 'Ned');
+	        returned.should.have.property('last_name', 'Flanders');
+	        returned.should.have.property('email', 'flanders@gmail.com');
+	        returned.should.have.property('phone', "8089882688");
 
-                returned.should.not.have.property('password', "secret");//password should be hashed
-                done();
-            });
-        });
+	        returned.should.not.have.property('password', "secret");//password should be hashed
+	        done();
+	      });
+	    });
     });
 
     describe('#validators', function(){
-        var bad;
-        // you can use beforeEach in each nested describe
-        beforeEach(function(done){
-            bad = new User(testUser);
-            bad.save(done);
-        });
+      var bad;
+      // you can use beforeEach in each nested describe
+      beforeEach(function(done){
+	      bad = new User(testUser);
+	      bad.save(done);
+      });
 
-        it('email must be right format', function(){
-        	bad.email = "none";
-            bad.validate(function(err, returned){
-                err.should.be.ok;//as in, there is an error
-                //err.errors.email.type.should.equal("Email is invalid")
-            }).should.throw();
-        });
+      it('email must be right format', function(){
+      	bad.email = "none";
+          bad.validate(function(err, returned){
+              err.should.be.ok;//as in, there is an error
+              //err.errors.email.type.should.equal("Email is invalid")
+          }).should.throw();
+      });
 
-        it('email cannot be empty', function(){
-        	bad.email = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            }); 
-        });
+      it('email cannot be empty', function(){
+      	bad.email = "";
+          bad.validate(function(err, returned){
+              err.should.be.ok;
+          }); 
+      });
 
-        it('email must be unique', function(){
-        	var copy = new User(testUser);
-            copy.validate(function(err, returned){
-            	//throws a duplicate key exception
-            }).should.throw();
-        });
+      it('email must be unique', function(){
+      	var copy = new User(testUser);
+          copy.validate(function(err, returned){
+          	//throws a duplicate key exception
+          }).should.throw();
+      });
 
-        it('first_name cannot be empty', function(){
-        	bad.first_name = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            }); 
-        });
+      it('first_name cannot be empty', function(){
+      	bad.first_name = "";
+          bad.validate(function(err, returned){
+              err.should.be.ok;
+          }); 
+      });
 
-        it('last_name cannot be empty', function(){
-        	bad.last_name = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            });
-        });
+      it('last_name cannot be empty', function(){
+      	bad.last_name = "";
+          bad.validate(function(err, returned){
+              err.should.be.ok;
+          });
+      });
 
-        it('phone cannot be empty', function(){
-        	bad.phone = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            });
-        });
+      it('phone cannot be empty', function(){
+      	bad.phone = "";
+          bad.validate(function(err, returned){
+              err.should.be.ok;
+          });
+      });
 
-        it('password cannot be empty', function(){
-        	bad.password = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            });
-        });
+      it('password cannot be empty', function(){
+      	bad.password = "";
+          bad.validate(function(err, returned){
+              err.should.be.ok;
+          });
+      });
     });//validators
 
 
