@@ -20,5 +20,10 @@ var app = express();
 
 require('./config/express')(app, config);
 require('./config/routes')(app);
+//require('./config/passport_local')(app, config);
 
 app.listen(config.port);
+
+
+//needed for testing
+module.exports = app;

@@ -1,0 +1,37 @@
+<html>
+<head>
+</head>
+
+<body>
+MY ACCOUNT
+
+<div>
+<%= user.email %>
+</div>
+
+<div>
+<%= user.first_name %>
+</div>
+
+<div>
+<%= user.last_name %>
+</div>
+
+<div>
+<%= user.phone %>
+</div>
+
+<div>
+<%= user.password %>
+<div>
+
+<div>
+<%= user._id %>
+<div>
+
+<a href="/user/<%=user._id%>/edit">Edit</a>
+<form action="/user/<%=user._id%>/delete" method="post">
+	<input type="submit" value="Delete"/>
+</form>
+</body>
+</html>
