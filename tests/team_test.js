@@ -2,9 +2,14 @@
 
  var should = require('should');
 
+ process.env.NODE_ENV = 'test';
+
+ var app = require("../app");
+ var request = require("supertest");
+
  var team_model = require('../app/models/team');
  var mongoose = require('mongoose');
- var test_db = mongoose.connect('mongodb://localhost/team-manager-test'); //connection to the testing environment DB
+ //var test_db = mongoose.connect('mongodb://localhost/team-manager-test'); //connection to the testing environment DB
 
  var Team = mongoose.model('Team');
 
