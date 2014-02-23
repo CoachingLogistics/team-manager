@@ -11,7 +11,7 @@ var mongoose = require('mongoose'),
  */
 exports.index = function(req, res) {
 	Player.find(function(err, players) {
-		res.render("players/index", {
+		res.render("player/index", {
 			'players': players
 		});
 	});
@@ -20,14 +20,14 @@ exports.index = function(req, res) {
 /*
  * renders a page for a new player
  */
-exports.new_category = function(req, res) {
-	res.render("players/new");
+exports.new_player = function(req, res) {
+	res.render("player/new");
 }
 
 /*
  * attemps to insert a new player
  */
-exports.create_category = function(req, res) {
+exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
 	var player = new Player({
@@ -37,12 +37,12 @@ exports.create_category = function(req, res) {
 	});
 	player.save(function(err, created_object) {
 		if(err) {
-			res.render('players/new', {
+			res.render('player/new', {
 				error: "Missing required fields"
 			});
 		}
 		else {
-			return res.redirect("/");
+			return res.redirect("/players");
 		}
 	});
 }
@@ -52,5 +52,12 @@ exports.create_category = function(req, res) {
  */
 exports.show = function(req, res) {
 	// will make this do more when we get more added
-	res.render('players/show');
+	Player.findById(req.params.id, function(err, p) {
+		if(err) {
+			return res.redirect('/');
+		}
+		else {
+				res.render('player/show', {'player': p});
+		}
+	});
 }

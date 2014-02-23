@@ -1,0 +1,22 @@
+<!-- May or may not need this later -->
+<h1>Player's Index page</h1>
+<table>
+	<thead>
+		<th>Last Name</th>
+		<th>First Name</th>
+		<th>Date of Birth</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% for(var i = 0; i < players.length; i++) { %>
+			<tr>
+				<td><%= players[i].last_name %></td>
+				<td><%= players[i].first_name %></td>
+				<td><%= players[i].date_of_birth %></td>
+				<td><a href=<%= '/players/' + players[i]._id %>>Show</a></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href='/players/new'>Create new player</a>
