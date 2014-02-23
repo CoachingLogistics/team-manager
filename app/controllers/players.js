@@ -30,7 +30,6 @@ exports.new_player = function(req, res) {
 exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
-	console.log(JSON.stringify(req.body));
 	var player = new Player({
 		first_name: req.body.first_name,
 		last_name: req.body.last_name,
@@ -53,5 +52,12 @@ exports.create_player = function(req, res) {
  */
 exports.show = function(req, res) {
 	// will make this do more when we get more added
-	res.render('player/show');
+	Player.findById(req.params.id, function(err, p) {
+		if(err) {
+			return res.redirect('/');
+		}
+		else {
+				res.render('player/show', {'player': p});
+		}
+	});
 }

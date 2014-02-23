@@ -13,7 +13,10 @@
 				<td><%= players[i].last_name %></td>
 				<td><%= players[i].first_name %></td>
 				<td><%= players[i].date_of_birth %></td>
+				<td><a href=<%= '/players/' + players[i]._id %>>Show</a></td>
 			</tr>
 		<% } %>
 	</tbody>
 </table>
+
+<a href='/players/new'>Create new player</a>
