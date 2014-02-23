@@ -1,0 +1,54 @@
+<html>
+<head>
+</head>
+<body>
+
+<% if (message) { %>
+<p><%= message %></p>
+<% } %>
+
+    <form action="/user/<%= user._id%>/edit" method="post">
+        <div>
+            <label>Email:</label>
+            <input type="text" name="email" id="email" value="<%=user.email%>"/>
+        </div>
+
+        <div>
+            <label>Email Confirmation:</label>
+            <input type="text" name="confirm_email" id="confirm_email"/>
+        </div>
+
+        <div>    
+            <label>Password:</label>
+            <input type="password" name="password"  id="password"/>
+        <div>
+            <label>Password Confirmation:</label>
+            <input type="password" name="confirm_password"  id="confirm_password"/>
+        </div>
+
+        <div>
+            <label>First Name:</label>
+            <input type="text" name="first_name" id="first_name" value="<%=user.first_name%>"/>
+        </div>
+
+        <div>    
+            <label>Last Name:</label>
+            <input type="text" name="last_name" id="last_name" value="<%=user.last_name%>"/>
+        </div>
+
+        <div>
+            <label>Phone Number:</label>
+            <input type="text" name="phone" id="phone" value="<%=user.phone%>"/>
+        </div>
+
+        <div>
+            <input type="submit" value="Edit Account"/>
+        </div>
+    </form>
+
+
+
+
+
+</body>
+</html>

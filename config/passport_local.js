@@ -1,8 +1,12 @@
 var express = require('express');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').strategy;
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 77;
+
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+
 
 module.exports = function(app, config) {
   app.configure(function () {
@@ -13,14 +17,11 @@ module.exports = function(app, config) {
     app.set('view engine', 'ejs');
     app.use(express.favicon(config.root + '/public/img/favicon.ico'));
     app.use(express.logger('dev'));
-
     app.use(express.cookieParser());//passport
-
     app.use(express.bodyParser());
     app.use(express.methodOverride());
+    app.use(express.session({secret:'my secret phrase'}));//passport
 
-    //passport stuff
-    app.use(express.session({secret:'my secret phrase'}));
       // Remember Me middleware
     app.use( function (req, res, next) {
         if ( req.method == 'POST' && req.url == '/login' ) {
@@ -36,9 +37,11 @@ module.exports = function(app, config) {
     app.use(passport.initialize());
     app.use(passport.session());
 
-
-
     app.use(app.router);
+
+
+
+
     app.use(function(req, res) {
       res.status(404).render('404', { title: '404' });
     });
@@ -46,11 +49,10 @@ module.exports = function(app, config) {
 };
 
 
-passport.serializeUser(function(user, done) {
 
+passport.serializeUser(function(user, done) {
   var createAccessToken = function () {
     var token = user.generateRandomToken();
-
     User.findOne( { accessToken: token }, function (err, existingUser) {
       if (err) { return done( err ); }
       if (existingUser) {
@@ -77,10 +79,10 @@ passport.deserializeUser(function(token, done) {
 });
 
 
-passport.use(new LocalStrategy(function(email, password, done) {
-  User.findOne({ email: email }, function(err, user) {
+passport.use(new LocalStrategy(function(username, password, done) {
+  User.findOne({ username: username }, function(err, user) {
     if (err) { return done(err); }
-    if (!user) { return done(null, false, { message: 'Unknown user ' + email }); }
+    if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
     user.comparePassword(password, function(err, isMatch) {
       if (err) return done(err);
       if(isMatch) {
@@ -91,3 +93,14 @@ passport.use(new LocalStrategy(function(email, password, done) {
     });
   });
 }));
+
+
+
+
+
+
+
+
+
+
+
