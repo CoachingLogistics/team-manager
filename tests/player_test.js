@@ -134,4 +134,51 @@ describe('Player', function(){	//context, so we can see where tests happen in co
 			});
 		});
 
+		describe('#age', function() {
+			it('test8: should have an age function', function(done) {
+				var current_date = new Date();
+				// birthday was one month ago, getMonth returns a month from 0-11
+				var date_string = current_date.getMonth() + '/' + current_date.getDate() + '/' + (current_date.getFullYear() - 20);
+				var age_passed = new Player({'first_name': 'Alex', 'last_name': 'Egan', 'date_of_birth': date_string});
+				age_passed.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.age).equal(20);
+					done();
+				});
+			});
+			// birthday yesterday
+			it('test9: should have an age function that returns the age, and works when the players bday was yesterday', function(done) {
+				var current_date = new Date();
+				var date_string = (current_date.getMonth() + 1) + '/' + (current_date.getDate() - 1) + '/' + (current_date.getFullYear() - 20);
+				var bday_yesterday = new Player({'first_name': 'Alex', 'last_name': 'Egan', 'date_of_birth': date_string});
+				bday_yesterday.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.age).equal(20);
+					done();
+				});
+			});
+			// birthday tomorrow
+			it('test10: should have an age function that returns the age, and works if the players bday is tomorrow', function(done) {
+				var current_date = new Date();
+				var date_string = (current_date.getMonth() + 1) + '/' + (current_date.getDate() + 1) + '/' + (current_date.getFullYear() - 20);
+				var bday_tomorrow = new Player({'first_name': 'Alex', 'last_name': 'Egan', 'date_of_birth': date_string});
+				bday_tomorrow.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.age).equal(19);
+					done();
+				});
+			});
+			// birthday next month
+			it('test11: should have an age function that returns the currect age if the players bday is next month', function(done) {
+				var current_date = new Date();
+				var date_string = (current_date.getMonth() + 2) + '/' + (current_date.getDate()) + '/' + (current_date.getFullYear() - 20);
+				var bday_later = new Player({'first_name': 'Alex', 'last_name': 'Egan', 'date_of_birth': date_string});
+				bday_later.save(function(err, returned) {
+					should.not.exist(err);
+					should(returned.age).equal(19);
+					done();
+				});
+			});
+		});
+
 });
