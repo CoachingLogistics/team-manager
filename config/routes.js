@@ -6,7 +6,6 @@ module.exports = function(app){
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
 	app.get('/', home.index);
-	app.get('/teams', teams.index);
 
 
 	//users
@@ -29,6 +28,15 @@ module.exports = function(app){
 	app.get('/players/:id/edit', players.edit);
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
+
+	// teams
+	app.get('/teams', teams.index);
+	app.get('/teams/new', teams.new);
+	app.put('/teams/new', teams.create);
+	app.get('/teams/:id', teams.show);
+	app.get('/teams/:id/edit', teams.edit);
+	app.post('/teams/:id/update', teams.update);
+	app.post('/teams/:id/delete', teams.delete)
 };
 
 
