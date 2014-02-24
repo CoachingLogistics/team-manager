@@ -1,0 +1,25 @@
+<h1>Create a new Player</h1>
+
+<form method="POST" action="/players/new">
+	First Name:<input type='text' name='first_name' /><br />
+	Last Name:<input type='text' name='last_name' /><br />
+	<b>Date of birth</b> <br />
+	Month: <select name="month" class="formlist">
+	<option></option>
+	<option value = "1">January</option>
+	<option value = "2">February</option>
+	<option value = "3">March</option>
+	<option value = "4">April</option>
+	<option value = "5">May</option>
+	<option value = "6">June</option>
+	<option value = "7">July</option>
+	<option value = "8">August</option>
+	<option value = "9">September</option>
+	<option value = "10">October</option>
+	<option value = "11">November</option>
+	<option value = "12">December</option> 
+	</select>
+	Day:<input type="number" max="31" min="1" name="day"/>
+	Year:<input type="number" max=<%= "" + new Date().getFullYear()%> name="year"> <br />
+	<input type='submit' value='Create' />
+</form>
