@@ -8,9 +8,8 @@
    sport: String,
  });
 
-// ArticleSchema.virtual('date')
-//   .get(function(){
-//     return this._id.getTimestamp();
-//   });
+ // TeamSchema.method('players').get(function(){
+ 	
+ // })
 
  mongoose.model('Team', TeamSchema);
