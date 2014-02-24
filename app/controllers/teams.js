@@ -5,7 +5,6 @@ exports.index = function(req, res){
   Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('team/index', {
-      title: 'Teams',
       teams: teams
     });
   });
@@ -14,15 +13,14 @@ exports.index = function(req, res){
 exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){
-  	//roster 
-  	//RosterSpot.findAll({ team_id: team._id}, rspot);
-    if(err) throw new Error(err);
+  		//roster 
+  		//RosterSpot.findAll({ team_id: team._id}, rspot);
+	    if(err) throw new Error(err);
 
-    res.render('team/show', {
-      title: 'Teams',
-      teams: teams
-    });
-  });
+	    res.render('team/show', {
+	      team: team
+	    });
+  	});
 };
 
 exports.edit = function(req, res){
@@ -30,8 +28,7 @@ exports.edit = function(req, res){
 		if(error) throw new Error(err);
 
 		res.render('team/edit', {
-			name: team.name,
-			sport: team.sport
+			team: team
 		})
 	});
 }
@@ -42,34 +39,49 @@ exports.new = function(req, res){
 
 exports.update = function(req, res){
 	Team.findById(req.params.id, function(error, team){
-		team.name = req.data.name;
-		team.sport = req.data.sport;
+		team.name = req.body.name;
+		team.sport = req.body.sport;
+
+		team.save(function(err, team){
+			if(err){
+				res.render('team/new', {
+					team: team,
+					message: err
+				});
+			}
+			res.redirect('/teams/' + team._id
+				//{
+				//team: team,
+				//message: "You have successfully updated team " + team.name
+				//}
+			);
+		});
 	})
-	team.save(function(err, team){
-		if(err){
-			res.render('team/new', {
-				user: req.data.name,
-				title: req.data.sport,
-				message: err
-			});
-		}
-		res.redirect('/');
-	});
+
 };
 
 exports.create = function(req, res){
 	var newTeam = new Team({
-		name: req.data.name,
-		sport: req.data.sport
+		name: req.body.name,
+		sport: req.body.sport
 	});
 	newTeam.save(function(err, team){
 		if(err){
 			res.render('team/new', {
-				user: req.data.name,
-				title: req.data.sport,
+				team: team,
 				message: err
 			});
 		}
-		res.redirect('/');
+		res.redirect('/teams/' + team._id //, {
+		//	team: team,
+		//	message: "You have successfully created team " + team.name
+		//}
+		);
 	});
 };
+
+exports.delete = function (req, res){
+	Team.findById(req.params.id, function(error, team){
+		//if team doesn't have any players associated with it, can delete
+	})
+}

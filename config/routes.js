@@ -32,11 +32,11 @@ module.exports = function(app){
 	// teams
 	app.get('/teams', teams.index);
 	app.get('/teams/new', teams.new);
-	app.put('/teams/new', teams.create);
+	app.post('/teams/new', teams.create);
 	app.get('/teams/:id', teams.show);
 	app.get('/teams/:id/edit', teams.edit);
-	app.post('/teams/:id/update', teams.update);
-	app.post('/teams/:id/delete', teams.delete)
+	app.post('/teams/:id/edit', teams.update);
+	//app.post('/teams/:id/delete', teams.delete);
 };
 
 

@@ -4,8 +4,8 @@
    Schema = mongoose.Schema;
 
  var TeamSchema = new Schema({
-   name: String,
-   sport: String,
+   name: {type: String, required: true},
+   sport: {type: String, required: true}
  });
 
  // TeamSchema.method('players').get(function(){
