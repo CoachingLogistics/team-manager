@@ -5,3 +5,9 @@
 <%= player.last_name %><br />
 <b>Date of Birth</b> <br />
 <%= player.date_of_birth %><br />
+
+<a href=<%= '/players/' + player._id + "/edit" %> >Edit</a> <br />
+<!-- Will add 'are you sure?' alert when we add the authorization check -->
+<form method='POST' action=<%= '/players/' + player._id + '/delete'%> >
+	<input type="Submit" value="Delete" />
+</form>

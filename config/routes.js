@@ -24,6 +24,9 @@ module.exports = function(app){
 	app.get('/players/new', players.new_player);
 	app.post('/players/new', players.create_player);
 	app.get('/players/:id', players.show);
+	app.get('/players/:id/edit', players.edit);
+	app.post('/players/:id/update', players.update);
+	app.post('/players/:id/delete', players.delete);
 };
 
 
