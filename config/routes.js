@@ -27,6 +27,9 @@ module.exports = function(app){
 	app.get('/players/:id/edit', players.edit);
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
+
+	// mailer (get for now because I'm just going to the URL)
+	app.get('/sendMail', home.send_mail);
 };
 
 
