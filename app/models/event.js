@@ -4,37 +4,38 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
   ObjectId = Schema.ObjectId;
 
-var eventSchema = new Schema({
+var EventSchema = new Schema({
   team_id: ObjectId,
   date: Date,
-  time: String,
+  time: Date,
   location: String,
   type: String
 });
 
-eventSchema.virtual('team_id').get(function(){
-	//team id?
-	return "team id?";
-});
+// do one for team_id
+// EventSchema.virtual('date')
+//   .get(function(){
+//     //getDate
+//   });
 
-eventSchema.virtual('date')
+EventSchema.virtual('date')
   .get(function(){
-    return this._id.getTimestamp();
+    var date = this.date.getMonth() + '/' + this.date.getDate() + '/' + this.date.getYear();
+    return date;
   });
 
-eventSchema.virtual('time').get(function(){
-	//how is time working?
-	return "time?";
+EventSchema.virtual('time').get(function(){
+	//getTime
 });
 
-eventSchema.virtual('location').get(function(){
+EventSchema.virtual('location').get(function(){
 	//location?
 	return "location?";
 });
 
-eventSchema.virtual('type').get(function(){
+EventSchema.virtual('type').get(function(){
 	//type?
 	return "type?";
 });
 
-mongoose.model('Event', eventSchema);
+mongoose.model('Event', EventSchema);

@@ -2,6 +2,8 @@
 
 var should = require('should');
 
+process.env.NODE_ENV = 'test';
+
 var player_model = require('../app/models/player');
 var mongoose = require('mongoose');
 //var test_db = mongoose.connect('mongodb://localhost/test-test'); //connection to the testing environment DB

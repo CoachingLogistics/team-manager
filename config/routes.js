@@ -3,14 +3,11 @@ module.exports = function(app){
 	//home route
 	var home = require('../app/controllers/home');
 	var events = require('../app/controllers/events')
-
-	app.get('/', home.index);
-
-	app.get('/events', events.index);
-	app.get('/events/new', events.new);
-	app.post('/events/new', events.create);
+	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
+
+	var mail = require('../app/controllers/mail');
 	app.get('/', home.index);
 
 
@@ -34,6 +31,25 @@ module.exports = function(app){
 	app.get('/players/:id/edit', players.edit);
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
+
+	// teams
+	app.get('/teams', teams.index);
+	app.get('/teams/new', teams.new);
+	app.post('/teams/new', teams.create);
+	app.get('/teams/:id', teams.show);
+	app.get('/teams/:id/edit', teams.edit);
+	app.post('/teams/:id/edit', teams.update);
+	//app.post('/teams/:id/delete', teams.delete);
+
+	// events
+	app.get('/events', events.index);
+	app.get('/events/new', events.new);
+	app.post('/events/new', events.create);
+
+	
+	// mailer
+	app.get('/mail/compose', mail.compose_mail);
+	app.post('/mail/send', mail.send_mail);
 };
 
 
