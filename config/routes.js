@@ -3,6 +3,7 @@ module.exports = function(app){
 	//home route
 	var home = require('../app/controllers/home');
 	var users = require('../app/controllers/users');
+	var players = require('../app/controllers/players');
 	app.get('/', home.index);
 
 
@@ -18,6 +19,14 @@ module.exports = function(app){
 	app.get('/user/:id/edit', users.edit);
 	app.post('/user/:id/edit', users.update);
 
+	// players
+	app.get('/players', players.index);
+	app.get('/players/new', players.new_player);
+	app.post('/players/new', players.create_player);
+	app.get('/players/:id', players.show);
+	app.get('/players/:id/edit', players.edit);
+	app.post('/players/:id/update', players.update);
+	app.post('/players/:id/delete', players.delete);
 };
 
 
