@@ -101,16 +101,20 @@ exports.edit = function(req, res){
 
 exports.update = function(req, res){
 
-	User.update(req.params.id, {$set:{
-		email: req.param('email'),
-		first_name: req.param('first_name'),
-		last_name: req.param('last_name'),
-		phone: req.param('phone'),
-		password: req.param('password')
+	User.findById(req.params.id, function(err, user){
+		user.email = req.param('email');
+		user.first_name = req.param('first_name');
+		user.last_name = req.param('last_name');
+		user.phone = req.param('phone');
+		//user.password = req.param('password');
+		user.save(function(err, user){
+			if(err){
+				console.log(err);
+				res.redirect('/404');
+			}
+			res.redirect('/account');
+		});
 
-	}}, function(error, user){
-		//req.flash('info', 'User successfully edited');
-      	res.redirect('/account');
 	});
 };
 
