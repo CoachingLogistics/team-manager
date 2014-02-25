@@ -4,6 +4,8 @@ module.exports = function(app){
 	var home = require('../app/controllers/home');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
+
+	var mail = require('../app/controllers/mail');
 	app.get('/', home.index);
 
 
@@ -28,8 +30,9 @@ module.exports = function(app){
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
 
-	// mailer (get for now because I'm just going to the URL)
-	app.get('/sendMail', home.send_mail);
+	// mailer
+	app.get('/mail/compose', mail.compose_mail);
+	app.post('/mail/send', mail.send_mail);
 };
 
 
