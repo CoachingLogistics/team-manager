@@ -32,3 +32,11 @@ var config = {
 };
 
 module.exports = config[env];
+
+
+
+// Root User:     admin
+//    Root Password: g2c6Rt8ylB-K
+//    Database Name: express
+
+// Connection URL: mongodb://$OPENSHIFT_MONGODB_DB_HOST:$OPENSHIFT_MONGODB_DB_PORT/
