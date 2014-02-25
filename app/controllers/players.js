@@ -88,15 +88,18 @@ exports.edit = function(req, res) {
 exports.update = function(req, res) {
 	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var d = new Date(date_string);
-	Player.update({_id: req.params.id}, {'$set':{
-		'first_name': req.body.first_name,
-		'last_name': req.body.last_name,
-		'date_of_birth': d
-	}}, function(err, player){
-		if(err){
-			return res.redirect('/players/' + req.params.id + '/edit');
-		}
-    	return res.redirect('/players/' + req.params.id);
+	Player.findById(req.params.id, function(err, the_player) {
+		the_player.first_name = req.body.first_name;
+		the_player.last_name = req.body.last_name;
+		the_player.date_of_birth = d;
+		the_player.save(function(err, saved_player) {
+			if(err) {
+				return res.redirect('/players/' + req.params.id + '/edit');
+			}
+			else {
+				return res.redirect('/players/' + req.params.id);
+			}
+		});
 	});
 }
 
