@@ -4,4 +4,4 @@ dist
 .sass-cache
 app/bower_components
 test/bower_components
-config/mailer.js
+mailer.js
