@@ -10,7 +10,7 @@ var request = require("supertest");
 var agent = request.agent(app);
 
 
-var user_model = require('../app/models/user');
+//var user_model = require('../app/models/user');
 var mongoose = require('mongoose');
 // var test_db = mongoose.connect('mongodb://localhost/team-manager-test'); //connection to the testing environment DB
 
@@ -238,7 +238,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 
 
 
-        //don't know how to get this working
+        //don't know how to get this confirmed
         it('user can edit their account', function(done){
         	var id = ned._id;
 
@@ -259,7 +259,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 	        });
         });
 
-        //don't know how to get this working
+        //don't know how to get this confirmed
         it('user can delete their account', function(done){
         	var id = ned._id;
 
