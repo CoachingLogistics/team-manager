@@ -15,21 +15,28 @@ exports.show = function(req, res){
   	Team.findById(req.params.id, function(err, team){
   		//roster 
   		//RosterSpot.findAll({ team_id: team._id}, rspot);
-	    if(err) throw new Error(err);
+		if(err) {
+			throw new Error(err);
+			//res.status(404).render('404');
+		}else{
+	    	res.render('team/show', {
+	    	  team: team
+	    	});			
+		}
 
-	    res.render('team/show', {
-	      team: team
-	    });
   	});
 };
 
 exports.edit = function(req, res){
 	Team.findById(req.params.id, function(error, team){
-		if(error) throw new Error(err);
-
-		res.render('team/edit', {
-			team: team
-		})
+		if(error) {
+			throw new Error(error);
+			//res.status(404).render('404');
+		}else{
+			res.render('team/edit', {
+				team: team
+			})
+		}
 	});
 }
 
@@ -39,25 +46,23 @@ exports.new = function(req, res){
 
 exports.update = function(req, res){
 	Team.findById(req.params.id, function(error, team){
+		
+		var oldTeam = JSON.parse(JSON.stringify( team ));
+
 		team.name = req.body.name;
 		team.sport = req.body.sport;
 
 		team.save(function(err, team){
 			if(err){
-				res.render('team/new', {
-					team: team,
+				res.render('team/edit', {
+					team: oldTeam,
 					message: err
 				});
+			}else{
+				res.redirect('/teams/' + team._id);	
 			}
-			res.redirect('/teams/' + team._id
-				//{
-				//team: team,
-				//message: "You have successfully updated team " + team.name
-				//}
-			);
-		});
+		})
 	})
-
 };
 
 exports.create = function(req, res){
@@ -71,12 +76,14 @@ exports.create = function(req, res){
 				team: team,
 				message: err
 			});
+		}else{
+			res.redirect('/teams/' + team._id //, {
+			//	team: team,
+			//	message: "You have successfully created team " + team.name
+			//}
+			);
 		}
-		res.redirect('/teams/' + team._id //, {
-		//	team: team,
-		//	message: "You have successfully created team " + team.name
-		//}
-		);
+
 	});
 };
 

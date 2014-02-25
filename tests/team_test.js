@@ -49,7 +49,7 @@ describe('Team', function(){	//context, so we can see where tests happen in cons
 
     //testing environment 
 
-    describe('#save()', function(){
+    describe('#save', function(){
         var team_object;
         // you can use beforeEach in each nested describe
         beforeEach(function(done){
@@ -90,6 +90,31 @@ describe('Team', function(){	//context, so we can see where tests happen in cons
 
         it('sport cannot be empty', function(done){
         	bad.sport = "";
+            bad.validate(function(err, returned){
+                err.should.be.ok;
+            });
+            done();
+        });
+    });//validators
+
+    describe('#routes', function(){
+        var bad;
+        // you can use beforeEach in each nested describe
+        beforeEach(function(done){
+            bad = new Team(testTeam);
+            bad.save(done);
+        });
+
+        it('team name must not be empty', function(done){
+            bad.name = "";
+            bad.validate(function(err, returned){
+                err.should.be.ok;//as in, there is an error
+            }).should.throw();
+            done();
+        });
+
+        it('sport cannot be empty', function(done){
+            bad.sport = "";
             bad.validate(function(err, returned){
                 err.should.be.ok;
             });
