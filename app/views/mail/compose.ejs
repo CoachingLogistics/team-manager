@@ -1,12 +1,13 @@
 <h1>Compose a message</h1>
 
 <form method="POST" action="/mail/send">
-	From: <input type="text" name="sender" /> <br />
-	To: <input type="text" name="reciever" /> <br />
+	<p>Defaults to account specified in team_mailer</p>
+	From: <input type="email" name="sender" /> <br />
+	To: <input type="email" name="reciever" /> <br />
 	Subject: <input type="text" name="subject" /> <br />
-	<p>I think this gets ignored in the email if you have HTML</p>
+	<p>This gets ignored in the email if you have HTML</p>
 	Text: <textarea name="text"></textarea> <br />
-	<p>I think this overrides the text part of the email</p>
+	<p>This overrides the text part of the email</p>
 	HTML: <textarea name="html"></textarea> <br />
 	<input type="submit" value="Send Message" />
 </form>
