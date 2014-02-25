@@ -2,16 +2,18 @@
  * Proof of concept. We can get emails to work
  * Please remember to not commit the password to your email account.
  * I'll work on moving that information into a file that is included in .gitignore
+ * http://www.nodemailer.com/ for more info
  */
 
 var nodemailer = require("nodemailer");
+var mailer_options = require("../../config/mailer");
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport("SMTP",{
-  service: "Gmail",
+  service: mailer_options.service,
   auth: {
-    user: "alexander.egan@gmail.com",
-    pass: "password"
+    user: mailer_options.user,
+    pass: mailer_options.pass
   }
 });
 
