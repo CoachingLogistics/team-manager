@@ -1,0 +1,12 @@
+<h1>Compose a message</h1>
+
+<form method="POST" action="/mail/send">
+	From: <input type="text" name="sender" /> <br />
+	To: <input type="text" name="reciever" /> <br />
+	Subject: <input type="text" name="subject" /> <br />
+	<p>I think this gets ignored in the email if you have HTML</p>
+	Text: <textarea name="text"></textarea> <br />
+	<p>I think this overrides the text part of the email</p>
+	HTML: <textarea name="html"></textarea> <br />
+	<input type="submit" value="Send Message" />
+</form>
