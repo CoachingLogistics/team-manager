@@ -1,7 +1,10 @@
 <h1>Edit <%= player.full_name %></h1>
+<% if(error) { %>
+	<b><%= error %></b>
+<% } %>
 <form method="POST", action=<%= "/players/"+player._id+"/update" %> >
-	First Name:<input type="text" name="first_name" value=<%= player.first_name %> /> <br />
-	Last Name:<input type="text" name="last_name" value=<%= player.last_name %> /> <br />
+	First Name:<input type="text" name="first_name" value="<%= player.first_name %>"  /> <br />
+	Last Name:<input type="text" name="last_name" value="<%= player.last_name %>" /> <br />
 	<b>Date of birth</b> <br />
 	<% if(month) { %>
 		Month: <select name="month" class="formlist">
@@ -20,7 +23,7 @@
 		<option value = "12">December</option> 
 		</select>
 		Day:<input type="number" max="31" min="1" name="day", value=<%= player.date_of_birth.getDate() %> />
-		Year:<input type="number" max=<%= "" + new Date().getFullYear()%> name="year" value=<%= player.date_of_birth.getFullYear() %>> <br />
+		Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year" value=<%= player.date_of_birth.getFullYear() %>> <br />
 	<% } %>
 	<% if(!month) { %>
 			Month: <select name="month" class="formlist">
@@ -39,7 +42,7 @@
 			<option value = "12">December</option> 
 			</select>
 			Day:<input type="number" max="31" min="1" name="day"/>
-			Year:<input type="number" max=<%= "" + new Date().getFullYear()%> name="year"> <br />
+			Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year"> <br />
 	<% } %>
 	<input type="submit" value="Update" />
 </form>

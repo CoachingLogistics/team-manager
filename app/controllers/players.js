@@ -77,7 +77,7 @@ exports.edit = function(req, res) {
 				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 				month_name = monthNames[p.date_of_birth.getMonth()];
 			}
-			return res.render('player/edit', {'player': p, 'month': month_name});
+			return res.render('player/edit', {'player': p, 'month': month_name, 'error': null});
 		}
 	})
 }
@@ -88,15 +88,26 @@ exports.edit = function(req, res) {
 exports.update = function(req, res) {
 	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var d = new Date(date_string);
-	Player.update({_id: req.params.id}, {'$set':{
-		'first_name': req.body.first_name,
-		'last_name': req.body.last_name,
-		'date_of_birth': d
-	}}, function(err, player){
-		if(err){
-			return res.redirect('/players/' + req.params.id + '/edit');
-		}
-    	return res.redirect('/players/' + req.params.id);
+	Player.findById(req.params.id, function(err, the_player) {
+		var saved_fname = the_player.first_name;
+		var saved_lname = the_player.last_name;
+		var saved_dob = the_player.date_of_birth;
+		the_player.first_name = req.body.first_name;
+		the_player.last_name = req.body.last_name;
+		the_player.date_of_birth = d;
+		the_player.save(function(err, saved_player) {
+			if(err || !req.body.year) {
+				the_player.first_name = saved_fname;
+				the_player.last_name = saved_lname;
+				the_player.date_of_birth = saved_dob;
+				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+				var month_name = monthNames[the_player.date_of_birth.getMonth()];
+				return res.render('player/edit', {'player': the_player, 'month': month_name, error: "Must include first and last names"});
+			}
+			else {
+				return res.redirect('/players/' + req.params.id);
+			}
+		});
 	});
 }
 
