@@ -32,3 +32,7 @@ CoachSchema.statics.getByUserId = function(user_id, callback) {
 		callback(err, coaches);
 	});
 };
+
+// set the schema and export the model
+mongoose.model('Coach', CoachSchema);
+module.exports = mongoose.model('Coach');
