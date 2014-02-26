@@ -151,6 +151,144 @@ describe('Coach', function() {
 		});
 	});// save
 
+	// get by team id
+	describe('#getByTeamId()', function(done) {
+		// probably could have better utalized code reuse but whatever
+		var fly;
+		var prep;
+		var prep_coach;
+		var fly_coach_1;
+		var fly_coach_2;
+
+		beforeEach(function(done) {
+			prep = new Team(testTeam);
+			prep.save(function(err, prep_saved) {
+				if(err) {
+					console.log(err);
+					return done(err);
+				}
+				else {
+					fly = new Team({'name': 'Flyers', 'sport': 'Hockey'});
+					fly.save(function(err, fly_saved) {
+						if(err) {
+							console.log(err);
+							return done(err);
+						}
+						// now I have both teams saved and all users created, so...
+						prep_coach = new Coach({'team_id': prep_saved._id, 'user_id': austin._id});
+						prep_coach.save(function(err, pc_saved) {
+							if(err) {
+								console.log(err);
+								return done(err);
+							}
+							fly_coach_1 = new Coach({'team_id': fly_saved._id, 'user_id': peter._id});
+							fly_coach_1.save(function(err, fc1_saved) {
+								if(err){ 
+									console.log(err);
+									return done(err);
+								}
+								fly_coach_2 = new Coach({'team_id': fly_saved._id, 'user_id': craig._id});
+								fly_coach_2.save(done);
+							});
+						});
+					});
+				}
+			});
+		});
+		// test the method
+		it('should have a method to get coaches by team id', function(done) {
+			Coach.getByTeamId(prep._id, function(err, coaches) {
+				should.not.exist(err);
+				should(coaches.length).equal(1);
+				coaches[0].should.have.property('team_id', prep._id);
+				coaches[0].should.have.property('user_id', austin._id);
+				done();
+			});
+		});
+		// test it returns multiple coaches if necessary
+		it('should have a method to get ALL coaches by team id', function(done) {
+			Coach.getByTeamId(fly._id, function(err, coaches) {
+				should.not.exist(err);
+				should(coaches.length).equal(2);
+				coaches[0].should.have.property('team_id', fly._id);
+				coaches[1].should.have.property('team_id', fly._id);
+				done();
+			});
+		});
+	});
+	// get by user id
+	describe('#getByTeamId()', function(done) {
+		// probably could have better utalized code reuse but whatever
+		var fly;
+		var prep;
+		var prep_coach_1;
+		var prep_coach_2;
+		var fly_coach_1;
+		var fly_coach_2;
+
+		beforeEach(function(done) {
+			prep = new Team(testTeam);
+			prep.save(function(err, prep_saved) {
+				if(err) {
+					console.log(err);
+					return done(err);
+				}
+				else {
+					fly = new Team({'name': 'Flyers', 'sport': 'Hockey'});
+					fly.save(function(err, fly_saved) {
+						if(err) {
+							console.log(err);
+							return done(err);
+						}
+						// now I have both teams saved and all users created, so...
+						prep_coach_1 = new Coach({'team_id': prep_saved._id, 'user_id': austin._id});
+						prep_coach_1.save(function(err, pc_saved) {
+							if(err) {
+								console.log(err);
+								return done(err);
+							}
+							fly_coach_1 = new Coach({'team_id': fly_saved._id, 'user_id': peter._id});
+							fly_coach_1.save(function(err, fc1_saved) {
+								if(err){ 
+									console.log(err);
+									return done(err);
+								}
+								fly_coach_2 = new Coach({'team_id': fly_saved._id, 'user_id': craig._id});
+								fly_coach_2.save(function(err, fc2_saved) {
+									if(err) {
+										console.log(err);
+										return done(err);
+									}
+									prep_coach_2 = new Coach({'team_id': prep_saved._id, 'user_id': peter._id});
+									prep_coach_2.save(done);
+								});
+							});
+						});
+					});
+				}
+			});
+		});
+		// test the method
+		it('should have a method to get coaches by user id', function(done) {
+			Coach.getByUserId(craig._id, function(err, coaches) {
+				should.not.exist(err);
+				should(coaches.length).equal(1);
+				coaches[0].should.have.property('team_id', fly._id);
+				coaches[0].should.have.property('user_id', craig._id);
+				done();
+			});
+		});
+		// test it returns multiple coaches if necessary
+		it('should have a method to get ALL coaches by user id', function(done) {
+			Coach.getByUserId(peter._id, function(err, coaches) {
+				should.not.exist(err);
+				should(coaches.length).equal(2);
+				coaches[0].should.have.property('user_id', peter._id);
+				coaches[1].should.have.property('user_id', peter._id);
+				done();
+			});
+		});
+	});
 
 
 
