@@ -92,7 +92,8 @@ describe('Family', function(){	//context, so we can see where tests happen in co
 
     after(function(done){
         //clear out db
-        User.remove(done);
+        //User.remove(done);
+        done();
     });
 
 
@@ -143,17 +144,19 @@ describe('Family', function(){	//context, so we can see where tests happen in co
         });
 
         // validators
-        it('player_id cannot be empty', function(){
+        it('player_id cannot be empty', function(done){
          flanders1.player_id = null;
             flanders1.validate(function(err, returned){
                 err.should.be.ok;
+                done();
             });
         });
 
-        it('user_id cannot be empty', function(){
+        it('user_id cannot be empty', function(done){
          flanders1.user_id = null;
             flanders1.validate(function(err, returned){
                 err.should.be.ok;
+                done();
             });
         });
 
@@ -206,50 +209,108 @@ describe('Family', function(){	//context, so we can see where tests happen in co
                 });
             });//end of beforeEach
             
-            it('method getByPlayerId', function(){
+            it('method getByPlayerId', function(done){
 
                 Family.getByPlayerId(todd._id, function(err, families){
                     families[0].should.have.property('player_id', todd._id);
-                });
 
-                Family.getByPlayerId(rod._id, function(err, families){
-                    families[0].should.have.property('player_id', rod._id);
-                });
+                    Family.getByPlayerId(rod._id, function(err, families){
+                        families[0].should.have.property('player_id', rod._id);
 
-                Family.getByPlayerId(lisa._id, function(err, families){
-                    families[0].should.have.property('player_id', lisa._id);
-                });
+                        Family.getByPlayerId(lisa._id, function(err, families){
+                            families[0].should.have.property('player_id', lisa._id);
 
-                Family.getByPlayerId(bart._id, function(err, families){
-                    families[0].should.have.property('player_id', bart._id);
+                            Family.getByPlayerId(bart._id, function(err, families){
+                                families[0].should.have.property('player_id', bart._id);
+                                done();
+                            });
+                        });
+                    });                    
                 });
-
             });
 
 
-            it('method getByUserId', function(){
+            it('method getByUserId', function(done){
+                //because of mongod's stupid objectID rules, where the same is not the same
+                var nedid = ned._id;
+                var homerid = homer._id;
+                var margeid = marge._id;
 
                 Family.getByUserId(ned._id, function(err, families){
                     families.should.have.length(2);
-                    families[0].should.have.property('user_id', ned._id);
-                    families[1].should.have.property('user_id', ned._id);
-                });
+                    families[0].should.have.property('user_id', nedid);
+                    families[1].should.have.property('user_id', nedid);
 
-                Family.getByUserId(homer._id, function(err, families){
-                    families.should.have.length(2);
-                    families[0].should.have.property('user_id', homer._id);
-                    families[1].should.have.property('user_id', homer._id);
-                });
+                    Family.getByUserId(homer._id, function(err, families){
+                        families.should.have.length(2);
+                        families[0].should.have.property('user_id', homerid);
+                        families[1].should.have.property('user_id', homerid);
 
-                Family.getByUserId(marge._id, function(err, families){
-                    families.should.have.length(1);
-                    families[0].should.have.property('user_id', marge._id);
-                    families[0].should.have.property('player_id', bart._id);
-                });
+                        Family.getByUserId(marge._id, function(err, families){
+                            families.should.have.length(1);
+                            families[0].should.have.property('user_id', margeid);
+                            families[0].should.have.property('player_id', bart._id);
 
+                            done();
+                        });
+                    });
+                });
             });
 
+                
 
+
+                describe('grabbing objects', function(){
+
+                    it('method getUsersForPlayer', function(done){
+
+                        Family.getUsersForPlayer(bart._id, function(users){
+                            users.should.have.length(2);
+                            users[0].should.have.property('last_name', 'Simpson');
+                            users[1].should.have.property('last_name', 'Simpson');
+
+                            Family.getUsersForPlayer(todd._id, function(users){
+                                users.should.have.length(1);
+                                users[0].should.have.property('first_name', 'Ned');
+
+                                Family.getUsersForPlayer(todd._id, function(users){
+                                    users.should.have.length(1);
+                                    users[0].should.have.property('first_name', 'Ned');
+                                    
+                                    Family.getUsersForPlayer(lisa._id, function(users){
+                                        users.should.have.length(1);
+                                        users[0].should.have.property('first_name', 'Homer');
+
+                                        done();
+                                    });
+                                });
+                            }); 
+                        });
+                    });
+
+                   it('method getPlayersForUser', function(done){
+
+                        Family.getPlayersForUser(homer._id, function(players){
+                            players.should.have.length(2);
+                            players[0].should.have.property('last_name', 'Simpson');
+                            players[1].should.have.property('last_name', 'Simpson');
+
+                            Family.getPlayersForUser(ned._id, function(players){
+                                players.should.have.length(2);
+                                players[0].should.have.property('last_name', 'Flanders');
+                                players[1].should.have.property('last_name', 'Flanders');
+
+                                Family.getPlayersForUser(marge._id, function(players){
+                                    players.should.have.length(1);
+                                    players[0].should.have.property('first_name', 'Bart');
+                                    players[0].should.have.property('last_name', 'Simpson');
+                                    
+                                    done();
+                                });
+                            }); 
+                        });
+                    });
+                });
 
 
         });
