@@ -1,0 +1,15 @@
+<h1><%= event.type + ' for  team team_id '%></h1>
+<b>Date</b> <br />
+<%= event.date %><br />
+<b>Time</b> <br />
+<%= event.time %><br />
+<b>Location</b> <br />
+<%= event.location %><br />
+
+<form method='GET' action="<%= '/events/' + event._id + '/edit'%>"" >
+	<input type="Submit" value="Edit"/>
+</form>
+
+<form method='POST' action=<%= '/events/' + event._id + '/delete'%> >
+	<input type="Submit" value="Delete" />
+</form>
