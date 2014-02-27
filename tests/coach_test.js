@@ -289,6 +289,7 @@ describe('Coach', function() {
 			});
 		});
 	});
+	// tried to put this in the describe above, but some scope issues arose...
 	describe('#getUsersForTeam()', function(done) {
 		var fly;
 		var fly_coach_1;
@@ -329,6 +330,45 @@ describe('Coach', function() {
 			Coach.getUsersForTeam(prep._id, function(err, users) {
 				users.should.have.length(1);
 				users[0].should.have.property('_id', austin._id);
+				done();
+			});
+		});
+	});
+
+	describe('#getTeamsForUser()', function(done) {
+		var prep;
+		var fly;
+		var prep_coach;
+		var fly_coach_1;
+		var fly_coach_2;
+		beforeEach(function(done) { 
+			prep = new Team({'name': 'Hawks', 'sport': 'Hockey'});
+			prep.save(function(err, prep_saved) {
+				prep_coach = new Coach({'team_id': prep_saved._id, 'user_id': peter._id});
+				prep_coach.save(function(err, pc_saved) {
+					fly = new Team({'name': 'Flyers', 'sport': 'Hockey'});
+					fly.save(function(err, fly_saved) {
+						fly_coach_1 = new Coach({'team_id': fly_saved._id, 'user_id': peter._id});
+						fly_coach_1.save(function(err, fc1_saved) {
+							fly_coach_2 = new Coach({'team_id': fly_saved._id, 'user_id': craig._id});
+							fly_coach_2.save(done);
+						});
+					});
+				});
+			});
+		});
+		// have a get teams by user 
+		it('should return all the teams for the specified user', function(done) {
+			Coach.getTeamsForUser(peter._id, function(err, teams) {
+				teams.should.have.length(2);
+				done();
+			});
+		});
+		// returns only one if there is only one
+		it('should return one team if the coach only coaches one team', function(done) {
+			Coach.getTeamsForUser(craig._id, function(err, teams) {
+				teams.should.have.length(1);
+				teams[0].should.have.property('_id', fly._id);
 				done();
 			});
 		});

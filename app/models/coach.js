@@ -34,11 +34,27 @@ CoachSchema.statics.getByUserId = function(user_id, callback) {
 	});
 };
 
+// returns the users for a team
 CoachSchema.statics.getUsersForTeam = function(team_id, callback) {
 	var toReturn = new Array;
 	this.find({'team_id': team_id}, function(err, coaches) {
 		async.each(coaches, function(item, innerCallback){
 			User.findById(item.user_id, function(error, returned) {
+				toReturn.push(returned);
+				innerCallback();
+			});
+		}, function(err) {
+			callback(err, toReturn);
+		});
+	});
+};
+
+// returns the teams for a user
+CoachSchema.statics.getTeamsForUser = function(user_id, callback) {
+	var toReturn = new Array;
+	this.find({'user_id': user_id}, function(err, coaches) {
+		async.each(coaches, function(item, innerCallback) {
+			Team.findById(item.team_id, function(error, returned) {
 				toReturn.push(returned);
 				innerCallback();
 			});
