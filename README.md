@@ -32,3 +32,14 @@ or
 ```
 node app
 ```
+
+to use the mailer, create a file called 'mailer.js' inside of your config folder, and model it like this:
+```
+var mailer_options = {
+	service: "Gmail",
+	user: "email here",
+	pass: "password here"
+};
+
+module.exports = mailer_options;
+```
