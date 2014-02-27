@@ -3,6 +3,13 @@ var express = require('express'),
   fs = require('fs'),
   config = require('./config/config');
 
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
+    if(typeof ipaddress === "undefined") {
+	    console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
+	    ipaddress = "127.0.0.1";
+    };
+
+
 mongoose.connect(config.db);
 var db = mongoose.connection;
 db.on('error', function () {
@@ -21,7 +28,9 @@ var app = express();
 require('./config/express')(app, config);
 require('./config/routes')(app);
 
-app.listen(config.port);
+app.listen(config.port, ipaddress, function(){
+	console.log("listening on port "+config.port+"......")
+});
 
 
 //needed for testing
