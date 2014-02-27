@@ -289,7 +289,36 @@ describe('Coach', function() {
 			});
 		});
 	});
-
+	describe('#getUsersForTeam()', function(done) {
+		var fly;
+		var fly_coach_1;
+		var fly_coach_2;
+		beforeEach(function(done) {
+			fly = new Team(testTeam);
+			fly.save(function(err, fly_saved) {
+				if(err) {
+					console.log(err);
+					return done(err);
+				}
+				fly_coach_1 = new Coach({'team_id': fly_saved._id, 'user_id': peter._id});
+				fly_coach_1.save(function(err, flc1_saved) {
+					if(err) {
+						console.log(err);
+						return done(err);
+					}
+					fly_coach_2 = new Coach({'team_id': fly_saved._id, 'user_id': craig._id});
+					fly_coach_2.save(done);
+				});
+			});
+		});
+		it('should have a function to get users coaching a team', function(done) {
+			Coach.getUsersForTeam(fly._id, function(err, users) {
+				users.should.have.length(2);
+				done();
+			});
+		});
+	});
+	
 
 
 });
