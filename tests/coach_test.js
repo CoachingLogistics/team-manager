@@ -293,6 +293,8 @@ describe('Coach', function() {
 		var fly;
 		var fly_coach_1;
 		var fly_coach_2;
+		var prep;
+		var prep_coach;
 		beforeEach(function(done) {
 			fly = new Team(testTeam);
 			fly.save(function(err, fly_saved) {
@@ -307,13 +309,26 @@ describe('Coach', function() {
 						return done(err);
 					}
 					fly_coach_2 = new Coach({'team_id': fly_saved._id, 'user_id': craig._id});
-					fly_coach_2.save(done);
+					fly_coach_2.save(function(err, fc2_saved) {
+						prep = new Team({'name': 'Hawks', 'sport': 'Hockey'});
+						prep.save(function(err, prep_saved) {
+							prep_coach = new Coach({'team_id': prep_saved._id, 'user_id': austin._id});
+							prep_coach.save(done);
+						});
+					});
 				});
 			});
 		});
 		it('should have a function to get users coaching a team', function(done) {
 			Coach.getUsersForTeam(fly._id, function(err, users) {
 				users.should.have.length(2);
+				done();
+			});
+		});
+		it('should only return one user if the team has one coach', function(done) {
+			Coach.getUsersForTeam(prep._id, function(err, users) {
+				users.should.have.length(1);
+				users[0].should.have.property('_id', austin._id);
 				done();
 			});
 		});
