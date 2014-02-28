@@ -22,7 +22,6 @@
 		Day:<input type="number" max="31" min="1" name="day", value=<%= event.date.getDate() %> />
 		Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year" value=<%= event.date.getFullYear() %>> <br />
 	<% } %>
-
 	Time: <input type="number" max="23" min="0" name="hour"/>:<input type="number" max="59" min="0" name="minute"> <br />		
 	Location: <input type='text' name='location'/><br />
 	Type: <input type='text' name='type'/><br />

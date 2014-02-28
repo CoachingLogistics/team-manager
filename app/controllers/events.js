@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
   Event = mongoose.model('Event');
+  Team = mongoose.model('Team');
 
 exports.index = function(req, res){
   Event.find(function(err, events){
@@ -8,6 +9,44 @@ exports.index = function(req, res){
       events: events
     });
   });
+};
+
+exports.new = function(req, res){
+	Team.find(function(err, teams){
+    if(err) throw new Error(err);
+    res.render('event/new', {
+      teams: teams
+    });
+  });
+};
+
+exports.create = function(req, res){
+	console.log(req.param('team_id'));
+	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
+	var time_string = "" + req.body.hour + ":" + req.body.minute;
+	var newEvent = new Event({
+		// team_id: req.param('team_id'),
+		date: new Date(date_string),
+		time: new Date(time_string),
+		location: req.body.location,
+  		type: req.param('type')
+	});
+	newEvent.save(function(err, event){
+		if(err){
+			console.log(err);
+			res.render('event/new', {
+				event: event,
+				message: err
+			});
+		}else{
+			res.redirect('/events/' + event._id //, {
+			//	event: event,
+			//	message: "You have successfully created team " + team.name
+			//}
+			);
+		}
+
+	});
 };
 
 exports.show = function(req, res){
@@ -41,10 +80,6 @@ exports.edit = function(req, res) {
 	})
 }
 
-exports.new = function(req, res){
-	res.render('event/new');
-}
-
 exports.update = function(req, res){
 	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var time_string = "" + req.body.hour + ":" + req.body.minute;
@@ -71,38 +106,8 @@ exports.update = function(req, res){
 	})
 };
 
-exports.create = function(req, res){
-	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-	var time_string = "" + req.body.hour + ":" + req.body.minute;
-	var newEvent = new Event({
-		team_id: req.param('team_id'),
-		date: new Date(date_string),
-		time: new Date(time_string),
-		location: req.body.location,
-  		type: req.param('type')
-	});
-	newEvent.save(function(err, event){
-		if(err){
-			console.log("error");
-			console.log(err);
-			res.render('event/new', {
-				event: event,
-				message: err
-			});
-		}else{
-			console.log("no err");
-			res.redirect('/events/' + event._id //, {
-			//	event: event,
-			//	message: "You have successfully created team " + team.name
-			//}
-			);
-		}
-
-	});
-};
-
-exports.delete = function (req, res){
-	Event.findById(req.params.id, function(error, event){
+exports.delete = function(req, res) {
+	Event.remove({_id: req.params.id}, function(err, docs) {
 		if(err) {
 			return res.redirect('/events/' + req.params.id);
 		}

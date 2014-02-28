@@ -48,6 +48,7 @@ module.exports = function(app){
 	app.get('/events/:id', events.show);
 	app.get('/events/:id/edit', events.edit);
 	app.post('/events/:id/edit', events.update);
+	app.post('/events/:id/delete', events.delete);
 	
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);

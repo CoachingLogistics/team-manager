@@ -1,12 +1,16 @@
 <h1>New Event</h1>
 
 
+
 <form method="post" action="/events/new">
 	Team Name: <select name="team_id" class="formlist">
-	<option value = <% team._id %>><% team.name %></option>
+	<% for (var i=0; i < teams.length; i++) { %>
+		<option value = <% teams[i]._id %>><%= teams[i].name %></option>
+		<%= teams[i]._id + ' and ' + teams[i].name %>
+	<% } %>
 	</select>
-
-	<input type='text' name='team_id'/><br />
+	<!-- <input type='text' name='team_id'/> -->
+	<br />
 	<b>Date</b> <br />
 	Month: <select name="month" class="formlist">
 	<option></option>
