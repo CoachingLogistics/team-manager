@@ -14,6 +14,12 @@ var UserSchema = new Schema({
 });
 
 
+
+//method, needs to be tested though
+UserSchema.virtual('name').get(function() {
+	return this.first_name + ' ' + this.last_name;
+});
+
 //bcrypt middleware
 UserSchema.pre('save', function(next){
 	var user = this;

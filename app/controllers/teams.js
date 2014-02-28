@@ -34,14 +34,17 @@ exports.edit = function(req, res){
 			//res.status(404).render('404');
 		}else{
 			res.render('team/edit', {
-				team: team
+				team: team,
+				user: req.user
 			})
 		}
 	});
 }
 
 exports.new = function(req, res){
-	res.render('team/new');
+	res.render('team/new',{
+		user: req.user
+	});
 }
 
 exports.update = function(req, res){
@@ -56,7 +59,8 @@ exports.update = function(req, res){
 			if(err){
 				res.render('team/edit', {
 					team: oldTeam,
-					message: err
+					message: err,
+					user: req.user
 				});
 			}else{
 				res.redirect('/teams/' + team._id);	
@@ -74,7 +78,8 @@ exports.create = function(req, res){
 		if(err){
 			res.render('team/new', {
 				team: team,
-				message: err
+				message: err,
+				user: req.user
 			});
 		}else{
 			res.redirect('/teams/' + team._id //, {
