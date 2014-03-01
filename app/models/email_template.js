@@ -19,5 +19,10 @@ var Email_Template_Schema = new Schema({
   body: {type: String, required: true}
 });
 
+// gets all templates for a team
+Email_Template_Schema.statics.getByTeamId = function(team_id, callback) {
+	this.find({'team_id': team_id}, callback(err, docs));
+};
+
 // and here is the model
 mongoose.model('Email_Template', Email_Template_Schema);
