@@ -1,3 +1,6 @@
+
+/***************GENERAL LAYOUT STYLING******************/
+
 .nav-justified {
   background-color: #eee;
   border: 1px solid #ccc;
@@ -49,6 +52,15 @@
   border-top: 1px;
 }
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
 #footer {
   position: absolute;
   bottom: 0;
@@ -59,9 +71,44 @@
   padding-top: 10px;
 }
 
+#rememberme{
+  padding-left: 33%;
+  border-bottom: 1px;
+  border-top: 1px;
+}
 
+#body_content{
+  padding-top: 25px;
+  padding-bottom: 35px;
 
+}
 
+/*******************************/
+
+#user_form{
+  width: 80%;
+}
+
+.roster-spot{
+  margin: 0px;
+  width: 33%;
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
+.roster-form{
+  padding: auto;
+}
+
+.form-signin{
+  width: 33%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.full-width{
+  width: 100%;
+}
 
 
 

@@ -11,7 +11,7 @@
             <div class="btn-group">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.name %><b class="caret"></b></a>
               <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                <li><a href="#">My Account</a></li>
+                <li><a href="/account">My Account</a></li>
                 <li><a href="#">Teams</a></li>
                 <li><a href="#">Players</a></li>
                 <li class="divider"></li>
@@ -32,6 +32,9 @@
                   <input type="password" placeholder="Password" name="password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Log in</button>
+                <div id="rememberme" class="text-center"><small>
+                <input type="checkbox" name="rememberme"/> Remember Me
+                </small></div>
               </form>
               <div id="register" class="text-right">
                 <small>
@@ -47,11 +50,12 @@
 
 
         <ul class="nav nav-justified">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Coaches</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Teams</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/teams">Teams</a></li>
+          <li><a href="/players">Players</a></li>
+          <li><a href="#">Stuff</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
       </div>
+      <div id="body_content">

@@ -5,7 +5,8 @@ exports.index = function(req, res){
   Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('team/index', {
-      teams: teams
+      teams: teams,
+      user:req.user
     });
   });
 };
@@ -20,7 +21,8 @@ exports.show = function(req, res){
 			//res.status(404).render('404');
 		}else{
 	    	res.render('team/show', {
-	    	  team: team
+	    	  team: team,
+	    	  user:req.user
 	    	});			
 		}
 
@@ -82,6 +84,10 @@ exports.create = function(req, res){
 				user: req.user
 			});
 		}else{
+
+			//create a COACH link here
+
+
 			res.redirect('/teams/' + team._id //, {
 			//	team: team,
 			//	message: "You have successfully created team " + team.name
@@ -95,5 +101,38 @@ exports.create = function(req, res){
 exports.delete = function (req, res){
 	Team.findById(req.params.id, function(error, team){
 		//if team doesn't have any players associated with it, can delete
-	})
-}
+	});
+};
+
+
+
+
+exports.roster_fill = function(req, res){
+  	Team.findById(req.params.id, function(err, team){
+		if(err) {
+			// throw new Error(err);
+			res.redirect("/404");
+		}else{
+	    	res.render('team/roster_fill', {
+	    	  team: team,
+	    	  user: req.user
+	    	});			
+		}
+
+  	});
+
+};
+
+
+
+exports.roster_create = function(req, res){
+	
+
+};
+
+
+
+
+
+
+

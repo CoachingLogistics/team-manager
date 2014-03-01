@@ -1,8 +1,12 @@
 <html>
+
 <head>
+<% include ../head_scripts %>
 </head>
 
 <body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
 MY ACCOUNT
 
 <div>
@@ -23,15 +27,27 @@ MY ACCOUNT
 
 <div>
 <%= user.password %>
-<div>
+</div>
 
 <div>
 <%= user._id %>
-<div>
+</div>
 
 <a href="/user/<%=user._id%>/edit">Edit</a>
 <form action="/user/<%=user._id%>/delete" method="post">
 	<input type="submit" value="Delete"/>
 </form>
+
+
+
+
+
+
+
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
 </body>
+
 </html>

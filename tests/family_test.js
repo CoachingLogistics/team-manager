@@ -310,16 +310,58 @@ describe('Family', function(){	//context, so we can see where tests happen in co
                             }); 
                         });
                     });
+                });//grabbing
+
+
+        });//querying
+
+    
+        describe("routes", function(done){
+            var bart;
+            
+            beforeEach(function(done){
+
+                //this generates the flanders kids
+                bart = new Player(testPlayer);
+                bart.first_name = "Bart";
+                bart.last_name = "Simpson";
+                bart.date_of_birth = "6/09/1994";
+                bart.save(done);
+            });
+
+            it("post route new family", function(done){
+                agent.post('/family/new')
+                .field('user_id', ned._id)
+                .field('player_id', bart._id)
+                .end(function(err, res){
+                    if(err) return done(err);
+                    //res.should.have.property('text.user_id', ned._id);
+                    done();
+                });
+            });
+
+            it("post route delete family", function(done){
+                nb = new Family({
+                    player_id: bart._id,
+                    user_id: ned._id
                 });
 
+                nb.save(function(err){
+                    if(err){ console.log(err); return done(err);}
+                        agent.post('/family/'+nb._id+'/delete')
+                        .end(function(err, res){
+                            if(err) return done(err);
+                            //res.should.have.property('text.user_id', ned._id);
+                            done();
+                        });
+                });
+            });
 
-        });
+        });//routes
 
 
 
-
-
-    });
+    });//Family
 
 
 

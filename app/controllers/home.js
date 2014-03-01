@@ -7,3 +7,10 @@ exports.index = function(req, res){
     user: req.user
   });
 };
+
+exports.err = function(req, res){
+  res.render('404', {
+    title: 'Generator-Express MVC',
+    user: req.user
+  });
+};

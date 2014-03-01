@@ -3,7 +3,8 @@ var mongoose = require('mongoose'),
 var passport = require('passport');
 var LocalStrategy = require('passport-local').strategy;
 
-exports.account = function(req, res){
+exports.account = function(req, res){	//test non-access?
+
 	res.render('user/account', {
 		user: req.user,
 	  	title: 'My Account'
@@ -13,16 +14,9 @@ exports.account = function(req, res){
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
 
-		var authorization = false;
-		if(user._id == req.user._id){
-			authorization = true;
-		}
-
 		res.render('user/show', {
 			user: req.user,
-			user_show: user,
-			authorized: authorization
-			//ADD IN OTHER STUFF?
+			user_show: user
 		});
 	});
 };
@@ -90,13 +84,17 @@ exports.logout = function(req, res){
 };
 
 
-exports.edit = function(req, res){
-	res.render('user/edit', {
-		user: req.user,
-		title: 'Edit User',
-	  	message: req.session.messages
-	  	//MORE STUFF
-	});
+exports.edit = function(req, res){		//ONLY A PERSON CAN EDIT THEIR OWN ACCOUNT
+	if(req.user._id == req.params.id){
+		res.render('user/edit', {
+			user: req.user,
+			title: 'Edit User',
+		  	message: req.session.messages
+		  	//MORE STUFF
+		});
+	}else{
+		res.redirect("/404");
+	}
 };
 
 exports.update = function(req, res){

@@ -19,6 +19,9 @@ exports.send_mail = function(req, res) {
 		if(err) {
 			console.log(err);
 		}
-		return res.render('mail/mail-response', {error: err});
+		return res.render('mail/mail-response', {
+			error: err,
+			user: req.user
+		});
 	});
 }
