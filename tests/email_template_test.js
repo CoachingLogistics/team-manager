@@ -99,8 +99,52 @@ describe('Email_Template', function() {
 				err.should.be.ok;
 				done();
 			});
+		});		
+	});
+	
+	// get by team
+	describe('#getByTeamId()', function(done) {
+		var fly_email;
+		var prep_email_1;
+		var prep_email_2;
+		beforeEach(function(done) {
+			fly = new Team(flyTeam);
+			fly.save(function(err, fly_saved) {
+				prep = new Team(prepTeam);
+				prep.save(function(err, prep_saved) {
+					fly_recipients = ["a@example.com", "b@example.com"];
+					fly_email = new Email_Template({'team_id': fly_saved._id, 'subject': 'template test', 'body': 'The eody of the email', 'recipients': fly_recipients});
+					fly_email.save(function(err, fm_saved) {
+						pe1_recipients = ["c@example.com", "d@example.com"];
+						prep_email_1 = new Email_Template({'team_id': prep_saved._id, 'subject': 'test', 'body': 'another test', 'recipients': pe1_recipients});
+						prep_email_1.save(function(err, pe1_saved) {
+							pe2_recipients = ["c@example.com"];
+							prep_email_2 = new Email_Template({'team_id': prep_saved._id, 'subject': 'test2', 'body': 'test subj', 'recipients': pe2_recipients});
+							prep_email_2.save(done);
+						});
+					});
+				});
+			});
+		});
+		// should have one email for the flyers
+		it('should have a function to return the emails for a team given its ID', function(done) {
+			Email_Template.getByTeamId(fly._id, function(err, docs) {
+				should.not.exist(err);
+				docs.should.have.length(1);
+				docs[0].should.have.property('team_id', fly._id);
+				done();
+			});
+		});
+		// test it for a team that has multiple emails
+		it('should have a function to return the emails for a team given its ID', function(done) {
+			Email_Template.getByTeamId(prep._id, function(err, docs) {
+				should.not.exist(err);
+				docs.should.have.length(2);
+				docs[0].should.have.property('team_id', prep._id);
+				docs[1].should.have.property('team_id', prep._id);
+				done();
+			});
 		});
 	});
-
 
 });

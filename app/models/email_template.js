@@ -21,7 +21,9 @@ var Email_Template_Schema = new Schema({
 
 // gets all templates for a team
 Email_Template_Schema.statics.getByTeamId = function(team_id, callback) {
-	this.find({'team_id': team_id}, callback(err, docs));
+	this.find({'team_id': team_id}, function(err, docs) {
+		callback(err, docs)
+	});
 };
 
 // and here is the model
