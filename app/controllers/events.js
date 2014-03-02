@@ -54,7 +54,7 @@ exports.show = function(req, res){
 		if(err) {
 			throw new Error(err);
 		}else{
-			Team.find(function(err, team){
+			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
 		    	res.render('event/show', {
 		    	  event: event,
@@ -63,7 +63,7 @@ exports.show = function(req, res){
 		    })		 	
 		}
   	});
-};
+}
 
 exports.edit = function(req, res) {
 	Event.findById(req.params.id, function(err, event) {
