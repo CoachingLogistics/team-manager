@@ -53,9 +53,8 @@ exports.show = function(req, res){
   	Event.findById(req.params.id, function(err, event){
 		if(err) {
 			throw new Error(err);
-			//res.status(404).render('404');
 		}else{
-			Team.find(function(err, teams){
+			Team.find(function(err, team){
     			if(err) throw new Error(err);
 		    	res.render('event/show', {
 		    	  event: event,
@@ -71,18 +70,18 @@ exports.edit = function(req, res) {
 		if(err) {
 			return res.status(404).render('404');
 		}else {
-			Team.findById(event.team_id, function(err, teams){
-			if(err) {
-				throw new Error(err);
-			}else{
-				var month_name;
-				if(event.date) {
-					var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-					month_name = monthNames[event.date.getMonth()];
-				}
-				return res.render('event/edit', {event: event, month: month_name, teams: teams, 'error': null});
-			}
-			});
+			Team.findById(event.team_id, function(err, team){
+				if(err) throw new Error(err);
+				Team.find(function(err, teams){
+    				if(err) throw new Error(err);
+					var month_name;
+					if(event.date) {
+						var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+						month_name = monthNames[event.date.getMonth()];
+					}
+					return res.render('event/edit', {event: event, month: month_name, team: team, teams: teams, 'error': null});
+				})
+			})
 		}
 	});
 }
@@ -92,9 +91,6 @@ exports.update = function(req, res){
 	var time_string = "" + req.body.hour + ":" + req.body.minute;
 	Event.findById(req.params.id, function(error, event){
 		var oldEvent = JSON.parse(JSON.stringify( event ));
-
-		// event.team_id = req.body.team_id;
-		// team_id: req.param('team_id'),
   		event.date = new Date(date_string);
   		event.time = new Date(team_string);
 		event.location = req.body.location;
@@ -102,14 +98,18 @@ exports.update = function(req, res){
 
 		event.save(function(err, event){
 			if(err){
-					res.render('event/edit', {
+				Team.find(function(err, teams){
+    				if(err) throw new Error(err);
+					res.render('event/show', {
 						event: oldEvent,
 						teams: teams,
 						message: err
 					});
+					});
 				}else{
 					res.redirect('/events/' + event._id);	
 				}
+
 			});
 		});
 	};
