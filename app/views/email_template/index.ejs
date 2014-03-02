@@ -9,7 +9,7 @@
 			<% for(var i = 0; i < templates.length; i++) { %>
 				<tr>
 					<td><%= templates[i].subject %></td>
-					<td>link here</td>
+					<td><a href="/teams/<%= templates.team_id %>/templates/<%= templates[i]._id %>">Details</a></td>
 				</tr>
 			<% } %>
 		</tbody>

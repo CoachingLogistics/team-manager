@@ -49,6 +49,7 @@ module.exports = function(app){
 	app.get('/teams/:id/newTemplate', email_templates.new);
 	app.post('/teams/:id/newTemplate', email_templates.create);
 	app.get('/teams/:id/templates', email_templates.index);
+	app.get('/teams/:id/templates/:temp_id', email_templates.show);
 };
 
 

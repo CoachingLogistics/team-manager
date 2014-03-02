@@ -33,4 +33,16 @@ exports.index = function(req, res) {
     }
     res.render('email_template/index', {'templates': docs});
   });
+};
+
+exports.show = function(req, res) {
+  var template_id = req.params.temp_id;
+  Email_Template.findById(template_id, function(err, returned) {
+    if(err) {
+      return res.redirect('/teams/' + req.params.id + '/templates');
+    }
+    else {
+      return res.render('email_template/show', {'template': returned});
+    }
+  });
 }
