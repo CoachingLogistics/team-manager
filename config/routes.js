@@ -5,6 +5,7 @@ module.exports = function(app){
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
+	var email_templates = require('../app/controllers/email_templates');
 	var families = require('../app/controllers/families');
 
 	var mail = require('../app/controllers/mail');
@@ -49,6 +50,14 @@ module.exports = function(app){
 	app.get('/mail/compose', mail.compose_mail);
 	app.post('/mail/send', mail.send_mail);
 
+	// email templates
+	app.get('/teams/:id/templates/new', email_templates.new);
+	app.post('/teams/:id/templates/new', email_templates.create);
+	app.get('/teams/:id/templates', email_templates.index);
+	app.get('/teams/:id/templates/:temp_id', email_templates.show);
+	app.post('/teams/:id/templates/:temp_id/delete', email_templates.delete);
+	app.get('/teams/:id/templates/:temp_id/edit', email_templates.edit);
+	app.post('/teams/:id/templates/:temp_id/update', email_templates.update);
 
 	//filling the roster
 	app.get('/teams/:id/roster-fill', teams.roster_fill);
