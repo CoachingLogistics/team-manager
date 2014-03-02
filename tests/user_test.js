@@ -294,7 +294,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 
         it('user show page', function(done){
 
-          agent.get('/user/'+ned._id)
+          agent.get('/users/'+ned._id)
             .expect(200)
             .end(function(err, res){
               if(err) return done(err);
@@ -313,7 +313,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
           .end(function(err, res){
             if(err) return done(err);
 
-            agent.get('/user/'+id+'/edit')
+            agent.get('/users/'+id+'/edit')
             .expect(200)
             .end(function(err, res){
               if(err) return done(err);
@@ -331,7 +331,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
           .end(function(err, res){
             if(err) return done(err);
 
-            agent.get('/user/22/edit')
+            agent.get('/users/22/edit')
             .expect(302)
             .expect("Location", "/404")
             .end(function(err, res){
@@ -378,7 +378,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
         	.end(function(err, res){
         		if(err) return done(err);
 
-	        	agent.post('/user/'+id+'/delete')
+	        	agent.post('/users/'+id+'/delete')
 	        	.expect(302)
 	        	.end(function(err, res){
 	        		if(err) return done(err);
