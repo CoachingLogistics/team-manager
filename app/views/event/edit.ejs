@@ -1,7 +1,14 @@
 <h1>Edit <%= event.type %> for team team id</h1>
 
 <form method="POST", action=<%= "/events/"+event._id+"/update" %> >
-	Team Name: <input type='text' name='team_id' value=<%= event.team_id %>'/><br />
+
+	Team Name: <select name="team_id" class="formlist">
+	<% for (var i=0; i < teams.length; i++) { %>
+		<option value = <%= teams[i]._id %>><%= teams[i].name %></option>
+		<%= teams[i]._id + ' and ' + teams[i].name %>
+	<% } %>
+	</select>
+	<br />
 	<b>Date</b> <br />
 	<% if(month) { %>
 		Month: <select name="month" class="formlist">

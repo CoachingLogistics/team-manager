@@ -21,11 +21,11 @@ exports.new = function(req, res){
 };
 
 exports.create = function(req, res){
-	console.log(req.param('team_id'));
+	console.log(req.body);
 	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var time_string = "" + req.body.hour + ":" + req.body.minute;
 	var newEvent = new Event({
-		// team_id: req.param('team_id'),
+		team_id: req.param('team_id'),
 		date: new Date(date_string),
 		time: new Date(time_string),
 		location: req.body.location,
@@ -34,18 +34,17 @@ exports.create = function(req, res){
 	newEvent.save(function(err, event){
 		if(err){
 			console.log(err);
+			Team.find(function(err, teams){
+    			if(err) throw new Error(err);
 			res.render('event/new', {
 				event: event,
+				teams: teams,
 				message: err
 			});
+			});
 		}else{
-			res.redirect('/events/' + event._id //, {
-			//	event: event,
-			//	message: "You have successfully created team " + team.name
-			//}
-			);
+			res.redirect('/events/' + event._id);
 		}
-
 	});
 };
 
@@ -56,11 +55,14 @@ exports.show = function(req, res){
 			throw new Error(err);
 			//res.status(404).render('404');
 		}else{
-	    	res.render('event/show', {
-	    	  event: event
-	    	});			
+			Team.find(function(err, teams){
+    			if(err) throw new Error(err);
+		    	res.render('event/show', {
+		    	  event: event,
+		    	  team: team
+		    	});
+		    })		 	
 		}
-
   	});
 };
 
@@ -68,16 +70,21 @@ exports.edit = function(req, res) {
 	Event.findById(req.params.id, function(err, event) {
 		if(err) {
 			return res.status(404).render('404');
-		}
-		else {
-			var month_name;
-			if(event.date) {
-				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-				month_name = monthNames[event.date.getMonth()];
+		}else {
+			Team.findById(event.team_id, function(err, teams){
+			if(err) {
+				throw new Error(err);
+			}else{
+				var month_name;
+				if(event.date) {
+					var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+					month_name = monthNames[event.date.getMonth()];
+				}
+				return res.render('event/edit', {event: event, month: month_name, teams: teams, 'error': null});
 			}
-			return res.render('event/edit', {event: event, month: month_name, 'error': null});
+			});
 		}
-	})
+	});
 }
 
 exports.update = function(req, res){
@@ -95,16 +102,17 @@ exports.update = function(req, res){
 
 		event.save(function(err, event){
 			if(err){
-				res.render('event/edit', {
-					event: oldEvent,
-					message: err
-				});
-			}else{
-				res.redirect('/events/' + event._id);	
-			}
-		})
-	})
-};
+					res.render('event/edit', {
+						event: oldEvent,
+						teams: teams,
+						message: err
+					});
+				}else{
+					res.redirect('/events/' + event._id);	
+				}
+			});
+		});
+	};
 
 exports.delete = function(req, res) {
 	Event.remove({_id: req.params.id}, function(err, docs) {
