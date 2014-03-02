@@ -51,6 +51,8 @@ module.exports = function(app){
 	app.get('/teams/:id/templates', email_templates.index);
 	app.get('/teams/:id/templates/:temp_id', email_templates.show);
 	app.post('/teams/:id/templates/:temp_id/delete', email_templates.delete);
+	app.get('/teams/:id/templates/:temp_id/edit', email_templates.edit);
+	app.post('/teams/:id/templates/:temp_id/update', email_templates.update);
 };
 
 

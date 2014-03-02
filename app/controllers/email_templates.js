@@ -58,3 +58,44 @@ exports.delete = function(req, res) {
     }
   });
 }
+
+exports.edit = function(req, res) {
+  var temp_id = req.params.temp_id;
+  Email_Template.findById(temp_id, function(err, docs) {
+    if(err) {
+      return res.redirect('/teams/' + req.params.id + '/templates');
+    }
+    else {
+      return res.render('email_template/edit', {'template': docs});
+    }
+  });
+};
+
+exports.update = function(req, res) {
+  var subject = req.body.subject;
+  var body = req.body.body;
+  var recipients = req.body.recipients;
+  if(body && recipients) {
+    Email_Template.findById(req.params.temp_id, function(err, returned) {
+      if(err) {
+        return res.redirect('/teams/'+req.params.id + '/templates');
+      }
+      else {
+        returned.subject = subject;
+        returned.body = body;
+        returned.recipients = recipients;
+        returned.save(function(err, saved) {
+          if(err) {
+            return res.redirect('/teams/'+req.params.id + '/templates/' + req.params.temp_id + '/edit');
+          }
+          else {
+            return res.redirect('/teams/' + req.params.id + '/templates/' + saved._id);
+          }
+        });
+      }
+    });
+  }
+  else {
+    return res.redirect('/teams/'+req.params.id + '/templates/' + req.params.temp_id + '/edit');
+  }
+}
