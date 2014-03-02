@@ -5,3 +5,7 @@
 <%= template.recipients %> <br />
 <b>Body</b> <br />
 <%= template.body %> <br />
+
+<form method="POST" action="/teams/<%= template.team_id %>/templates/<%= template._id %>/delete">
+	<input type="submit" value="Delete" />
+</form>

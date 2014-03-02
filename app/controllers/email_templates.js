@@ -31,7 +31,7 @@ exports.index = function(req, res) {
     if(err) {
       return res.redirect('/teams/' + team_id);
     }
-    res.render('email_template/index', {'templates': docs});
+    res.render('email_template/index', {'templates': docs, 'team_id': team_id});
   });
 };
 
@@ -43,6 +43,18 @@ exports.show = function(req, res) {
     }
     else {
       return res.render('email_template/show', {'template': returned});
+    }
+  });
+};
+
+exports.delete = function(req, res) {
+  var template_id = req.params.temp_id;
+  Email_Template.remove({'_id': template_id}, function(err, docs) {
+    if(err) {
+      return res.redirect('/teams/' + req.params.id + '/templates/' + template_id);
+    }
+    else {
+      return res.redirect('/teams/' + req.params.id + '/templates');
     }
   });
 }
