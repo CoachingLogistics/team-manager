@@ -5,11 +5,8 @@ module.exports = function(app){
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
-<<<<<<< HEAD
 	var email_templates = require('../app/controllers/email_templates');
-=======
 	var families = require('../app/controllers/families');
->>>>>>> master
 
 	var mail = require('../app/controllers/mail');
 
