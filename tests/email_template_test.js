@@ -147,4 +147,76 @@ describe('Email_Template', function() {
 		});
 	});
 
+	describe('routes', function() {
+		var route_template;
+
+		beforeEach(function(done) {
+			route_template = new Email_Template({'team_id': prep._id, 'subject': 'subject', 'body': 'body', 'recipients': ['a@e.com']});
+			route_template.save(function(err, returned) {
+				if(err) {
+					console.log(err);
+					return done(err);
+				}
+				done();
+			});
+		});
+
+		after(function(done) {
+			Email_Template.remove(done);
+		})
+
+		// test index page
+		it('should have a list page for email templates', function(done) {
+			agent.get('/teams/'+prep._id+'/templates').expect(200).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// test show page
+		it('should have a show page for email templates', function(done) {
+			agent.get('/teams/'+prep._id+'/templates/' + route_template._id).expect(200).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// test the edit page
+		it('should have an edit page for email templates', function(done) {
+			agent.get('/teams/'+prep._id+'/templates/' + route_template._id + '/edit').expect(200).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// tests the new page
+		it('should have a page to make a new email template', function(done) {
+			agent.get('/teams/'+prep._id+'/templates/new').expect(200).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// tests that you can create an email template
+		it('should have a controller action and route to create a new template', function(done) {
+			var path = '/teams/'+prep._id+'/templates/new'
+			agent.post(path).field('subject', 'subject').field('body', 'body').field('recipients', 'a@e.com,e@a.com').expect(302).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// tests that you can edit an email template
+		it('should have a controller action to update an email template', function(done) {
+			var path = '/teams/'+prep._id+'/templates/' + route_template._id + '/update';
+			agent.post(path).field('subject', 'subject').field('body', 'body').field('recipients', 'a@e.com,e@a.com').expect(302).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+		// tests delete
+		it('should have a controller action to delete an email template', function(done) {
+			var path = '/teams/'+prep._id+'/templates/' + route_template._id + '/delete';
+			agent.post(path).expect(302).end(function(err, res) {
+				should.not.exist(err);
+				done();
+			});
+		});
+	});
+
 });
