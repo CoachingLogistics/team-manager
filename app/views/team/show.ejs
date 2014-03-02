@@ -14,10 +14,11 @@
 		<b>Sport: </b><%= team.sport %><br />
 		<b>Players: </b>
 
-<form method='GET' action="<%= '/teams/' + team._id + '/edit'%>"" >
+<form method='GET' action="<%= '/teams/' + team._id + '/edit'%>" >
 	<input type="Submit" value="Edit Team"/>
 </form>
 
+<a href="/teams/<%= team._id %>/templates">Email Templates</a>
 
 
 <!--***********************END OF CONTENT************************-->
