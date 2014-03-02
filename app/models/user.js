@@ -6,12 +6,28 @@ var mongoose = require('mongoose'),
 
 var UserSchema = new Schema({
   email: { type:String, unique:true, required:true, match: /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/ },
-  first_name: { type:String, required:true },
-  last_name: { type:String, required:true },
-  phone : { type:String, required:true },
-  password : { type:String, required:true },
+  first_name: { type:String },
+  last_name: { type:String },
+  phone : { type:String },
+  password : { type:String },
   accessToken: { type: String } // Used for Remember Me sessions
 });
+
+
+
+UserSchema.virtual('name').get(function() {
+	return this.first_name + ' ' + this.last_name;
+});
+
+
+UserSchema.statics.getByEmail = function(email, callback) {
+	this.findOne({email: email}, function(err, user){
+		callback(err, user);
+	});
+};
+
+
+
 
 
 //bcrypt middleware

@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+USERS
+<table class="table">
+	<thead>
+		<tr>
+			<th>Email</th><th>Name</th><th></th>
+		</tr>
+	</thead>
+	<hr>
+	<tbody>
+	<%for(var ii = 0; ii< users.length; ii++){%>
+		<tr>
+			<td><%= users[ii].email %></td>
+			<td><%= users[ii].name %></td>
+			<td><a href="/users/<%= users[ii]._id %>">show</a></td>
+		</tr>
+	<% } %>
+	</tbody>
+</table>
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

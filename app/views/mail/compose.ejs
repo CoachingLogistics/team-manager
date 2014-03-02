@@ -1,3 +1,14 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
 <h1>Compose a message</h1>
 
 <form method="POST" action="/mail/send">
@@ -11,3 +22,9 @@
 	HTML: <textarea name="html"></textarea> <br />
 	<input type="submit" value="Send Message" />
 </form>
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

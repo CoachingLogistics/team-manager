@@ -1,3 +1,14 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
 <h1>Team <%= team.name %></h1>
 		<b>Name: </b><%= team.name %><br />
 		<b>Sport: </b><%= team.sport %><br />
@@ -6,3 +17,11 @@
 <form method='GET' action="<%= '/teams/' + team._id + '/edit'%>"" >
 	<input type="Submit" value="Edit Team"/>
 </form>
+
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

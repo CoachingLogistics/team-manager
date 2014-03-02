@@ -12,7 +12,8 @@ var mongoose = require('mongoose'),
 exports.index = function(req, res) {
 	Player.find(function(err, players) {
 		res.render("player/index", {
-			'players': players
+			'players': players,
+			user: req.user
 		});
 	});
 }
@@ -21,7 +22,9 @@ exports.index = function(req, res) {
  * renders a page for a new player
  */
 exports.new_player = function(req, res) {
-	res.render("player/new");
+	res.render("player/new", {
+		user: req.user
+	});
 }
 
 /*
@@ -39,7 +42,8 @@ exports.create_player = function(req, res) {
 	player.save(function(err, created_object) {
 		if(err) {
 			res.render('player/new', {
-				error: "Missing required fields"
+				error: "Missing required fields",
+				user: req.user
 			});
 		}
 		else {
@@ -55,10 +59,13 @@ exports.show = function(req, res) {
 	// will make this do more when we get more added
 	Player.findById(req.params.id, function(err, p) {
 		if(err) {
-			return res.status(404).render('404');
+			res.status(404).render("404", {user:req.user});
 		}
 		else {
-			res.render('player/show', {'player': p});
+			res.render('player/show', {
+				player: p,
+				user: req.user
+			});
 		}
 	});
 }
@@ -69,7 +76,7 @@ exports.show = function(req, res) {
 exports.edit = function(req, res) {
 	Player.findById(req.params.id, function(err, p) {
 		if(err) {
-			return res.status(404).render('404');
+			res.status(404).render("404", {user:req.user});
 		}
 		else {
 			var month_name;
@@ -77,7 +84,12 @@ exports.edit = function(req, res) {
 				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 				month_name = monthNames[p.date_of_birth.getMonth()];
 			}
-			return res.render('player/edit', {'player': p, 'month': month_name, 'error': null});
+			return res.render('player/edit', {
+				player: p,
+				month: month_name,
+				error: null,
+				user: req.user
+			});
 		}
 	})
 }
@@ -102,7 +114,12 @@ exports.update = function(req, res) {
 				the_player.date_of_birth = saved_dob;
 				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 				var month_name = monthNames[the_player.date_of_birth.getMonth()];
-				return res.render('player/edit', {'player': the_player, 'month': month_name, error: "Must include first and last names"});
+				return res.render('player/edit', {
+					player: the_player,
+					month: month_name, 
+					error: "Must include first and last names",
+					user: req.user
+				});
 			}
 			else {
 				return res.redirect('/players/' + req.params.id);
