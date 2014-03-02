@@ -11,6 +11,16 @@ exports.account = function(req, res){	//test non-access?
 	});
 };
 
+exports.index = function(req, res){			//delete this later
+	User.find({}, function(error, users) {
+
+		res.render('user/index', {
+			user: req.user,
+			users: users
+		});
+	});
+};
+
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
 
@@ -121,7 +131,7 @@ exports.delete = function(req, res){
   if(req.user._id == req.params.id){
     User.remove({_id: req.params.id}, function(error, docs) {
     	if(error){
-    		res.redirect('/user/'+req.params.id);
+    		res.redirect('/users/'+req.params.id);
     	}
       // req.flash('info', 'User successfully deleted');
       res.redirect('/');

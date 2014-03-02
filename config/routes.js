@@ -16,15 +16,16 @@ module.exports = function(app){
 
 	//users
 	app.get('/account', ensureAuthenticated, users.account);
-	app.get('/user/:id', users.show)
+	app.get('/users/:id', users.show)
 	app.get('/register', users.registration);
 	app.post('/register', users.register);
 	app.get('/login', users.signin);
 	app.post('/login', users.login);
 	app.get('/logout', users.logout);
-	app.post('/user/:id/delete', users.delete);
-	app.get('/user/:id/edit', ensureAuthenticated, users.edit);
+	app.post('/users/:id/delete', users.delete);
+	app.get('/users/:id/edit', ensureAuthenticated, users.edit);
 	app.post('/user/:id/edit', users.update);
+	app.get('/users', users.index);	//to be removed in production
 
 	// players
 	app.get('/players', players.index);
@@ -56,6 +57,7 @@ module.exports = function(app){
 	//family
 	app.post('/family/new', families.new);
 	app.post('/family/:id/delete', families.delete);
+	app.get('/families', families.index);		//to be removed in production
 
 
 	//

@@ -37,7 +37,15 @@ exports.delete = function(req, res){	//post       //test
 };
 
 
+exports.index = function(req, res){
+  Family.find({}, function(error, families) {
 
+    res.render('./families_index', {
+      user: req.user,
+      families: families
+    });
+  });
+};
 //any more controllers?  To deliver sets of users/players?
 
 

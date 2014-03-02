@@ -85,7 +85,7 @@ describe('User', function(){	//context, so we can see where tests happen in cons
       });
 
 
-    });
+    });//save
 
     describe('#validators', function(){
       var bad;
@@ -394,13 +394,81 @@ describe('User', function(){	//context, so we can see where tests happen in cons
     });//authorization
 
 
+  describe('scope methods', function(){  //context, so we can see where tests happen in console
 
+      var ned;
+      var homer;
+      var marge;
 
+    beforeEach(function(done){  //clears the database and creates testing objects
 
+          testUser = {
+              first_name    : 'Ned',
+              last_name    : 'Flanders',
+              email    : 'flanders@gmail.com',
+              password: "secret", 
+              phone: "8089882688"
+          };
 
+          //creates all the users we need. put here to avoid non-unique email errors
+          User.remove(function(){
+              ned = new User(testUser);
+              ned.save(function(err, ned_user){
+                  homer = new User({
+                      first_name: "Homer",
+                      last_name: "Simpson",
+                      email: "homer@gmail.com",
+                      password: "donuts",
+                      phone: "8675309"
+                  });
+                  homer.save(function(err, ned_user){
+                      marge = new User({
+                          first_name: "Marge",
+                          last_name: "Simpson",
+                          email: "marge@gmail.com",
+                          password: "blue",
+                          phone: "4222222"
+                      });
+                      marge.save(done);
+                  });
+              });
+          });
+      });
 
+      after(function(done){
+          //clear out db
+          //User.remove(done);
+          done();
+      });
 
+      it("method getByEmail finds user", function(done){
+        User.getByEmail("flanders@gmail.com", function(err, user){
+          user.should.have.property("first_name", "Ned");
+          user.should.have.property("_id", ned._id);
+          done();
+        });
+      });
+
+      it("method getByEmail returns null", function(done){
+        User.getByEmail("fake@gmail.com", function(err, user){
+          (user == null).should.be.true;
+          done();
+        });
+
+      });
+
+  });//scopes
 
 
 
 });
+
+
+
+
+
+
+
+
+
+

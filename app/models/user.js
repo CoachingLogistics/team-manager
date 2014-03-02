@@ -19,6 +19,17 @@ UserSchema.virtual('name').get(function() {
 	return this.first_name + ' ' + this.last_name;
 });
 
+
+UserSchema.statics.getByEmail = function(email, callback) {
+	this.findOne({email: email}, function(err, user){
+		callback(err, user);
+	});
+};
+
+
+
+
+
 //bcrypt middleware
 UserSchema.pre('save', function(next){
 	var user = this;

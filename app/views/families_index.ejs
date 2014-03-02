@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<% include ./head_scripts %>
+</head>
+
+<body>
+<% include ./head %>
+<!--************************CONTENT**************************-->
+
+FAMILIES
+<table class="table">
+	<thead>
+		<tr>
+			<th>Player</th><th>User</th><th></th>
+		</tr>
+	</thead>
+	<hr>
+	<tbody>
+	<%for(var ii = 0; ii< families.length; ii++){%>
+		<tr>
+			<td><a href="players/<%= families[ii].player_id %>"><%= families[ii].player_id%></a></td>
+			<td><a href="users/<%= families[ii].user_id %>"><%= families[ii].user_id %></a></td>
+			<td><form action="family/<%= families[ii]._id %>/delete" method="post"><input type="submit" value="Delete"/></form></td>
+		</tr>
+	<% } %>
+	</tbody>
+</table>
+<!--***********************END OF CONTENT************************-->
+<% include ./footer %>
+</body>
+
+</html>
