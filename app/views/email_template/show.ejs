@@ -1,13 +1,21 @@
-<h1>The Template</h1>
-<b>Subject</b> <br />
-<%= template.subject %> <br />
-<b>Recipients</b> <br />
-<%= template.recipients %> <br />
-<b>Body</b> <br />
-<%= template.body %> <br />
+<html>
+	<head>
+		<% include ../head_scripts %>
+	</head>
+	<body>
+		<% include ../head %>
+		<h1>The Template</h1>
+		<b>Subject</b> <br />
+		<%= template.subject %> <br />
+		<b>Recipients</b> <br />
+		<%= template.recipients %> <br />
+		<b>Body</b> <br />
+		<%= template.body %> <br />
 
-<a href="/teams/<%= template.team_id %>/templates/<%= template._id %>/edit">Edit</a> <br />
+		<a href="/teams/<%= template.team_id %>/templates/<%= template._id %>/edit">Edit</a> <br />
 
-<form method="POST" action="/teams/<%= template.team_id %>/templates/<%= template._id %>/delete">
-	<input type="submit" value="Delete" />
-</form>
+		<form method="POST" action="/teams/<%= template.team_id %>/templates/<%= template._id %>/delete">
+			<input type="submit" value="Delete" />
+		</form>
+	</body>
+</html>

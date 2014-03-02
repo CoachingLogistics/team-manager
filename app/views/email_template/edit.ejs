@@ -1,8 +1,16 @@
-<h1>Edit Email Template</h1>
-<form method="POST" action="/teams/<%= template.team_id %>/templates/<%= template._id%>/update" >
-	Subject:<input type="text" name="subject" value="<%=template.subject%>" /> <br />
-	Recipients (comma separated for now): <input type="text" name="recipients" value="<%= template.recipients %>" /> <br />
-	Body: <br />
-	<textarea name="body" value="<%= template.body %>" ></textarea> <br />
-	<input type="submit" value="Create" />
-</form>
+<html>
+	<head>
+		<% include ../head_scripts %>
+	</head>
+	<body>
+		<% include ../head %>
+		<h1>Edit Email Template</h1>
+		<form method="POST" action="/teams/<%= template.team_id %>/templates/<%= template._id%>/update" >
+			Subject:<input type="text" name="subject" value="<%=template.subject%>" /> <br />
+			Recipients (comma separated for now): <input type="text" name="recipients" value="<%= template.recipients %>" /> <br />
+			Body: <br />
+			<textarea name="body" value="<%= template.body %>" ></textarea> <br />
+			<input type="submit" value="Create" />
+		</form>
+	</body>
+</html>

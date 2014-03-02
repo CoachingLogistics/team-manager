@@ -4,7 +4,7 @@ var Email_Template = mongoose.model('Email_Template');
 
 // renders the page for a new template
 exports.new = function(req, res) {
-  res.render('email_template/new', {'id': req.params.id});
+  res.render('email_template/new', {'id': req.params.id, 'user': req.user});
 };
 
 // attempts to create and save a template
@@ -34,7 +34,7 @@ exports.index = function(req, res) {
     if(err) {
       return res.redirect('/teams/' + team_id);
     }
-    res.render('email_template/index', {'templates': docs, 'team_id': team_id});
+    res.render('email_template/index', {'templates': docs, 'team_id': team_id, 'user': req.user});
   });
 };
 
@@ -46,7 +46,7 @@ exports.show = function(req, res) {
       return res.redirect('/teams/' + req.params.id + '/templates');
     }
     else {
-      return res.render('email_template/show', {'template': returned});
+      return res.render('email_template/show', {'template': returned, 'user': req.user});
     }
   });
 };
@@ -72,7 +72,7 @@ exports.edit = function(req, res) {
       return res.redirect('/teams/' + req.params.id + '/templates');
     }
     else {
-      return res.render('email_template/edit', {'template': docs});
+      return res.render('email_template/edit', {'template': docs, 'user': req.user});
     }
   });
 };

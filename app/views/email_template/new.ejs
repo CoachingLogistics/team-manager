@@ -1,8 +1,16 @@
-<h1>New Email Template</h1>
-<form method="POST" action="/teams/<%= id %>/templates/new" >
-	Subject:<input type="text" name="subject" /> <br />
-	Recipients (comma separated for now): <input type="text" name="recipients" /> <br />
-	Body: <br />
-	<textarea name="body"></textarea> <br />
-	<input type="submit" value="Create" />
-</form>
+<html>
+	<head>
+		<% include ../head_scripts %>
+	</head>
+	<body>
+		<% include ../head %>
+		<h1>New Email Template</h1>
+		<form method="POST" action="/teams/<%= id %>/templates/new" >
+			Subject:<input type="text" name="subject" /> <br />
+			Recipients (comma separated for now): <input type="text" name="recipients" /> <br />
+			Body: <br />
+			<textarea name="body"></textarea> <br />
+			<input type="submit" value="Create" />
+		</form>
+	</body>
+</html>
