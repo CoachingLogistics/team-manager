@@ -1,0 +1,18 @@
+<h1>Index</h1>
+<% if(templates) { %>
+	<table>
+		<thead>
+			<th>Subject</th>
+			<th></th>
+		</thead>
+		<tbody>
+			<% for(var i = 0; i < templates.length; i++) { %>
+				<tr>
+					<td><%= templates[i].subject %></td>
+					<td>link here</td>
+				</tr>
+			<% } %>
+		</tbody>
+	</table>
+
+<% } %>

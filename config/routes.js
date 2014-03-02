@@ -5,6 +5,7 @@ module.exports = function(app){
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
+	var email_templates = require('../app/controllers/email_templates');
 
 	var mail = require('../app/controllers/mail');
 	app.get('/', home.index);
@@ -43,6 +44,11 @@ module.exports = function(app){
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
 	app.post('/mail/send', mail.send_mail);
+
+	// email templates
+	app.get('/teams/:id/newTemplate', email_templates.new);
+	app.post('/teams/:id/newTemplate', email_templates.create);
+	app.get('/teams/:id/templates', email_templates.index);
 };
 
 
