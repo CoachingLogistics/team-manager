@@ -59,7 +59,7 @@ exports.show = function(req, res) {
 	// will make this do more when we get more added
 	Player.findById(req.params.id, function(err, p) {
 		if(err) {
-			res.send(404)
+			res.status(404).render("404", {user:req.user});
 		}
 		else {
 			res.render('player/show', {
@@ -76,7 +76,7 @@ exports.show = function(req, res) {
 exports.edit = function(req, res) {
 	Player.findById(req.params.id, function(err, p) {
 		if(err) {
-			res.send(404);
+			res.status(404).render("404", {user:req.user});
 		}
 		else {
 			var month_name;
