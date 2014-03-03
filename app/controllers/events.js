@@ -49,7 +49,6 @@ exports.create = function(req, res){
 };
 
 exports.show = function(req, res){
-	//remember to put the id of the event in the request data
   	Event.findById(req.params.id, function(err, event){
 		if(err) {
 			throw new Error(err);
@@ -87,32 +86,40 @@ exports.edit = function(req, res) {
 }
 
 exports.update = function(req, res){
-	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-	var time_string = "" + req.body.hour + ":" + req.body.minute;
-	Event.findById(req.params.id, function(error, event){
-		var oldEvent = JSON.parse(JSON.stringify( event ));
-  		event.date = new Date(date_string);
-  		event.time = new Date(team_string);
-		event.location = req.body.location;
-		event.type = req.body.type;
+	// console.log ("we've got to update");
+	// console.log ("dis req " + req);
+	// Team.findById(event.team_id, function(err, team){
+		if(err) throw new Error(err);
+		var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
+		var time_string = "" + req.body.hour + ":" + req.body.minute;
+		Event.findById(req.params.id, function(error, event){
+			var oldEvent = JSON.parse(JSON.stringify( event ));
+	  		// event.team_id = req.param('team_id'), 
+	  		event.date = new Date(date_string);
+	  		event.time = new Date(team_string);
+			event.location = req.body.location;
+			event.type = req.body.type;
 
-		event.save(function(err, event){
-			if(err){
-				Team.find(function(err, teams){
-    				if(err) throw new Error(err);
-					res.render('event/show', {
-						event: oldEvent,
-						teams: teams,
-						message: err
-					});
-					});
-				}else{
-					res.redirect('/events/' + event._id);	
-				}
+			event.save(function(err, event){
+				if(err){
+					Team.find(function(err, teams){
+	    				if(err) throw new Error(err);
+						res.render('event/show', {
+							event: oldEvent,
+							// team: team,
+							teams: teams,
+							message: err
+						});
+						});
+					}else{
+						res.redirect('/events/' + req.params.id);	
+					}
 
+				});
 			});
-		});
+		// });
 	};
+
 
 exports.delete = function(req, res) {
 	Event.remove({_id: req.params.id}, function(err, docs) {

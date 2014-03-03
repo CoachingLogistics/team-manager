@@ -13,7 +13,7 @@
 	<b>Date</b> <br />
 	<% if(month) { %>
 		Month: <select name="month" class="formlist">
-		<option value=<%= event.date.getMonth() + 1 %>></option>
+		<option value=<%= event.date.getMonth() + 1 %>><%= month%></option>
 		<option value = "1">January</option>
 		<option value = "2">February</option>
 		<option value = "3">March</option>
