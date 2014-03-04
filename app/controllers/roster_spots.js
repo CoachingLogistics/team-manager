@@ -92,7 +92,10 @@ exports.create = function(req, res){
 };
 
 exports.delete = function (req, res){
-	Team.findById(req.params.id, function(error, team){
-		//if team doesn't have any players associated with it, can delete
+	RosterSpot.remove({_id: req.params.id}, function(error, rosterSpot){
+		if err throw new Error(error);
+		else{
+			res.redirect('/teams/');
+		}
 	})
 }
