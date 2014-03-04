@@ -150,7 +150,7 @@ exports.roster_create = function(req, res){
 
 					for(var ii=0; ii<players.length; ii++){
 						console.log(players[ii].first_name + " : "+ req.param("first_name"));
-						if(players[ii].first_name == req.param('first_name')){
+						if(players[ii].first_name.toUpperCase() == req.param('first_name').toUpperCase()){
 							index = ii;
 						}
 					}
