@@ -1,3 +1,13 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
 <h1>Edit <%= team.name %></h1>
 
 <form method="post" action='<%= "/teams/" + team._id + "/edit" %>'>
@@ -5,3 +15,9 @@
 	Sport: <input type='text' name='sport' value='<%= team.sport %>' /><br />
 	<input type='submit' value='Update' />
 </form>
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

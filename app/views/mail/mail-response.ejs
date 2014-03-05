@@ -1,6 +1,24 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
 <h1>Mail Response</h1>
 <% if(error) { %>
 	<b>Error message: <%= error %> </b>
 <% } else { %>
 	<p>Message sent</p>
 <% } %>
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

@@ -94,7 +94,7 @@ exports.update = function(req, res){
 		var time_string = "" + req.body.hour + ":" + req.body.minute;
 		Event.findById(req.params.id, function(error, event){
 			var oldEvent = JSON.parse(JSON.stringify( event ));
-	  		// event.team_id = req.param('team_id'), 
+	  		event.team_id = req.param('team_id'), 
 	  		event.date = new Date(date_string);
 	  		event.time = new Date(team_string);
 			event.location = req.body.location;

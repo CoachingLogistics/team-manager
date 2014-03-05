@@ -1,33 +1,35 @@
 <html>
+
 <head>
+<% include ../head_scripts %>
 </head>
+
 <body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
 
 <% if (message) { %>
 <p><%= message %></p>
 <% } %>
 
 
-<form action="/login" method="post">
-	<div>
-	<label>Email:</label>
-	<input type="text" name="username"/><br/>
-	</div>
-	<div>
-	<label>Password:</label>
-	<input type="password" name="password"/><br/>
-	</div>
-	<div>
-	<input type="checkbox" name="rememberme"/>Remember Me
-	</div>
-	<div>
-	<input type="submit" value="Submit"/>
-	</div>
+<form class="form-signin" role="form" action="/login" method="post">
+	<h2 class="form-signin-heading text-center">Please sign in</h2>
+        <input type="email" class="form-control" placeholder="Email address" required autofocus name="username">
+        <input type="password" class="form-control" placeholder="Password" required name="password">
+        <label class="checkbox">
+          <input type="checkbox" name="rememberme"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 </form>
 
+<h3 class="text-center"><a href="/register">Not registered? Get an account now!</a></h3>
 
 
 
 
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
 </body>
+
 </html>

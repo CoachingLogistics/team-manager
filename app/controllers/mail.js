@@ -2,7 +2,10 @@ var mailer = require('../mailers/team_mailer');
 
 // controller action for rendering an email sending view
 exports.compose_mail = function(req, res) {
-	res.render('mail/compose');
+	res.render('mail/compose', {
+		title: "Mail",
+		user: req.user
+	});
 }
 
 // controller action for sending a message
@@ -16,6 +19,9 @@ exports.send_mail = function(req, res) {
 		if(err) {
 			console.log(err);
 		}
-		return res.render('mail/mail-response', {error: err});
+		return res.render('mail/mail-response', {
+			error: err,
+			user: req.user
+		});
 	});
 }

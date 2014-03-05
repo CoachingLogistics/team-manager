@@ -1,3 +1,15 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
+
 <h1><%= player.full_name %></h1>
 <b>First Name</b> <br />
 <%= player.first_name %><br />
@@ -11,3 +23,10 @@
 <form method='POST' action=<%= '/players/' + player._id + '/delete'%> >
 	<input type="Submit" value="Delete" />
 </form>
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>
