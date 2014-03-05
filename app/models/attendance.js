@@ -1,0 +1,60 @@
+/*
+ * This is an attendance model, which connects a roster spot to an event for a team. 
+ * This is fairly barebones as the project does not have an event yet
+ *
+ */
+
+// loading in required files
+var fs = require('fs');
+var models_path = __dirname;
+fs.readdirSync(models_path).forEach(function (file) {
+  if (~file.indexOf('.js')) require(models_path + '/' + file);
+});
+
+// requirements
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
+var Player = mongoose.model('Player');
+var Team = mongoose.model('Team');
+
+// the attendance
+var AttendanceSchema = new Schema({
+	event_id: {type: ObjectId, required: true},
+	roster_spot_id: {type: ObjectId, required: true}
+});
+
+// returns an array of Attendance Objects with the specified event_id
+CoachSchema.statics.getByEventId = function(event_id, callback) {
+	this.find({event_id: event_id}, function(err, attendances){
+		callback(err, attendances);
+	});
+};
+
+// returns an array of Attendance Objects with the specified roster_spot_id
+CoachSchema.statics.getByRosterId = function(roster_spot_id, callback) {
+	this.find({roster_spot_id: roster_spot_id}, function(err, attendances){
+		callback(err, attendances);
+	});
+};
+
+// returns the players for an event
+CoachSchema.statics.getPlayersForEvent = function(event_id, callback) {
+	var toReturn = new Array;
+	// get every attendance
+	this.find({'event_id': event_id}, function(err, attendances) {
+		// use async to loop through each one and add it to an array
+		async.each(attendances, function(item, innerCallback){
+			// gets the roster spots
+			Roster_Spot.findById(item.roster_spot_id, function(error, roster_spot) {
+				// find the player model
+				Player.findById(roster_spot._id, function(error2, player) {
+					toReturn.push(player);
+					innerCallback();
+				});
+			});
+		}, function(err) {
+			callback(err, toReturn);
+		});
+	});
+};
