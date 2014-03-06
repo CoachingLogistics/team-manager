@@ -7,6 +7,8 @@
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
+var mongoose = require('mongoose');
+var Team = mongoose.model('Team');
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -36,4 +38,33 @@ exports.sendMail = function(from, to, subject, text, html, callback) {
         callback(error, response);
     }
   });
-}
+};
+
+
+exports.added_to_team = function(email_address, team_id, callback) {
+  Team.findById(team_id, function(err, the_team) {
+    // the message, however we want to have it displayed
+    // we may also want to have an email template just for this, but not sure it is necessary
+    var msg = "Welcome to the " + the_team.name + " " + the_team.sport + " team manager system!
+    This email is informing you that you have been added to the teaam";
+    // mail options. My name is in there for testing purposes
+    var mailOptions = {
+        from: "Alex Egan <alexander.egan@gmail.com>",
+        to: email_address,
+        subject: the_team.name + " " + the_team.sport,
+        text: msg,
+        html: msg,
+    };
+    // send the mail
+    smtpTransport.sendMail(mailOptions, function(err, response) {
+      if(err) {
+          console.log(err);
+          callback(err, "Message not sent");
+      }
+      else {
+        // err should be undefined here, but the callback should have an error and response parameters just incase
+          callback(err, response);
+      }
+    });
+  });
+};
