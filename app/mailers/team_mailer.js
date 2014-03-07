@@ -9,6 +9,7 @@ var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
 var mongoose = require('mongoose');
 var Team = mongoose.model('Team');
+var Player = mongoose.model('Player');
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -40,7 +41,8 @@ exports.sendMail = function(from, to, subject, text, html, callback) {
   });
 };
 
-
+// this message is sent when an existing player (and therefore user) is added to a new team
+// and a roster spot is created.
 exports.added_to_team = function(email_address, team_id, callback) {
   Team.findById(team_id, function(err, the_team) {
     // the message, however we want to have it displayed
@@ -59,12 +61,41 @@ exports.added_to_team = function(email_address, team_id, callback) {
     smtpTransport.sendMail(mailOptions, function(err, response) {
       if(err) {
           console.log(err);
-          callback(err, "Message not sent");
+          return callback(err, "Message not sent");
       }
       else {
         // err should be undefined here, but the callback should have an error and response parameters just incase
-          callback(err, response);
+          return callback(err, response);
       }
+    });
+  });
+};
+
+// adds player and spot
+exports.player_and_spot_added = function(email_address, player_id, team_id, callback) {
+  Team.findById(team_id, function(err1, the_team) {
+    Player.findById(player_id, function(err2, the_player) {
+      var name = the_team.name;
+      var sport = the_team.sport;
+      var msg = "You have successfully added " + the_player.full_name + " to the system, and " + the_player.full_name + " has been
+      added to the team " + the_team.name + " " + the_team.sport + ". Thank you for using team manager";
+      var mail_options = {
+        from: "Alex Egan <alexander.egan@gmail.com>",
+        to: email_address,
+        subject: the_team.name + " " + the_team.sport,
+        text: msg,
+        html: msg,
+      };
+      smtpTransport.sendMail(mailOptions, function(err3, response) {
+        if(err3) {
+          console.log(err3);
+          return callback(err3, "Message not sent");
+        }
+        else {
+          // will not have an error at this point, but the callback should expect one
+          return callback(err3, response);
+        }
+      });
     });
   });
 };
