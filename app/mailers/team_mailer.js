@@ -77,8 +77,9 @@ exports.player_and_spot_added = function(email_address, player_id, team_id, call
     Player.findById(player_id, function(err2, the_player) {
       var name = the_team.name;
       var sport = the_team.sport;
-      var msg = "You have successfully added " + the_player.full_name + " to the system, and " + the_player.full_name + " has been
-      added to the team " + the_team.name + " " + the_team.sport + ". Thank you for using team manager";
+      var player_name = the_player.full_name;
+      var msg = "You have successfully added " + player_name + " to the system, and " + player_name + " has been
+      added to the team " + name + " " + sport + ". Thank you for using team manager";
       var mail_options = {
         from: "Alex Egan <alexander.egan@gmail.com>",
         to: email_address,
@@ -86,16 +87,46 @@ exports.player_and_spot_added = function(email_address, player_id, team_id, call
         text: msg,
         html: msg,
       };
-      smtpTransport.sendMail(mailOptions, function(err3, response) {
+      smtpTransport.sendMail(mail_options, function(err3, response) {
         if(err3) {
           console.log(err3);
           return callback(err3, "Message not sent");
         }
         else {
-          // will not have an error at this point, but the callback should expect one
-          return callback(err3, response);
+          // will not have an error at this point, but the callback should account for one
+          return callback(err3, response.message);
         }
       });
     });
   });
 };
+
+// adds a new player and family
+exports.family_added = function(email_address, player_id, team_id, callback) {
+  Team.findById(team_id, function(err1, the_team) {
+    Player.findById(player_id, function(err2, the_player) {
+      var name = the_team.name;
+      var sport = the_team.sport;
+      var player_name = the_player.full_name;
+      var msg = "You have successfully added " + player_name + " to the system under your account, and " +
+      player_name + " has been added to " + name + " " + sport + ". Thank you for using team manager!";
+      var mail_options = {
+        from: "Alex Egan <alexander.egan@gmail.com>",
+        to: email_address,
+        subject: the_team.name + " " + the_team.sport,
+        text: msg,
+        html: msg,
+      };
+      smtpTransport.sendMail(mail_options, function(err3, response) {
+        if(err3) {
+          console.log(err3);
+          return callback(err3, "Message not sent");
+        }
+        else {
+          // again, no error here but callback should account for one
+          return callback(err3, response.message);
+        }
+      });
+    });
+  });
+}
