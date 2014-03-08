@@ -1,13 +1,16 @@
 
 
+	var mongoose = require('mongoose');
+  	var Schema = mongoose.Schema;
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+
+
+
 
 //cannot use dependent models in this?????
 // var Family = mongoose.model('Family');
-// var RosterSpot = mongoose.model('RosterSpot');
-
+// var RosterSpot = require('./roster_spot.js').RosterSpot;
+//console.log(RosterSpot);
 
 
 var PlayerSchema = new Schema({
@@ -49,11 +52,11 @@ PlayerSchema.methods.getUsers = function (callback) {
 };
 
 //doesn't work
-// PlayerSchema.methods.getTeams = function (callback) {
-// 	RosterSpot.getTeamsForPlayer(this._id, function(teams){
-// 		callback(teams);
-// 	})
-// };
+PlayerSchema.methods.getTeams = function (callback) {
+	RosterSpot.getTeamsForPlayer(this._id, function(teams){
+		callback(teams);
+	})
+};
 
 // // test this
 // PlayerSchema.methods.getAttendance = function (callback) {
@@ -63,4 +66,5 @@ PlayerSchema.methods.getUsers = function (callback) {
 
 
 mongoose.model('Player', PlayerSchema);
-module.exports = mongoose.model('Player', PlayerSchema);
+module.exports.Player = mongoose.model('Player', PlayerSchema);
+module.exports.Schema = PlayerSchema;
