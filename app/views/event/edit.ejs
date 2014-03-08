@@ -1,6 +1,16 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
 <h1>Edit <%= event.type %> for team <%= team.name %></h1>
 
-<form method="POST", action=<%= "/events/"+event._id+"/update" %> >
+<form method="POST", action=<%= "/events/"+event._id+"/edit" %> >
 
 	Team Name: <select name="team_id" class="formlist">
 	<option value= <%= team._id %>> <%= team.name %> </option>
@@ -27,12 +37,24 @@
 		<option value = "11">November</option>
 		<option value = "12">December</option> 
 		</select>
-		Day:<input type="number" max="31" min="1" name="day", value=<%= event.date.getDate() %> />
-		Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year" value=<%= event.date.getFullYear() %>> <br />
+		Day:<input type="number" max="31" min="1" name="day", value="<%= event.date.getDate() %>" />
+		Year:<input type="number" max="<%= new Date().getFullYear()+3 %>" min="1950" name="year" value="<%= event.date.getFullYear() %>"> <br />
 	<% } %>
-	Time: <input type="number" max="23" min="0" name="hour"/>:<input type="number" max="59" min="0" name="minute"> <br />		
+	Time: <input type="number" max="23" min="0" name="hour" value="<%=hour%>"/>:<input type="number" max="59" min="0" name="minute" value="<%=event.date.getMinutes()%>">
+	<select name="time" class="formlist">
+	<option value="am">AM</option>
+	<option   <%if(time == "PM"){%> selected="selected" <%}%>  value = "pm">PM</option>
+	</select>
+	<br />		
 	Location: <input type='text' name='location'/><br />
 	Type: <input type='text' name='type'/><br />
 
 	<input type="submit" value="Update" />
 </form>
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

@@ -6,7 +6,8 @@ exports.index = function(req, res){
   Event.find(function(err, events){
     if(err) throw new Error(err);
     res.render('event/index', {
-      events: events
+      events: events,
+      user:req.user
     });
   });
 };
@@ -15,22 +16,26 @@ exports.new = function(req, res){
 	Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('event/new', {
-      teams: teams
+      teams: teams,
+      user:req.user
     });
   });
 };
 
 exports.create = function(req, res){
-	console.log(req.body);
-	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-	var time_string = "" + req.body.hour + ":" + req.body.minute;
+
+	var hour = req.param('hour');
+	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+
+
 	var newEvent = new Event({
 		team_id: req.param('team_id'),
-		date: new Date(date_string),
-		time: new Date(time_string),
+		date: date,
 		location: req.body.location,
   		type: req.param('type')
 	});
+
 	newEvent.save(function(err, event){
 		if(err){
 			console.log(err);
@@ -39,7 +44,8 @@ exports.create = function(req, res){
 			res.render('event/new', {
 				event: event,
 				teams: teams,
-				message: err
+				message: err,
+				user:req.user
 			});
 			});
 		}else{
@@ -53,11 +59,22 @@ exports.show = function(req, res){
 		if(err) {
 			throw new Error(err);
 		}else{
+
+			var time = "AM";
+			var hour = event.date.getHours();
+			if(event.date.getHours()>12){
+				hour = event.date.getHours()-12;
+				time="PM";
+			}
+
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
 		    	res.render('event/show', {
 		    	  event: event,
-		    	  team: team
+		    	  team: team,
+		    	  user:req.user,
+		    	  time: time,
+		    	  hour: hour
 		    	});
 		    })		 	
 		}
@@ -67,18 +84,36 @@ exports.show = function(req, res){
 exports.edit = function(req, res) {
 	Event.findById(req.params.id, function(err, event) {
 		if(err) {
-			return res.status(404).render('404');
+			return res.status(404).render('404', {user:req.user});
 		}else {
 			Team.findById(event.team_id, function(err, team){
 				if(err) throw new Error(err);
 				Team.find(function(err, teams){
     				if(err) throw new Error(err);
+
 					var month_name;
 					if(event.date) {
 						var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 						month_name = monthNames[event.date.getMonth()];
 					}
-					return res.render('event/edit', {event: event, month: month_name, team: team, teams: teams, 'error': null});
+
+					var time = "AM";
+					var hour = event.date.getHours();
+					if(event.date.getHours()>12){
+						hour = event.date.getHours()-12;
+						time="PM";
+					}
+
+					return res.render('event/edit', {
+						event: event,
+						month: month_name,
+						team: team,
+						teams: teams,
+						user:req.user,
+						'error': null,
+						time: time,
+						hour: hour
+					});
 				})
 			})
 		}
@@ -86,39 +121,27 @@ exports.edit = function(req, res) {
 }
 
 exports.update = function(req, res){
-	// console.log ("we've got to update");
-	// console.log ("dis req " + req);
-	// Team.findById(event.team_id, function(err, team){
-		if(err) throw new Error(err);
-		var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-		var time_string = "" + req.body.hour + ":" + req.body.minute;
+	var hour = req.param('hour');
+	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+
 		Event.findById(req.params.id, function(error, event){
-			var oldEvent = JSON.parse(JSON.stringify( event ));
-	  		event.team_id = req.param('team_id'), 
-	  		event.date = new Date(date_string);
-	  		event.time = new Date(team_string);
-			event.location = req.body.location;
-			event.type = req.body.type;
+
+	  		event.date = date;
+			event.location = req.param('location');
+			event.type = req.param('type');
 
 			event.save(function(err, event){
 				if(err){
-					Team.find(function(err, teams){
-	    				if(err) throw new Error(err);
-						res.render('event/show', {
-							event: oldEvent,
-							// team: team,
-							teams: teams,
-							message: err
-						});
-						});
-					}else{
-						res.redirect('/events/' + req.params.id);	
-					}
+					console.log(err);
+					res.redirect('/');
+				}else{
+					res.redirect('/events/' + event._id);	
+				}
 
-				});
 			});
-		// });
-	};
+		});
+};
 
 
 exports.delete = function(req, res) {

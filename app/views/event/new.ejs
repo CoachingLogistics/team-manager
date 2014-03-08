@@ -1,3 +1,13 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
 <h1>New Event</h1>
 
 	<form method="post" action="/events/new">
@@ -22,15 +32,25 @@
 	<option value = "9">September</option>
 	<option value = "10">October</option>
 	<option value = "11">November</option>
-	<option value = "12">December</option> 
+	<option value = "12">December</option>
 	</select>
 	Day:<input type="number" max="31" min="1" name="day"/>
-	Year:<input type="number" max=<%= "" + new Date().getFullYear()%> name="year"> <br />
+	Year:<input type="number" max="<%= new Date().getFullYear()+3 %>" name="year"> <br />
 
-	Time: <input type="number" max="23" min="0" name="hour"/>:<input type="number" max="59" min="0" name="minute"> <br />
+	Time: <input type="number" max="23" min="0" name="hour"/>:<input type="number" max="59" min="0" name="minute"> 
+	<select name="time" class="formlist">
+	<option value="am">AM</option><option value = "pm">PM</option>
+	</select>
 	
 	Location: <input type='text' name='location'/><br />
 	Type: <input type='text' name='type'/><br />
 
 	<input type='submit' value='Create' />
 </form>
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>
