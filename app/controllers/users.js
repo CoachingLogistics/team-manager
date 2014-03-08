@@ -2,12 +2,21 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').strategy;
+var Family = mongoose.model('Family');
+var Player = mongoose.model('Player');
+var Team = mongoose.model('Team');
+
 
 exports.account = function(req, res){	//test non-access?
 
-	res.render('user/account', {
-		user: req.user,
-	  	title: 'My Account'
+	Family.getPlayersForUser(req.user._id, function(players){
+		
+		res.render('user/account', {
+			user: req.user,
+		  	title: 'My Account', 
+		  	players: players
+		});
+
 	});
 };
 
@@ -23,10 +32,14 @@ exports.index = function(req, res){			//delete this later
 
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
+		Family.getPlayersForUser(user._id, function(players){
+			
+			res.render('user/show', {
+				user: req.user,
+				user_show: user,
+			  	players: players
+			});
 
-		res.render('user/show', {
-			user: req.user,
-			user_show: user
 		});
 	});
 };
@@ -134,6 +147,11 @@ exports.delete = function(req, res){
     		res.redirect('/users/'+req.params.id);
     	}
       // req.flash('info', 'User successfully deleted');
+
+      //delete dependent families/coaches?
+
+
+
       res.redirect('/');
     });
   }else{

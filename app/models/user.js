@@ -1,8 +1,21 @@
+
+
+// Synchronously load model dependecies, so foreign model calls can be made
+// var fs = require('fs');
+// var models_path = __dirname;
+// fs.readdirSync(models_path).forEach(function (file) {
+//   if (~file.indexOf('.js')) require(models_path + '/' + file);
+// })
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+// var Player = mongoose.model('Player');
+// var Family = mongoose.model('Family');
+
+
 var bcrypt = require('bcrypt-nodejs');
 var SALT_WORK_FACTOR = 7;
-
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
   email: { type:String, unique:true, required:true, match: /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/ },
@@ -24,6 +37,16 @@ UserSchema.statics.getByEmail = function(email, callback) {
 	this.findOne({email: email}, function(err, user){
 		callback(err, user);
 	});
+};
+
+
+
+
+//tested in family_test
+UserSchema.methods.getPlayers = function (callback) {
+	Family.getPlayersForUser(this._id, function(players){
+		callback(players);
+	})
 };
 
 
@@ -67,3 +90,4 @@ UserSchema.methods.generateRandomToken = function() {
 };
 
 mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User');
