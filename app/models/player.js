@@ -16,7 +16,8 @@
 var PlayerSchema = new Schema({
   first_name: {type: String, required: true},
   last_name: {type: String, required: true},
-  date_of_birth: Date
+  date_of_birth: Date,
+  active: {type: Boolean, default: true}
 });
 
 
@@ -52,11 +53,11 @@ PlayerSchema.methods.getUsers = function (callback) {
 };
 
 //doesn't work
-PlayerSchema.methods.getTeams = function (callback) {
-	RosterSpot.getTeamsForPlayer(this._id, function(teams){
-		callback(teams);
-	})
-};
+// PlayerSchema.methods.getTeams = function (callback) {
+// 	RosterSpot.getTeamsForPlayer(this._id, function(teams){
+// 		callback(teams);
+// 	})
+// };
 
 // // test this
 // PlayerSchema.methods.getAttendance = function (callback) {

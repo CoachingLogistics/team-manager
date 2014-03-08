@@ -65,13 +65,13 @@ exports.show = function(req, res) {
 		else {
 
 			//
-			p.getTeams(function(teams){
+			//p.getTeams(function(teams){
 				res.render('player/show', {
 					player: p,
-					teams: teams,
+					//teams: teams,
 					user: req.user
 				});
-			});
+			//});
 		};
 	});
 }
