@@ -12,10 +12,12 @@ fs.readdirSync(models_path).forEach(function (file) {
 });
 
 // requirements
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var Player = mongoose.model('Player');
+var Roster_Spot = mongoose.model('RosterSpot');
 var Team = mongoose.model('Team');
 
 // the attendance
@@ -40,6 +42,7 @@ AttendanceSchema.statics.getByRosterId = function(roster_spot_id, callback) {
 };
 
 // returns the players for an event
+// may not need this, or may need to rework it to make it more useful, but it's here if we need it
 AttendanceSchema.statics.getPlayersForEvent = function(event_id, callback) {
 	var toReturn = new Array;
 	// get every attendance
