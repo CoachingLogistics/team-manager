@@ -23,7 +23,8 @@ var UserSchema = new Schema({
   last_name: { type:String },
   phone : { type:String },
   password : { type:String },
-  accessToken: { type: String } // Used for Remember Me sessions
+  accessToken: { type: String }, // Used for Remember Me sessions
+  active: { type: Boolean, default: true }
 });
 
 
@@ -56,12 +57,14 @@ UserSchema.pre('save', function(next){
 	var user = this;
 	if(!user.isModified('password')) return next();
 
+
 	bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
 		if(err) return next(err);
 
 		bcrypt.hash(user.password, salt, null, function(err, hash){
 			if(err) return next(err);
 			user.password = hash;
+			user.active = true; //put this in so we know if a person logged in
 			next();
 		});
 	});

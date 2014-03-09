@@ -1,9 +1,4 @@
-/*
- * Proof of concept. We can get emails to work
- * Please remember to not commit the password to your email account.
- * I'll work on moving that information into a file that is included in .gitignore
- * http://www.nodemailer.com/ for more info
- */
+
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");

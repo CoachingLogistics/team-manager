@@ -208,9 +208,13 @@ exports.roster_create = function(req, res){
 				});
 
 			}else{	//user does not exist
+				
+				var random_password = User.generateRandomPassword();
 
-				var new_user = new User({		//user does not have a password...
-					email: req.param('email')
+				var new_user = new User({		//user's password needs to be sent to them
+					email: req.param('email'),
+					active: false,
+					password: random_password
 				});
 
 				new_user.save(function(err, usr){	//new user created

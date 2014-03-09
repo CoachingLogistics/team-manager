@@ -183,7 +183,6 @@ exports.remember = function(req, res){
   		}
 
   		var random_password = User.generateRandomPassword();
-  		console.log(random_password);
 		user.password = random_password;
 
 		user.save(function(err, usr){
