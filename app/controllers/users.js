@@ -5,6 +5,7 @@ var LocalStrategy = require('passport-local').strategy;
 var Family = mongoose.model('Family');
 var Player = mongoose.model('Player');
 var Team = mongoose.model('Team');
+var ForgottenEmail = require('../mailers/forgotten_email');
 
 
 exports.account = function(req, res){	//test non-access?
@@ -160,6 +161,48 @@ exports.delete = function(req, res){
   }
 };
 
+
+
+exports.forget = function(req, res){
+  	res.render('user/forget', {
+		user: req.user,
+		message: req.session.messages
+	});
+};
+
+exports.remember = function(req, res){
+  	var email = req.param('email');
+
+  	User.getByEmail(email, function(err, user){
+
+  		if(err){
+  			res.render('user/login', {
+				user: req.user,
+			  	message: err
+			});
+  		}
+
+  		var random_password = User.generateRandomPassword();
+  		console.log(random_password);
+		user.password = random_password;
+
+		user.save(function(err, usr){
+			if(err){
+				console.log(err);
+				res.redirect('/404');
+			}
+
+			//can do email, or usr.email
+
+			ForgottenEmail.sendMail(email, usr, random_password, function(){
+					res.render('user/login', {
+					user: req.user,
+				  	message: 'Your new password has been sent.'
+				});
+			});
+		});
+	});
+};
 
 
 
