@@ -1,5 +1,5 @@
 /*
- * This is an attendance model, which connects a roster spot to an event for a team. 
+ * This is an attendance model, which connects a roster spot to an event for a team.
  * This is fairly barebones as the project does not have an event yet
  *
  */
@@ -58,3 +58,7 @@ CoachSchema.statics.getPlayersForEvent = function(event_id, callback) {
 		});
 	});
 };
+
+// set the schema and export the model
+mongoose.model('Attendance', AttendanceSchema);
+module.exports = mongoose.model('Attendance', AttendanceSchema);
