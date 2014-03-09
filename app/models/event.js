@@ -12,29 +12,44 @@ fs.readdirSync(models_path).forEach(function (file) {
  var Team = mongoose.model('Team');
 
  var EventSchema = new Schema({
-    team_id: {type: ObjectId, required: false},
-    date: {type: Date, required: false},
-    //time: {type: Date, required: false},
+    team_id: {type: ObjectId, required: true},
+    date: {type: Date, required: true},
     location: {type: String, required: false},
     type: {type: String, required: false}
  });
 
- // TeamSchema.method('players').get(function(){
-  
- // })
+
+//test this
+EventSchema.virtual('time').get(function() {
+	var hours = this.date.getHours();
+	var time = "AM";
+	var minutes = this.date.getMinutes();
+	if(this.date.getHours() > 12){
+		hours = +this.date.getHours() - 12;
+		time="PM";
+	}else if(this.date.getHours() == 12){
+		time="PM";
+	}
+
+	if(this.date.getMinutes() == 0){
+		minutes = "00";
+	}
+
+	return hours+":"+minutes+" "+time;
+});
 
 
-//test
+//test this
 EventSchema.statics.getByTeamId = function(team_id, callback) {
-	this.find({team_id: team_id}, function(err, events){
+	this.find({team_id: team_id}).sort({date: 1}).execFind(function(err,events){
 		callback(err, events);
 	});
 };
 
 //test this
 EventSchema.methods.getTeam = function (callback) {
-	Team.find({_id: this.team_id}, function(err, team){
-		callback(team);
+	Team.findOne({_id: this.team_id}, function(err, team){
+		callback(err, team);
 	})
 };
 

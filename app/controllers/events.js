@@ -26,6 +26,7 @@ exports.create = function(req, res){
 
 	var hour = req.param('hour');
 	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
 
@@ -62,7 +63,7 @@ exports.show = function(req, res){
 
 			var time = "AM";
 			var hour = event.date.getHours();
-			if(event.date.getHours()>12){
+			if(event.date.getHours()>=12){
 				hour = event.date.getHours()-12;
 				time="PM";
 			}
@@ -99,7 +100,7 @@ exports.edit = function(req, res) {
 
 					var time = "AM";
 					var hour = event.date.getHours();
-					if(event.date.getHours()>12){
+					if(event.date.getHours()>=12){
 						hour = event.date.getHours()-12;
 						time="PM";
 					}
@@ -123,6 +124,7 @@ exports.edit = function(req, res) {
 exports.update = function(req, res){
 	var hour = req.param('hour');
 	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
 		Event.findById(req.params.id, function(error, event){
