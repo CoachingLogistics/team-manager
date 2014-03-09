@@ -25,7 +25,7 @@ var  User = mongoose.model('User');
 
 //mocha stuff
 after(function(done){
-	console.log("all done");
+	console.log("user tests done");
 	done();
 });
 

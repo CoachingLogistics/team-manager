@@ -1,0 +1,43 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
+<h1>Events Page</h1>
+<table>
+	<thead>
+		<th>Team Name</th>
+		<th>Date</th>
+		<th>Time</th>
+		<th>Location</th>
+		<th>Type</th>
+	</thead>
+	<tbody>
+		<% for(var i = 0; i < events.length; i++) { %>
+			<tr>
+				<td><%= events[i].team_id %></td>
+				<td><%= events[i].date %></td>
+				<td><%= events[i].time %></td>
+				<td><%= events[i].location %></td>
+				<td><%= events[i].type %></td>
+				<td></td>
+				<td><a href=<%= '/events/' + events[i]._id %>>Show</a></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href='/events/new'>New Event</a>
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

@@ -2,12 +2,22 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').strategy;
+var Family = mongoose.model('Family');
+var Player = mongoose.model('Player');
+var Team = mongoose.model('Team');
+var ForgottenEmail = require('../mailers/forgotten_email');
+
 
 exports.account = function(req, res){	//test non-access?
 
-	res.render('user/account', {
-		user: req.user,
-	  	title: 'My Account'
+	Family.getPlayersForUser(req.user._id, function(players){
+		
+		res.render('user/account', {
+			user: req.user,
+		  	title: 'My Account', 
+		  	players: players
+		});
+
 	});
 };
 
@@ -23,10 +33,14 @@ exports.index = function(req, res){			//delete this later
 
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
+		Family.getPlayersForUser(user._id, function(players){
+			
+			res.render('user/show', {
+				user: req.user,
+				user_show: user,
+			  	players: players
+			});
 
-		res.render('user/show', {
-			user: req.user,
-			user_show: user
 		});
 	});
 };
@@ -134,6 +148,11 @@ exports.delete = function(req, res){
     		res.redirect('/users/'+req.params.id);
     	}
       // req.flash('info', 'User successfully deleted');
+
+      //delete dependent families/coaches?
+
+
+
       res.redirect('/');
     });
   }else{
@@ -142,6 +161,48 @@ exports.delete = function(req, res){
   }
 };
 
+
+
+exports.forget = function(req, res){
+  	res.render('user/forget', {
+		user: req.user,
+		message: req.session.messages
+	});
+};
+
+exports.remember = function(req, res){
+  	var email = req.param('email');
+
+  	User.getByEmail(email, function(err, user){
+
+  		if(err){
+  			res.render('user/login', {
+				user: req.user,
+			  	message: err
+			});
+  		}
+
+  		var random_password = User.generateRandomPassword();
+  		console.log(random_password);
+		user.password = random_password;
+
+		user.save(function(err, usr){
+			if(err){
+				console.log(err);
+				res.redirect('/404');
+			}
+
+			//can do email, or usr.email
+
+			ForgottenEmail.sendMail(email, usr, random_password, function(){
+					res.render('user/login', {
+					user: req.user,
+				  	message: 'Your new password has been sent.'
+				});
+			});
+		});
+	});
+};
 
 
 

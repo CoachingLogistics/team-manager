@@ -4,6 +4,7 @@
  */
 var mongoose = require('mongoose'),
   Player = mongoose.model('Player');
+  Family = mongoose.model('Family');
 
 /*
  * Function for the players index page
@@ -62,11 +63,16 @@ exports.show = function(req, res) {
 			res.status(404).render("404", {user:req.user});
 		}
 		else {
-			res.render('player/show', {
-				player: p,
-				user: req.user
-			});
-		}
+
+			//
+			//p.getTeams(function(teams){
+				res.render('player/show', {
+					player: p,
+					//teams: teams,
+					user: req.user
+				});
+			//});
+		};
 	});
 }
 
@@ -137,6 +143,9 @@ exports.delete = function(req, res) {
 			return res.redirect('/players/' + req.params.id);
 		}
 		else {
+			
+			//delete dependent roster spots/attendances/families?
+
 			return res.redirect('/players');
 		}
 	});
