@@ -3,8 +3,8 @@
 
 var mailer_options = {
 	service: "Gmail",
-	user: "email here",
-	pass: "password here"
+	user: "watadog@gmail.com",
+	pass: "charcoal"
 };
 
 module.exports = mailer_options;

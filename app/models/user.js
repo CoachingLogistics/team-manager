@@ -1,8 +1,21 @@
+
+
+// Synchronously load model dependecies, so foreign model calls can be made
+// var fs = require('fs');
+// var models_path = __dirname;
+// fs.readdirSync(models_path).forEach(function (file) {
+//   if (~file.indexOf('.js')) require(models_path + '/' + file);
+// })
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+// var Player = mongoose.model('Player');
+// var Family = mongoose.model('Family');
+
+
 var bcrypt = require('bcrypt-nodejs');
 var SALT_WORK_FACTOR = 7;
-
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
   email: { type:String, unique:true, required:true, match: /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/ },
@@ -27,6 +40,14 @@ UserSchema.statics.getByEmail = function(email, callback) {
 };
 
 
+
+
+//tested in family_test
+UserSchema.methods.getPlayers = function(callback) {
+	Family.getPlayersForUser(this._id, function(players){
+		callback(players);
+	})
+};
 
 
 
@@ -66,4 +87,45 @@ UserSchema.methods.generateRandomToken = function() {
 	return token;
 };
 
+UserSchema.statics.generateRandomPassword = function() {
+
+	// var text = "";
+ //    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+ //    for( var i=0; i < 5; i++ )
+ //        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+ //    return text;
+
+	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	var token = "";
+	for( var x = 0; x<8; x++){
+		var i = Math.floor(Math.random() * chars.length );
+		token += chars.charAt(i);
+	}
+	return token;
+};
+
+
+
+// UserSchema.statics.setPassword = function(email, callback) {
+
+// 	User.getByEmail(email, function(err, user){
+// 		if(err){ callback(err); }
+
+// 		var rando_pass = generateRandomPassword();
+// 		var user = this;
+// 		user.password = rando_pass;
+
+// 		callback(err, user, rando_pass);
+// 	});
+// };
+
+
+
+
+
+
+
 mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User');

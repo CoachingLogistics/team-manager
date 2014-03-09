@@ -4,6 +4,8 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
   Family = mongoose.model('Family');
 
+var mailer = require('../mailers/team_mailer.js');
+
 
 
 
@@ -107,6 +109,10 @@ exports.create = function(req, res){
 exports.delete = function (req, res){
 	Team.findById(req.params.id, function(error, team){
 		//if team doesn't have any players associated with it, can delete
+
+
+
+		//delete dependent roster spots/events/attendances?
 	});
 };
 
@@ -135,8 +141,8 @@ exports.roster_fill = function(req, res){
 
 
 exports.roster_create = function(req, res){
-	console.log(req.param('first_name')+ " "+ req.param("last_name")+" : "+ req.param("email"));
-	res.send();
+	//console.log(req.param('first_name')+ " "+ req.param("last_name")+" : "+ req.param("email"));
+	//res.send();
 
 	Team.findById(req.params.id, function(err, team){
 		User.getByEmail(req.param('email'), function(err, user){

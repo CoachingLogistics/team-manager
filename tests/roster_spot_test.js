@@ -1,20 +1,27 @@
 
+// // Synchronously load model dependecies, so foreign model calls can be made
+// var fs = require('fs');
+// var models_path = __dirname.replace('tests','app/models')
+
+// fs.readdirSync(models_path).forEach(function (file) {
+//   if (~file.indexOf('.js')) require(models_path + '/' + file);
+// });
+
 
 var should = require('should');
 
 process.env.NODE_ENV = 'test';
 
-var roster_spot_model = require('../app/models/roster_spot');
-var mongoose = require('mongoose');
-//var test_db = mongoose.connect('mongodb://localhost/test-test'); //connection to the testing environment DB
-
-var Player = mongoose.model('Player');
-var Team = mongoose.model('Team');
-var RosterSpot = mongoose.model('RosterSpot');
 
 var app = require("../app");
 var request = require("supertest");
 var agent = request.agent(app);
+
+var mongoose = require('mongoose');
+var Player = mongoose.model('Player');
+var Team = mongoose.model('Team');
+var RosterSpot = mongoose.model('RosterSpot');
+
 
 
 //mocha stuff
@@ -35,7 +42,7 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
 
 	beforeEach(function(done){	//clears the database and creates testing objects
 	    
-	    RosterSpot.remove(done);//clear out db
+	    //RosterSpot.remove(done);//clear out db
 
 	    testPlayer = {
 	    	first_name: "Johnny",
@@ -50,6 +57,8 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
 	      player_id: null,
 	      team_id: null
 	    };
+
+	    done();
     });
 
     after(function(done){
@@ -157,5 +166,225 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
 		describe('routes', function() {
 
 		});
+	});//save
+
+
+
+	describe("testing the accessor methods", function() {
+		var peter, steve, white, benedict, averages, cobras, jp, js, cw, jb, cb;
+
+		beforeEach(function(done){
+
+	        peter = new Player({
+	        	first_name: "Peter",
+	        	last_name: "Lafleur"
+	    	});
+
+	        benedict = new Player({
+	        	first_name: "Benedict",
+	        	last_name: "Arnold"
+	    	});
+
+	        steve = new Player({
+	        	first_name: "Steve",
+	        	last_name: "Pirate"
+	    	});
+
+	        white = new Player({
+	        	first_name: "White",
+	        	last_name: "Goodman"
+	    	});
+
+	        averages = new Team({
+	        	name: "Average Joes",
+	        	sport: "Dodgeball"
+	        });
+
+	       	cobras = new Team({
+	        	name: "Purple Cobras",
+	        	sport: "Dodgeball"
+	        });
+
+	        peter.save(function(err, pete){
+	        	steve.save(function(err, stev){
+	        		averages.save(function(err, joes){
+
+	        			jp = new RosterSpot({
+	        				team_id: joes._id,
+	        				player_id: pete._id
+	        			});
+
+	        			jp.save(function(err, jp){
+		        			js = new RosterSpot({
+		        				team_id: joes._id,
+		        				player_id: stev._id
+		        			});
+
+		        			js.save(function(err, js){
+		        				white.save(function(err, whit){
+		        					cobras.save(function(err, purps){
+		        						cw = new RosterSpot({
+					        				team_id: purps._id,
+					        				player_id: whit._id
+					        			});
+
+					        			cw.save(function(err, cw){
+					        				benedict.save(function(err, ben){
+				        						cb = new RosterSpot({
+							        				team_id: purps._id,
+							        				player_id: ben._id
+							        			});
+
+							        			cb.save(function(err, cb){
+							        				jb = new RosterSpot({
+								        				team_id: joes._id,
+								        				player_id: ben._id
+								        			});
+
+								        			jb.save(function(err, jb){
+								        				done();
+								        			})
+							        			})			        					
+					        				})
+					        			});
+		        					});
+		        				})
+		        			});
+	        			});
+	        		});
+	        	});
+	        });
+	    });//beforeEach
+
+		
+
+
+        it('method getByPlayerId', function(done){
+
+            RosterSpot.getByPlayerId(peter._id, function(err, spots){
+                spots[0].should.have.property('player_id', peter._id);
+
+                RosterSpot.getByPlayerId(white._id, function(err, spots){
+                    spots[0].should.have.property('player_id', white._id);
+
+                    RosterSpot.getByPlayerId(benedict._id, function(err, spots){
+                        spots.should.have.length(2);
+                        spots[0].should.have.property('player_id', benedict._id);
+                        
+                        done();
+                    });
+                });                    
+            });
+        });
+
+
+            it('method getByTeamId', function(done){
+
+                RosterSpot.getByTeamId(cobras._id, function(err, spots){
+                    spots.should.have.length(2);
+                    spots[0].should.have.property('team_id', cobras._id);
+                    spots[1].should.have.property('team_id', cobras._id);
+
+                    RosterSpot.getByTeamId(averages._id, function(err, spots){
+                        spots.should.have.length(3);
+                        spots[0].should.have.property('team_id', averages._id);
+                        spots[1].should.have.property('team_id', averages._id);
+                        spots[2].should.have.property('team_id', averages._id);
+
+                        done();
+
+                    });
+                });
+            });
+
+                
+
+
+                describe('grabbing objects', function(){
+
+                    it('method getTeamsForPlayer', function(done){
+
+                        RosterSpot.getTeamsForPlayer(peter._id, function(teams){
+                            teams.should.have.length(1);
+                            teams[0].should.have.property('name', 'Average Joes');
+
+                            RosterSpot.getTeamsForPlayer(white._id, function(teams){
+                                teams.should.have.length(1);
+                                teams[0].should.have.property('name', 'Purple Cobras');
+
+                                RosterSpot.getTeamsForPlayer(benedict._id, function(teams){
+                                    teams.should.have.length(2);
+                                    teams[0].should.have.property('sport', 'Dodgeball');
+                                    teams[1].should.have.property('sport', 'Dodgeball');
+                                    
+                                    done();
+                                });
+                            }); 
+                        });
+                    });
+
+                   it('method getPlayersForTeam', function(done){
+
+                        RosterSpot.getPlayersForTeam(averages._id, function(players){
+                            players.should.have.length(3);
+
+                            RosterSpot.getPlayersForTeam(cobras._id, function(players){
+                                players.should.have.length(2);
+                                    
+                                done();
+                            }); 
+                        });
+                    });
+
+
+                   //Tests for the self.methods in Teams and Players.
+
+                   // it('Team instance method getPlayers', function(done){
+
+	                  //  	cobras.getPlayers(function(players){
+	                  //  		players.should.have.length(2);
+
+	                  //  		averages.getPlayers(function(players){
+	                  //  			players.should.have.length(3);
+
+	                  //  			done();
+	                  //  		});
+	                  //  	});
+                   // });
+
+                   // it('Player instance method getTeams', function(done){
+
+	                  //  	peter.getTeams(function(teams){
+	                  //  		teams.should.have.length(1);
+	                  //  		teams.should.have.property('name', 'Average Joes')
+
+	                  //  		white.getTeams(function(teams){
+	                  //  			teams.should.have.length(1);
+	                  //  			teams.should.have.property('name', 'Purple Cobras')
+
+	                  //  			benedict.getTeams(function(teams){
+	                  //  				teams.should.have.length(2);
+
+	                  //  				done();
+	                  //  			});
+	                  //  		});
+	                  //  	});
+                   // });
+
+
+               });//describe
+
+
+
+
 	});
+
+
 });
+
+
+
+
+
+
+

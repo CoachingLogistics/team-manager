@@ -33,7 +33,7 @@ describe('Email_Template', function() {
 	});
 
 	after(function(done) {
-		Email_Template.remove(done);
+		Email_Template.remove();
 		Team.remove(done);
 	});
 
