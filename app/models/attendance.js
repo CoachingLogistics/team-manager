@@ -21,25 +21,26 @@ var Team = mongoose.model('Team');
 // the attendance
 var AttendanceSchema = new Schema({
 	event_id: {type: ObjectId, required: true},
-	roster_spot_id: {type: ObjectId, required: true}
+	roster_spot_id: {type: ObjectId, required: true},
+  attending: {type: Boolean, required: true, default: true}
 });
 
 // returns an array of Attendance Objects with the specified event_id
-CoachSchema.statics.getByEventId = function(event_id, callback) {
+AttendanceSchema.statics.getByEventId = function(event_id, callback) {
 	this.find({event_id: event_id}, function(err, attendances){
 		callback(err, attendances);
 	});
 };
 
 // returns an array of Attendance Objects with the specified roster_spot_id
-CoachSchema.statics.getByRosterId = function(roster_spot_id, callback) {
+AttendanceSchema.statics.getByRosterId = function(roster_spot_id, callback) {
 	this.find({roster_spot_id: roster_spot_id}, function(err, attendances){
 		callback(err, attendances);
 	});
 };
 
 // returns the players for an event
-CoachSchema.statics.getPlayersForEvent = function(event_id, callback) {
+AttendanceSchema.statics.getPlayersForEvent = function(event_id, callback) {
 	var toReturn = new Array;
 	// get every attendance
 	this.find({'event_id': event_id}, function(err, attendances) {
