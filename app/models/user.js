@@ -89,14 +89,6 @@ UserSchema.methods.generateRandomToken = function() {
 
 UserSchema.statics.generateRandomPassword = function() {
 
-	// var text = "";
- //    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
- //    for( var i=0; i < 5; i++ )
- //        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
- //    return text;
-
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	var token = "";
 	for( var x = 0; x<8; x++){
@@ -105,23 +97,6 @@ UserSchema.statics.generateRandomPassword = function() {
 	}
 	return token;
 };
-
-
-
-// UserSchema.statics.setPassword = function(email, callback) {
-
-// 	User.getByEmail(email, function(err, user){
-// 		if(err){ callback(err); }
-
-// 		var rando_pass = generateRandomPassword();
-// 		var user = this;
-// 		user.password = rando_pass;
-
-// 		callback(err, user, rando_pass);
-// 	});
-// };
-
-
 
 
 

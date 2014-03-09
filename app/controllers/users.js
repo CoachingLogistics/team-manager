@@ -205,7 +205,51 @@ exports.remember = function(req, res){
 };
 
 
+exports.password_form = function(req, res){
+	if(req.user._id != req.params.id){
+		res.redirect('/404');
+	}
 
+	User.findById(req.params.id, function(error, user) {
+			
+			res.render('user/password', {
+				user: user//or should this be req.user???
+			});
+	});
+};
+
+
+exports.password_change = function(req, res){
+
+	User.findById(req.params.id, function(error, user) {
+
+		var old = req.param('old');
+		var password = req.param('password');
+
+		user.comparePassword(old, function(err, isMatch){
+			if(err || isMatch == false){
+				res.render('user/password', {
+					user: req.user,
+					message: "Old password was wrong"
+				});
+			}
+
+			if(isMatch){
+				user.password = password;
+				user.save(function(err, usr){
+					Family.getPlayersForUser(usr._id, function(players){
+						res.render('user/account', {
+							user: req.user,
+							message: "New password set",
+							players: players
+						});
+					});
+				})
+			}
+		})
+			
+	});
+};
 
 
 
