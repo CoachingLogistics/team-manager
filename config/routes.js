@@ -2,6 +2,7 @@ module.exports = function(app){
 
 	//home route
 	var home = require('../app/controllers/home');
+	var events = require('../app/controllers/events')
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
@@ -46,6 +47,15 @@ module.exports = function(app){
 	app.post('/teams/:id/edit', teams.update);
 	//app.post('/teams/:id/delete', teams.delete);
 
+	// events
+	app.get('/events', events.index);
+	app.get('/events/new', events.new);
+	app.post('/events/new', events.create);
+	app.get('/events/:id', events.show);
+	app.get('/events/:id/edit', events.edit);
+	app.post('/events/:id/edit', events.update);
+	app.post('/events/:id/delete', events.delete);
+	
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
 	app.post('/mail/test', mail.test);
