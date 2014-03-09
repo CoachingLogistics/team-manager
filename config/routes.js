@@ -26,7 +26,9 @@ module.exports = function(app){
 	app.get('/logout', users.logout);
 	app.post('/users/:id/delete', users.delete);
 	app.get('/users/:id/edit', ensureAuthenticated, users.edit);
-	app.post('/user/:id/edit', users.update);
+	app.post('/users/:id/edit', users.update);
+	app.get('/forget', users.forget);
+	app.post('/forget', users.remember);
 	app.get('/users', users.index);	//to be removed in production
 
 	// players

@@ -1,4 +1,11 @@
 
+// // Synchronously load model dependecies, so foreign model calls can be made
+// var fs = require('fs');
+// var models_path = __dirname.replace('tests','app/models')
+
+// fs.readdirSync(models_path).forEach(function (file) {
+//   if (~file.indexOf('.js')) require(models_path + '/' + file);
+// })
 
 var should = require('should');
 
@@ -27,7 +34,7 @@ var  Family = mongoose.model('Family');
 
 //mocha stuff
 after(function(done){
-	console.log("all done");
+	console.log("family test done");
 	done();
 });
 
@@ -310,6 +317,37 @@ describe('Family', function(){	//context, so we can see where tests happen in co
                             }); 
                         });
                     });
+
+
+
+                    it('method for USERS getPlayers', function(done){
+
+                        ned.getPlayers(function(players){
+                            players.should.have.length(2);
+                            players[0].should.have.property('last_name', 'Flanders');
+                            players[1].should.have.property('last_name', 'Flanders');
+                            done();                     
+                        })
+                    });
+
+
+                    it('method for PLAYERS getUsers', function(done){
+
+                        lisa.getUsers(function(users){
+                            users.should.have.length(1);
+                            users[0].should.have.property('first_name', 'Homer');
+
+                            bart.getUsers(function(users){
+                                users.should.have.length(2);
+                                users[0].should.have.property('last_name', 'Simpson');
+                                users[1].should.have.property('last_name', 'Simpson');
+
+                                done();
+                            });
+                        });
+                    });
+
+
                 });//grabbing
 
 

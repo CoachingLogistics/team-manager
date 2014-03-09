@@ -28,3 +28,4 @@ Email_Template_Schema.statics.getByTeamId = function(team_id, callback) {
 
 // and here is the model
 mongoose.model('Email_Template', Email_Template_Schema);
+module.exports = mongoose.model('Email_Template');

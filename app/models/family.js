@@ -81,4 +81,4 @@ FamilySchema.statics.getPlayersForUser = function(user_id, callback) {
 
 
 mongoose.model('Family', FamilySchema);
-module.exports = mongoose.model('Family');
+module.exports = mongoose.model('Family', FamilySchema);

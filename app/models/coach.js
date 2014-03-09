@@ -66,4 +66,4 @@ CoachSchema.statics.getTeamsForUser = function(user_id, callback) {
 
 // set the schema and export the model
 mongoose.model('Coach', CoachSchema);
-module.exports = mongoose.model('Coach');
+module.exports = mongoose.model('Coach', CoachSchema);
