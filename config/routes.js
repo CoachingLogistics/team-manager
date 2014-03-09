@@ -60,7 +60,7 @@ module.exports = function(app){
 	
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
-	app.post('/mail/send', mail.send_mail);
+	app.post('/mail/test', mail.test);
 
 	// email templates
 	app.get('/teams/:id/templates/new', email_templates.new);
