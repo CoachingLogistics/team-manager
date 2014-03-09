@@ -122,7 +122,7 @@ describe('Attendance', function() {
         done();
       });
     });
-    
+
     // no response
     it('should not allow an attendance to be created if it does not have a response', function(done) {
       var mattAttendance = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id});
@@ -131,7 +131,53 @@ describe('Attendance', function() {
         done();
       });
     });
-  });
+  }); // end describe save
 
+  describe('#getByEventId()', function(done) {
+    // these are the attendances we will be using for this
+    var mattGame;
+    var markGame;
+    var mattPrac;
+    var lukePrac;
+
+    beforeEach(function(done) {
+      mattGame = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id, 'attending': true});
+      mattGame.save(function(err, mattGame_saved) {
+        markGame = new Attendance({'event_id': game._id, 'roster_spot_id': markSpot._id, 'attending': true});
+        markGame.save(function(err, markGame_saved) {
+          mattPrac = new Attendance({'event_id': prac._id, 'roster_spot_id': mattSpot._id, 'attending': false});
+          mattPrac.save(function(err, mattPrac_saved) {
+            lukePrac = new Attendance({'event_id': prac._id, 'roster_spot_id': lukeSpot._id, 'attending': true});
+            lukePrac.save(function(err, lukePrac_saved) {
+              // now we can test
+              done();
+            });// lukePrac save
+          }); // mattPrac save
+        }); // markGame save
+      }); // mattGame save
+    }); // before each
+
+    // should work for Game
+    it('should have a function to get all of the attendances for an event (testing game)', function(done) {
+      Attendance.getByEventId(game._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(2);
+        docs[0].should.have.property('event_id', game._id);
+        docs[1].should.have.property('event_id', game._id);
+        done();
+      });
+    });
+
+    // should work for Practice
+    it('should have a function to get all of the attendances for an event (testing practice)', function(done) {
+      Attendance.getByEventId(prac._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(2);
+        docs[0].should.have.property('event_id', prac._id);
+        docs[1].should.have.property('event_id', prac._id);
+        done();
+      });
+    });
+  }); // describe getByEventId
 
 }); // end describe Attendance
