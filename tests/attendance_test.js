@@ -180,4 +180,52 @@ describe('Attendance', function() {
     });
   }); // describe getByEventId
 
+  describe('#getByRosterId()', function(done) {
+    // these are the attendances we will be using for this
+    var mattGame;
+    var markGame;
+    var mattPrac;
+    var lukePrac;
+
+    beforeEach(function(done) {
+      mattGame = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id, 'attending': true});
+      mattGame.save(function(err, mattGame_saved) {
+        markGame = new Attendance({'event_id': game._id, 'roster_spot_id': markSpot._id, 'attending': true});
+        markGame.save(function(err, markGame_saved) {
+          mattPrac = new Attendance({'event_id': prac._id, 'roster_spot_id': mattSpot._id, 'attending': false});
+          mattPrac.save(function(err, mattPrac_saved) {
+            lukePrac = new Attendance({'event_id': prac._id, 'roster_spot_id': lukeSpot._id, 'attending': true});
+            lukePrac.save(function(err, lukePrac_saved) {
+              // now we can test
+              done();
+            });// lukePrac save
+          }); // mattPrac save
+        }); // markGame save
+      }); // mattGame save
+    }); // before each
+
+    // should work for Game
+    it('should have a function to get all of the attendances for a roster spot (testing matt)', function(done) {
+      Attendance.getByRosterId(mattSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(2);
+        docs[0].should.have.property('roster_spot_id', mattSpot._id);
+        docs[1].should.have.property('roster_spot_id', mattSpot._id);
+        done();
+      });
+    });
+
+    // should work for Practice
+    it('should have a function to get all of the attendances for an event (testing luke)', function(done) {
+      Attendance.getByRosterId(lukeSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(1);
+        docs[0].should.have.property('roster_spot_id', lukeSpot._id);
+        docs[0].should.have.property('event_id', prac._id);
+        docs[0].should.have.property('attending', true);
+        done();
+      });
+    });
+  }); // describe getByRosterId
+
 }); // end describe Attendance
