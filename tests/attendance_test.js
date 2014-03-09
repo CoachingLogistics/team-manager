@@ -91,6 +91,46 @@ describe('Attendance', function() {
         done();
       });
     });
+
+    // should allow for responses being false
+    it('should allow an attendance to be created with a response of false', function(done) {
+      var markAttendance = new Attendance({'event_id': game._id, 'roster_spot_id': markSpot._id, 'attending': false});
+      markAttendance.save(function(err, markAttendance_saved) {
+        should.not.exist(err);
+        markAttendance_saved.should.have.property('event_id', game._id);
+        markAttendance_saved.should.have.property('roster_spot_id', markSpot._id);
+        markAttendance.should.have.property('attending', false);
+        done();
+      });
+    });
+
+    // tests validations
+    // no event id
+    it('should not allow an attendance to be saved if it does not have an event_id', function(done) {
+      var mattAttendance = new Attendance({'roster_spot_id': mattSpot._id, 'attending': true});
+      mattAttendance.save(function(err, mattAttendance_saved) {
+        should.exist(err);
+        done();
+      });
+    });
+
+    // no roster spot id
+    it('should not allow an attendance to be saved if it does not have a roster_spot_id', function(done) {
+      var blankAttendnace = new Attendance({'event_id': game._id, 'attending': true});
+      blankAttendnace.save(function(err, blankAttendance_saved) {
+        should.exist(err);
+        done();
+      });
+    });
+    
+    // no response
+    it('should not allow an attendance to be created if it does not have a response', function(done) {
+      var mattAttendance = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id});
+      mattAttendance.save(function(err, mattAttendance_saved) {
+        should.exist(err);
+        done();
+      });
+    });
   });
 
 

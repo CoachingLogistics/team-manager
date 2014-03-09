@@ -22,7 +22,7 @@ var Team = mongoose.model('Team');
 var AttendanceSchema = new Schema({
 	event_id: {type: ObjectId, required: true},
 	roster_spot_id: {type: ObjectId, required: true},
-  attending: {type: Boolean, required: true, default: true}
+  attending: {type: Boolean, required: true}
 });
 
 // returns an array of Attendance Objects with the specified event_id
