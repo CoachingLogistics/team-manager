@@ -19,8 +19,8 @@ var SALT_WORK_FACTOR = 7;
 
 var UserSchema = new Schema({
   email: { type:String, unique:true, required:true, match: /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/ },
-  first_name: { type:String },
-  last_name: { type:String },
+  first_name: { type:String, default:"Mr./Ms." },
+  last_name: { type:String, default: "User" },
   phone : { type:String },
   password : { type:String },
   accessToken: { type: String }, // Used for Remember Me sessions

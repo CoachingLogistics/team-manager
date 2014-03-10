@@ -3,9 +3,12 @@ var mongoose = require('mongoose'),
   Player = mongoose.model('Player');
   User = mongoose.model('User');
   Family = mongoose.model('Family');
+  RosterSpot = mongoose.model('RosterSpot');
 
 var mailer = require('../mailers/team_mailer.js');
-
+var NewUserAdded = require('../mailers/new_added_user');
+var ExistingPlayer = require('../mailers/existing_player');
+var NewPlayer = require('../mailers/new_player');
 
 
 
@@ -145,37 +148,40 @@ exports.roster_create = function(req, res){
 	//res.send();
 
 	Team.findById(req.params.id, function(err, team){
-		User.getByEmail(req.param('email'), function(err, user){
+		User.getByEmail(req.param('email'), function(err, usr){
 			if(err) res.redirect("/404");
 
-			if(user){	//user exists
+
+			if(usr){//user exists
 				//find player by user and name
 				var index = null;
-				Family.getPlayersForUser(user._id, function(players){
-					console.log(players);
+				Family.getPlayersForUser(usr._id, function(players){
+					//console.log(players);
 
 					for(var ii=0; ii<players.length; ii++){
-						console.log(players[ii].first_name + " : "+ req.param("first_name"));
+						//console.log(players[ii].first_name + " : "+ req.param("first_name"));
 						if(players[ii].first_name == req.param('first_name')){
 							index = ii;
 						}
 					}
 
-					console.log(index);
-
 					if(index != null){	//if it exists, link it to team
 						var existing_player = players[index];
 
-						// var spot = new RosterSpot({
-						// 	player_id: existing_player._id,
-						// 	team_id: team._id
-						// });
+						var spot = new RosterSpot({
+							player_id: existing_player._id,
+							team_id: team._id
+						});
 
-						// spot.save(function(err, roster_spot){	//roster spot created
+						spot.save(function(err, roster_spot){	//roster spot created
 
-						//  //SEND AN EMAIL TO LET THEM KNOW!!!!!!!!!!
+						 	//email sent
+						 	console.log("existing player");
+							ExistingPlayer.sendMail(req.user, team, existing_player, usr, function(){
+									res.redirect('teams/'+req.params.id);
+							});
 
-						// });
+						});
 
 
 					}else{		//if it don't, create it and link it to family and roster
@@ -185,23 +191,28 @@ exports.roster_create = function(req, res){
 						});
 
 						new_player.save(function(err, player){	//new player created
+							console.log(player);
 							var fam = new Family({
-								user_id: user._id,
+								user_id: usr._id,
 								player_id: player._id
 							});
 
 							fam.save(function(err, fam){	//new family created
 
-								// var spot = new RosterSpot({
-								// 	player_id: player._id,
-								// 	team_id: team._id
-								// });
+								var spot = new RosterSpot({
+									player_id: player._id,
+									team_id: team._id
+								});
 
-								// spot.save(function(err, roster_spot){	//roster spot created
+								spot.save(function(err, roster_spot){	//roster spot created
 
-								//  //SEND AN EMAIL TO LET THEM KNOW!!!!!!!!!!
+									//email sent
+									console.log("new player");
+									NewPlayer.sendMail(req.user, team, player, usr, function(){
+											res.redirect('teams/'+req.params.id);
+									});								 
 
-								// });
+								});
 							});
 						});
 					}
@@ -214,7 +225,8 @@ exports.roster_create = function(req, res){
 				var new_user = new User({		//user's password needs to be sent to them
 					email: req.param('email'),
 					active: false,
-					password: random_password
+					password: random_password,
+					last_name: req.param('last_name')//assuming they have the same last name as the player
 				});
 
 				new_user.save(function(err, usr){	//new user created
@@ -226,33 +238,33 @@ exports.roster_create = function(req, res){
 
 						new_player.save(function(err, player){	//new player created
 							var fam = new Family({
-								user_id: user._id,
+								user_id: usr._id,
 								player_id: player._id
 							});
 
 							fam.save(function(err, fam){	//new family created
 
-								// var spot = new RosterSpot({
-								// 	player_id: player._id,
-								// 	team_id: team._id
-								// });
+								var spot = new RosterSpot({
+									player_id: player._id,
+									team_id: team._id
+								});
 
-								// spot.save(function(err, roster_spot){	//roster spot created
+								spot.save(function(err, roster_spot){	//roster spot created
 
-								//  //SEND AN EMAIL TO LET THEM KNOW!!!!!!!!!!
-								//	//ALSO MENTION MAKING A PASSWORD
+									//email sent
+									console.log("new user");
+									NewUserAdded.sendMail(req.user, team, player, usr, random_password, function(){
+											res.redirect('teams/'+req.params.id);
+									});
 
-								// });
+								});
 							});
 						});
 
 				});
 
-				//create player and link it to user
-				//link player to team
 
-
-			}
+			}//end else
 		});
 	});
 };
