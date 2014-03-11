@@ -4,6 +4,8 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
   Family = mongoose.model('Family');
   RosterSpot = mongoose.model('RosterSpot');
+  Event = mongoose.model('Event');
+  Coach = mongoose.model('Coach');
 
 var mailer = require('../mailers/team_mailer.js');
 var NewUserAdded = require('../mailers/new_added_user');
@@ -25,17 +27,28 @@ exports.index = function(req, res){
 exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){
-  		//roster 
-  		//RosterSpot.findAll({ team_id: team._id}, rspot);
-		if(err) {
-			throw new Error(err);
-			//res.status(404).render('404');
-		}else{
-	    	res.render('team/show', {
-	    	  team: team,
-	    	  user:req.user
-	    	});			
-		}
+  		Coach.getUsersForTeam(team._id, function(err, coaches){
+
+  			Event.getByTeamId(team._id, function(err, events){
+
+  				RosterSpot.getPlayersForTeam(team._id, function(players){
+
+					if(err) {
+						throw new Error(err);
+						//res.status(404).render('404');
+					}else{
+				    	res.render('team/show', {
+				    	  team: team,
+				    	  user:req.user,
+				    	  events: events,
+				    	  players: players,
+				    	  coaches: coaches
+				    	});		
+					}
+
+				});
+			});
+  		});
 
   	});
 };
@@ -96,10 +109,18 @@ exports.create = function(req, res){
 			});
 		}else{
 
-			//create a COACH link here
+			var coach = new Coach({
+				user_id: req.user._id,
+				team_id: team._id
+			});
+			
+
+			coach.save(function(err, coach){
+				res.redirect('/teams/' + team._id 
+			});
 
 
-			res.redirect('/teams/' + team._id //, {
+			// {
 			//	team: team,
 			//	message: "You have successfully created team " + team.name
 			//}
