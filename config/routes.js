@@ -29,6 +29,8 @@ module.exports = function(app){
 	app.post('/users/:id/edit', users.update);
 	app.get('/forget', users.forget);
 	app.post('/forget', users.remember);
+	app.get('/users/:id/password-change', users.password_form);
+	app.post('/users/:id/password-change', users.password_change);
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
@@ -60,7 +62,7 @@ module.exports = function(app){
 	
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
-	app.post('/mail/send', mail.send_mail);
+	app.post('/mail/test', mail.test);
 
 	// email templates
 	app.get('/teams/:id/templates/new', email_templates.new);

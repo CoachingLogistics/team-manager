@@ -25,3 +25,10 @@ exports.send_mail = function(req, res) {
 		});
 	});
 }
+
+// writing these to test the new mail functions in team_mailer
+exports.test = function(req, res) {
+	mailer.family_added("aegan@andrew.cmu.edu", req.body.player_id, req.body.team_id, function(err, message) {
+		res.send("message is " + message);
+	});
+}

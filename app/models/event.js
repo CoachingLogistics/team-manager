@@ -15,7 +15,8 @@ fs.readdirSync(models_path).forEach(function (file) {
     team_id: {type: ObjectId, required: true},
     date: {type: Date, required: true},
     location: {type: String, required: false},
-    type: {type: String, required: false}
+    type: {type: String, required: false},
+    description: {type: String, required: false}
  });
 
 
@@ -39,14 +40,14 @@ EventSchema.virtual('time').get(function() {
 });
 
 
-//test this
+//tested
 EventSchema.statics.getByTeamId = function(team_id, callback) {
 	this.find({team_id: team_id}).sort({date: 1}).execFind(function(err,events){
 		callback(err, events);
 	});
 };
 
-//test this
+//tested
 EventSchema.methods.getTeam = function (callback) {
 	Team.findOne({_id: this.team_id}, function(err, team){
 		callback(err, team);
