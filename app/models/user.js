@@ -19,11 +19,12 @@ var SALT_WORK_FACTOR = 7;
 
 var UserSchema = new Schema({
   email: { type:String, unique:true, required:true, match: /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/ },
-  first_name: { type:String },
-  last_name: { type:String },
+  first_name: { type:String, default:"Mr./Ms." },
+  last_name: { type:String, default: "User" },
   phone : { type:String },
   password : { type:String },
-  accessToken: { type: String } // Used for Remember Me sessions
+  accessToken: { type: String }, // Used for Remember Me sessions
+  active: { type: Boolean, default: true }
 });
 
 
@@ -56,12 +57,14 @@ UserSchema.pre('save', function(next){
 	var user = this;
 	if(!user.isModified('password')) return next();
 
+
 	bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
 		if(err) return next(err);
 
 		bcrypt.hash(user.password, salt, null, function(err, hash){
 			if(err) return next(err);
 			user.password = hash;
+			user.active = true; //put this in so we know if a person logged in
 			next();
 		});
 	});
@@ -89,14 +92,6 @@ UserSchema.methods.generateRandomToken = function() {
 
 UserSchema.statics.generateRandomPassword = function() {
 
-	// var text = "";
- //    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
- //    for( var i=0; i < 5; i++ )
- //        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
- //    return text;
-
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	var token = "";
 	for( var x = 0; x<8; x++){
@@ -105,23 +100,6 @@ UserSchema.statics.generateRandomPassword = function() {
 	}
 	return token;
 };
-
-
-
-// UserSchema.statics.setPassword = function(email, callback) {
-
-// 	User.getByEmail(email, function(err, user){
-// 		if(err){ callback(err); }
-
-// 		var rando_pass = generateRandomPassword();
-// 		var user = this;
-// 		user.password = rando_pass;
-
-// 		callback(err, user, rando_pass);
-// 	});
-// };
-
-
 
 
 
