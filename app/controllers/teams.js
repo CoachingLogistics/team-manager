@@ -116,7 +116,7 @@ exports.create = function(req, res){
 			
 
 			coach.save(function(err, coach){
-				res.redirect('/teams/' + team._id 
+				res.redirect('/teams/' + team._id);
 			});
 
 
@@ -124,7 +124,6 @@ exports.create = function(req, res){
 			//	team: team,
 			//	message: "You have successfully created team " + team.name
 			//}
-			);
 		}
 
 	});

@@ -24,11 +24,12 @@
 	<div class="col-md-4">
 		<table class="table">
 		<tr>
-			<th class="text-center">Players</th>
+			<th class="text-left">Players</th>
+			<th class="text-right">Next event</th>
 		</tr>
 
 		<tr>
-			<td>
+			<td colspan="2">
 				<div class="list-group">
 		<% players.forEach(function(p){ %>
 				<a class="list-group-item" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
