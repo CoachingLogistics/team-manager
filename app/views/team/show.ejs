@@ -2,6 +2,17 @@
 
 <head>
 <% include ../head_scripts %>
+<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
+<script type='text/javascript' src='/js/team_show.js'></script>
+<script>$(document).ready(function() {$('#calendar').fullCalendar({
+    	header:{left:   'title', center: 'month basicWeek', right:  'today prev,next'},
+    	weekMode: 'liquid',
+    	events: <%-JSON.stringify(events)%>,
+    	eventTextColor: "#000000",
+        contentHeight:200});});
+</script>
+
 </head>
 
 <body>
@@ -10,15 +21,7 @@
 
 <div class="row">
 	<div class="col-md-8">
-		Event calendar go here!!!!
-		For now I'll just load the events
-		<h3>EVENTS</h3>
-		<% events.forEach(function(e){ %>
-				<a href="/events/<%=e._id%>"><%= e.type + " " + e.date %></a>
-		<% }); if(events.length ==0){ %>
-			No events yet
-			<% } %>
-
+		<div id="calendar"></div>
 
 	</div>
 	<div class="col-md-4">
@@ -50,11 +53,22 @@
 		<h1>Team <%= team.name %></h1>
 				<b>Name: </b><%= team.name %><br />
 				<b>Sport: </b><%= team.sport %><br />
-				<b>Managed by: </b><% coaches.forEach(function(c){ %> <a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %></a><% }); %>
+				<b>Managed by: </b><% coaches.forEach(function(c, index, arr){ %>
+					<% if(index == arr.length-1){ %>
+						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %></a>
+					<% }else{ %>
+						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %>, </a>
+					<% } %>
+				<% }); %>
+
+
 
 		<form method='GET' action="<%= '/teams/' + team._id + '/edit'%>" >
 			<input type="Submit" value="Edit Team"/>
 		</form>
+
+		<button type="button" class="btn btn-default"> <a href="/teams/<%=team._id%>/edit">Edit</a></button>
+		<button type="button" class="btn btn-default"> <a href="/teams/<%=team._id%>/event">Create Event</a></button>
 
 		<a href="/teams/<%= team._id %>/templates">Email Templates</a>
 	</div>
@@ -65,34 +79,3 @@
 </body>
 
 </html>
-
-
-<!--ul class="list-group">
-  <li class="list-group-item">
-    <span class="badge">14</span>
-    Cras justo odio
-  </li>
-</ul>
-
-		<table class="table">
-		<tr>
-			<th class="text-center">Players</th>
-		</tr>
-		<% players.forEach(function(p){ %>
-		<tr>
-			<td>
-				<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
-			</td>
-		</tr>
-
-		<% }); %>
-
-		</table>
-
-
-
-
-
-
-
--->

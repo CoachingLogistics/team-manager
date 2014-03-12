@@ -26,12 +26,39 @@ exports.index = function(req, res){
 
 exports.show = function(req, res){
 	//remember to put the id of the team in the request data
-  	Team.findById(req.params.id, function(err, team){
-  		Coach.getUsersForTeam(team._id, function(err, coaches){
+  	Team.findById(req.params.id, function(err, team){	//get team
+  		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
+  			var access = false;
+  			coaches.forEach(function(c){	//check to see if the user is a coach
+  				if(req.user._id == c._id){
+  					access = true;
+  				}
+  			});
 
-  			Event.getByTeamId(team._id, function(err, events){
+  			Event.getByTeamId(team._id, function(err, evs){	//get events
+  				var events = [];
+				evs.forEach(function(obj){
+					var noob = {};
+				    noob.title = obj.type+'\n'+timeFormat(obj.date)+'\n'+obj.location;
+				    noob.start = obj.date;
+				    noob.url = '/events/'+obj._id;
+				    noob.color = "#FFFFCC";
 
-  				RosterSpot.getPlayersForTeam(team._id, function(players){
+				    if(obj.type == 'Practice'){
+				    	noob.color = "#C3EBFF";
+				    }else if(obj.type == 'Game'){
+				    	noob.color = "#ADEBAD";
+				    }else if(obj.type == 'Meeting'){
+				    	noob.color = "#CCCCFF";
+				    }else{
+				    	noob.color = "#FFFFCC";
+				    }
+				    events.push(noob);
+				});
+
+				console.log(events)
+
+  				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players
 
 					if(err) {
 						throw new Error(err);
@@ -42,7 +69,8 @@ exports.show = function(req, res){
 				    	  user:req.user,
 				    	  events: events,
 				    	  players: players,
-				    	  coaches: coaches
+				    	  coaches: coaches,
+				    	  access: access
 				    	});		
 					}
 
@@ -52,6 +80,33 @@ exports.show = function(req, res){
 
   	});
 };
+
+exports.calendar = function(req, res) {
+	Event.getByTeamId(req.params.id, function(err, evs){	//get events
+
+		var events = [];
+		evs.forEach(function(obj){
+			var noob = {};
+		    noob.title = obj.type+'\n'+timeFormat(obj.date)+'\n'+obj.location;
+		    noob.start = obj.date;
+		    noob.url = '/events/'+obj._id;
+		    noob.color = "#FFFFCC";
+
+		    if(obj.type == 'Practice'){
+		    	noob.color = "#C3EBFF";
+		    }else if(obj.type == 'Game'){
+		    	noob.color = "#ADEBAD";
+		    }else if(obj.type == 'Meeting'){
+		    	noob.color = "#CCCCFF";
+		    }else{
+		    	noob.color = "#FFFFCC";
+		    }
+		    events.push(noob);
+		});
+
+		res.send(events);
+	});
+}
 
 exports.edit = function(req, res){
 	Team.findById(req.params.id, function(error, team){
@@ -287,6 +342,24 @@ exports.roster_create = function(req, res){
 			}//end else
 		});
 	});
+};
+
+
+var dateFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    return month+"/"+day+"/"+year;
+};
+
+var timeFormat = function(date) {
+    var time = "AM";
+	var hour = date.getHours();
+	if( date.getHours()>=12){
+		hour =  date.getHours()-12;
+		time="PM";
+	}
+	return hour+":"+date.getMinutes()+" "+time;
 };
 
 
