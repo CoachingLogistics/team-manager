@@ -124,10 +124,12 @@ describe('Attendance', function() {
     });
 
     // no response
-    it('should not allow an attendance to be created if it does not have a response', function(done) {
+    it('should allow an attendance to be created if it does not have a response', function(done) {
       var mattAttendance = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id});
       mattAttendance.save(function(err, mattAttendance_saved) {
-        should.exist(err);
+        should.not.exist(err);
+        mattAttendance_saved.should.have.property('event_id', game._id);
+        mattAttendance_saved.should.have.property('roster_spot_id', mattSpot._id);
         done();
       });
     });
