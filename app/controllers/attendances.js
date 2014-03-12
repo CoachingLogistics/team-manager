@@ -18,9 +18,8 @@ exports.send_email = function(req, res) {
     // send email with this saved_attendance ID to email address
     RosterSpot.findById(roster_spot_id, function(err, rs) {
       Family.getUsersForPlayer(rs.player_id, function(users) {
-        var theUser = users[0];
-        var emailAddress = theUser.email;
-        // team_mailer.ask_attendance(emailAddress, event_id, function(err, response) {
+        var theUser = users[0];;
+        // team_mailer.ask_attendance(theUser._id, event_id, function(err, response) {
           // what to do here?
           // res.redirect('somewhere');
         //})

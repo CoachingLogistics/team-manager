@@ -10,6 +10,7 @@ var mailer_options = require("../../config/mailer");
 var mongoose = require('mongoose');
 var Team = mongoose.model('Team');
 var Player = mongoose.model('Player');
+var User = mongoose.model('User');
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -124,6 +125,33 @@ exports.family_added = function(email_address, player_id, team_id, callback) {
           return callback(err3, response.message);
         }
       });
+    });
+  });
+}
+
+// asks a user if they can attend
+exports.ask_attendance = function(user_id, event_id, callback) {
+  User.findById(user_id, function(err1, theUser) {
+    if(err1) {
+      console.log(err1);
+      return callback(err1, "User not found, message not sent");
+    }
+    var theEmail = theUser.email;
+    var mail_options = {
+      from: "Alex Egan <alexander.egan@gmail.com>",
+      to: theEmail,
+      subject: "Attendance Information",
+      text: "Are you going to this game? Here are links",
+      html: "Are you going to this game? Here are links"
+    };
+    smtpTransport.sendMail(mail_options, function(err2, response) {
+      if(err2) {
+        console.log(err2);
+        return callback(err2, "Message not sent");
+      }
+      else {
+        return callback(err2, response.message);
+      }
     });
   });
 }
