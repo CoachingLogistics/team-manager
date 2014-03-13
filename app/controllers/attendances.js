@@ -38,7 +38,7 @@ exports.record_response = function(req, res) {
     Attendance.findById(attendance_id, function(err, a) {
       a.attending = true;
       a.save(function(err, saved_attendance) {
-        // res.redirect('somewhere');
+        res.render('attendance/emailReturn');
       });
     });
   }
@@ -47,7 +47,7 @@ exports.record_response = function(req, res) {
       // find attendance and update the response to be false
       a.attending = false;
       a.save(function(err, saved_attendance) {
-        // res.redirect('somewhere');
+        res.render('attendance/emailReturn');
       });
     });
   }

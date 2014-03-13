@@ -10,6 +10,7 @@ module.exports = function(app){
 	var families = require('../app/controllers/families');
 
 	var mail = require('../app/controllers/mail');
+	var attendances = require('../app/controllers/attendances');
 
 	//home stuff
 	app.get('/', home.index);
@@ -59,7 +60,7 @@ module.exports = function(app){
 	app.get('/events/:id/edit', events.edit);
 	app.post('/events/:id/edit', events.update);
 	app.post('/events/:id/delete', events.delete);
-	
+
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
 	app.post('/mail/test', mail.test);
@@ -82,6 +83,8 @@ module.exports = function(app){
 	app.post('/family/:id/delete', families.delete);
 	app.get('/families', families.index);		//to be removed in production
 
+	// attendance
+	app.post('/attendance/:attendanceid/:response', attendances.record_response)
 
 	//
 	app.get('*', home.err);
