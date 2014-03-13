@@ -8,6 +8,8 @@ module.exports = function(app){
 	var players = require('../app/controllers/players');
 	var email_templates = require('../app/controllers/email_templates');
 	var families = require('../app/controllers/families');
+	var roster_spots = require('../app/controllers/roster_spots');
+	var coaches = require('../app/controllers/coaches');
 
 	var mail = require('../app/controllers/mail');
 
@@ -52,6 +54,7 @@ module.exports = function(app){
 	//app.post('/teams/:id/delete', teams.delete);
 	app.get('/teams/:id/event', events.team_event);
 	app.get('/teams/:id/calendar', teams.calendar);
+	app.get('/teams/:id/roster', teams.roster);
 
 	// events
 	app.get('/events', events.index);
@@ -78,6 +81,10 @@ module.exports = function(app){
 	//filling the roster
 	app.get('/teams/:id/roster-fill', teams.roster_fill);
 	app.post('/teams/:id/roster-create', teams.roster_create);
+	app.post('/teams/:team_id/players/:player_id/remove', roster_spots.deleteByIds)
+
+	//coach
+	app.post('/teams/:team_id/user/:user_id/remove', coaches.deleteByIds)
 
 	//family
 	app.post('/family/new', families.new);

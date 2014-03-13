@@ -11,6 +11,8 @@ var mailer = require('../mailers/team_mailer.js');
 var NewUserAdded = require('../mailers/new_added_user');
 var ExistingPlayer = require('../mailers/existing_player');
 var NewPlayer = require('../mailers/new_player');
+var NewCoach = require('../mailers/new_coach');
+var ExistingCoach = require('../mailers/existing_coach');
 
 
 
@@ -24,15 +26,18 @@ exports.index = function(req, res){
   });
 };
 
+
 exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){	//get team
   		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
   			var access = false;
   			coaches.forEach(function(c){	//check to see if the user is a coach
-  				if(req.user._id == c._id){
-  					access = true;
-  				}
+  				if(req.user){
+	  				if(req.user._id.equals(c._id)){
+	  					access = true;
+	  				}
+	  			}
   			});
 
   			Event.getByTeamId(team._id, function(err, evs){	//get events
@@ -81,7 +86,7 @@ exports.show = function(req, res){
   	});
 };
 
-exports.calendar = function(req, res) {
+exports.calendar = function(req, res) {	//probably not needed
 	Event.getByTeamId(req.params.id, function(err, evs){	//get events
 
 		var events = [];
@@ -106,19 +111,26 @@ exports.calendar = function(req, res) {
 
 		res.send(events);
 	});
-}
+};
+
+
+
+
 
 exports.edit = function(req, res){
 	Team.findById(req.params.id, function(error, team){
-		if(error) {
-			throw new Error(error);
-			//res.status(404).render('404');
-		}else{
-			res.render('team/edit', {
-				team: team,
-				user: req.user
-			})
-		}
+		Coach.getUsersForTeam(team._id, function(err, coaches){
+			if(error) {
+				throw new Error(error);
+				//res.status(404).render('404');
+			}else{
+				res.render('team/edit', {
+					team: team,
+					user: req.user,
+					coaches: coaches
+				})
+			}
+		});
 	});
 }
 
@@ -168,11 +180,74 @@ exports.create = function(req, res){
 				user_id: req.user._id,
 				team_id: team._id
 			});
+
+			var coaches = [];
+
+			if(req.param('coaches')){
+				var co = req.param('coaches').split(",");
+				
+				co.forEach(function(c){
+					c = c.replace(' ', '');
+					coaches.push(c);
+				})
+			}
+			console.log(coaches)
 			
 
 			coach.save(function(err, coach){
+				if(coaches.length>0){
+					coaches.forEach(function(cmail){
+
+						User.getByEmail(cmail, function(err, user){
+							if(err) console.log(err);
+
+							if(user){	//user exists
+								console.log(user.email);
+								var manager = new Coach({
+									user_id: user._id,
+									team_id: team._id
+								});
+
+								manager.save(function(err, manager){
+									//email
+									ExistingCoach.sendMail(req.user, team, user, function(){
+											//nothing
+									});
+								});
+
+							}else{	//user must be created
+
+								var random_password = User.generateRandomPassword();
+
+								var new_user = new User({		//user's password needs to be sent to them
+									email: cmail,
+									active: false,
+									password: random_password
+								});
+
+								new_user.save(function(error, usr){	//new user created
+									console.log(error);
+									console.log(usr);
+
+									var manager = new Coach({
+										user_id: usr._id,
+										team_id: team._id
+									});
+									manager.save(function(err, manager){//new coach saved
+										//email
+										NewCoach.sendMail(req.user, team, usr, random_password, function(){
+												//nothing
+										});
+
+									});
+								})				
+
+							}//else
+						})
+					})
+				}
 				res.redirect('/teams/' + team._id);
-			});
+			});//coach save
 
 
 			// {
@@ -343,6 +418,46 @@ exports.roster_create = function(req, res){
 		});
 	});
 };
+
+exports.roster = function(req, res){
+	//remember to put the id of the team in the request data
+  	Team.findById(req.params.id, function(err, team){	//get team
+  		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
+  			var access = false;
+  			coaches.forEach(function(c){	//check to see if the user is a coach
+  				if(req.user){
+	  				if(req.user._id.equals(c._id)){
+	  					access = true;
+	  				}
+	  			}
+  			});
+
+  			Event.getByTeamId(team._id, function(err, events){	//get events
+
+  				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players
+
+					if(err) {
+						throw new Error(err);
+						//res.status(404).render('404');
+					}else{
+				    	res.render('team/roster', {
+				    	  team: team,
+				    	  user:req.user,
+				    	  events: events,
+				    	  players: players,
+				    	  coaches: coaches,
+				    	  access: access
+				    	});		
+					}
+
+				});
+			});
+  		});
+
+  	});
+};
+
+
 
 
 var dateFormat = function(date) {

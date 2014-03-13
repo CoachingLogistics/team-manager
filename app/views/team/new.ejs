@@ -2,6 +2,7 @@
 
 <head>
 <% include ../head_scripts %>
+<script src="/js/team_new.js"></script>
 </head>
 
 <body>
@@ -11,7 +12,7 @@
 
 <h1>New Team</h1>
 
-    <form id="user_form" method="post" action="/teams/new" class="form-horizontal" role="form">
+    <form id="team_form" method="post" action="/teams/new" class="form-horizontal" role="form">
 
         <div class="form-group">
             <label for="inputName" class="col-sm-2 control-label">Team Name</label>
@@ -26,9 +27,18 @@
               <input type="text" class="form-control" id="inputSport" placeholder="Dodgeball" name="sport">
             </div>
         </div>
+
+        <div class="form-group">
+            <label for="coaches" class="col-sm-2 control-label">Managers</label>
+            <div class="col-sm-10">
+                <p class="help-block">You will be listed as this team's manager, giving you access to create events, set the roster, and edit the team information.  If you wish to add other users as managers enter their emails, separated by commas:</p>
+              <input type="text" class="form-control" id="coaches" placeholder="manager emails (separated by commas)" name="coaches">
+            </div>
+        </div>
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10 text-center">
-              <button type="submit" class="btn btn-default">Create Team</button>
+              <button id="submit" type="submit" class="btn btn-default">Create Team</button>
             </div>
         </div>
 
