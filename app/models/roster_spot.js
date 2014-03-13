@@ -18,6 +18,8 @@ var RosterSpotSchema = new Schema({
 	player_id: {type: ObjectId, required: true}
 });
 
+//what are the point of these?  Why not call Player.find() and Team.find()?
+
 RosterSpotSchema.statics.getAllPlayers = function(callback){
 	Player.find(function(err, players){
 		callback(err, players);

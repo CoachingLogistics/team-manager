@@ -118,26 +118,26 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
         	});
         });
 
-		describe('#getAllPlayers', function() {
-			it('should get all players currently in the database', function(done) {
-				RosterSpot.getAllPlayers(function(err, players){
-					players[0].should.have.property('first_name', player_object.first_name);
-					players[0].should.have.property('last_name', player_object.last_name);
-					players[0].should.have.property('date_of_birth', player_object.date_of_birth);
-					done();
-				});
-			});
-		});
+		// describe('#getAllPlayers', function() {
+		// 	it('should get all players currently in the database', function(done) {
+		// 		RosterSpot.getAllPlayers(function(err, players){
+		// 			players[0].should.have.property('first_name', player_object.first_name);
+		// 			players[0].should.have.property('last_name', player_object.last_name);
+		// 			players[0].should.have.property('date_of_birth', player_object.date_of_birth);
+		// 			done();
+		// 		});
+		// 	});
+		// });
 
-		describe('#getAllTeams', function() {
-			it('should get all teams currently in the database', function(done) {
-				RosterSpot.getAllTeams(function(err, teams){
-					teams[0].should.have.property('name', team_object.name);
-					teams[0].should.have.property('sport', team_object.sport);
-					done();
-				});
-			});
-		});
+		// describe('#getAllTeams', function() {
+		// 	it('should get all teams currently in the database', function(done) {
+		// 		RosterSpot.getAllTeams(function(err, teams){
+		// 			teams[0].should.have.property('name', team_object.name);
+		// 			teams[0].should.have.property('sport', team_object.sport);
+		// 			done();
+		// 		});
+		// 	});
+		// });
 
 		describe('#getPlayer', function() {
 			it('should be able to get the player associated with the roster spot', function(done) {
@@ -297,6 +297,25 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
                 });
             });
 
+
+            it('method getByIds', function(done){
+
+                RosterSpot.getByTeamId(cobras._id, function(err, spots){
+                    spots.should.have.length(2);
+                    spots[0].should.have.property('team_id', cobras._id);
+                    spots[1].should.have.property('team_id', cobras._id);
+
+                    RosterSpot.getByTeamId(averages._id, function(err, spots){
+                        spots.should.have.length(3);
+                        spots[0].should.have.property('team_id', averages._id);
+                        spots[1].should.have.property('team_id', averages._id);
+                        spots[2].should.have.property('team_id', averages._id);
+
+                        done();
+
+                    });
+                });
+            });
                 
 
 
@@ -330,6 +349,21 @@ describe('RosterSpot', function(){	//context, so we can see where tests happen i
 
                             RosterSpot.getPlayersForTeam(cobras._id, function(players){
                                 players.should.have.length(2);
+                                    
+                                done();
+                            }); 
+                        });
+                    });
+
+                    it('method getByIds', function(done){
+
+                        RosterSpot.getByIds(averages._id, steve._id, function(err, spot){
+                        	
+                            spot.should.have.property('_id', js._id)
+
+                            RosterSpot.getByIds(cobras._id, white._id, function(err, spot){
+                            	
+                                spot.should.have.property('_id', cw._id)
                                     
                                 done();
                             }); 

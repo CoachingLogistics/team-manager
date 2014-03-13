@@ -61,7 +61,7 @@ exports.show = function(req, res){
 				    events.push(noob);
 				});
 
-				console.log(events)
+				
 
   				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players
 
@@ -191,7 +191,7 @@ exports.create = function(req, res){
 					coaches.push(c);
 				})
 			}
-			console.log(coaches)
+			
 			
 
 			coach.save(function(err, coach){
@@ -202,7 +202,7 @@ exports.create = function(req, res){
 							if(err) console.log(err);
 
 							if(user){	//user exists
-								console.log(user.email);
+								
 								var manager = new Coach({
 									user_id: user._id,
 									team_id: team._id
@@ -226,8 +226,7 @@ exports.create = function(req, res){
 								});
 
 								new_user.save(function(error, usr){	//new user created
-									console.log(error);
-									console.log(usr);
+									
 
 									var manager = new Coach({
 										user_id: usr._id,

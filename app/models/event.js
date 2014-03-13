@@ -20,7 +20,7 @@ fs.readdirSync(models_path).forEach(function (file) {
  });
 
 
-//test this
+//tested
 EventSchema.virtual('time').get(function() {
 	var hours = this.date.getHours();
 	var time = "AM";
