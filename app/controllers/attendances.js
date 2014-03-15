@@ -21,7 +21,7 @@ exports.send_email = function(req, res) {
         var theUser = users[0];;
         // team_mailer.ask_attendance(theUser._id, event_id, function(err, response) {
           // what to do here?
-          // res.redirect('somewhere');
+          res.redirect('attendance/emailSent', {user: req.user});
         //})
       });
     });
@@ -38,7 +38,7 @@ exports.record_response = function(req, res) {
     Attendance.findById(attendance_id, function(err, a) {
       a.attending = true;
       a.save(function(err, saved_attendance) {
-        res.render('attendance/emailReturn');
+        res.render('attendance/emailReturn', {user: req.user});
       });
     });
   }
@@ -47,7 +47,7 @@ exports.record_response = function(req, res) {
       // find attendance and update the response to be false
       a.attending = false;
       a.save(function(err, saved_attendance) {
-        res.render('attendance/emailReturn');
+        res.render('attendance/emailReturn', {user: req.user});
       });
     });
   }
