@@ -44,6 +44,8 @@ module.exports = function(app){
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
 
+	app.get('/players/:id/teams', players.teams);
+
 	// teams
 	app.get('/teams', teams.index);
 	app.get('/teams/new', teams.new);
@@ -55,6 +57,7 @@ module.exports = function(app){
 	app.get('/teams/:id/event', events.team_event);
 	app.get('/teams/:id/calendar', teams.calendar);
 	app.get('/teams/:id/roster', teams.roster);
+
 
 	// events
 	app.get('/events', events.index);
