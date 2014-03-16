@@ -26,14 +26,6 @@ MY ACCOUNT
 <%= user.phone %>
 </div>
 
-<div>
-<%= user.password %>
-</div>
-
-<div>
-<%= user._id %>
-</div>
-
 <a href="/users/<%=user._id%>/edit">Edit</a>
 <form action="/users/<%=user._id%>/delete" method="post">
 	<input type="submit" value="Delete"/>
