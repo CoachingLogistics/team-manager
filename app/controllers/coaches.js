@@ -20,6 +20,10 @@ exports.new = function(req, res){	//post
 };
 
 
+
+
+
+
 exports.delete = function(req, res){	//post
   //if(req.user._id == req.params.id){	//authorize
     Coach.remove({_id: req.params.id}, function(error, docs) {
@@ -37,3 +41,13 @@ exports.delete = function(req, res){	//post
 };
 
 
+exports.deleteByIds = function (req, res){
+  Coach.getByIds(req.params.team_id, req.params.user_id, function(err, coach){
+    if(err) console.log(err);
+
+    Coach.remove({_id:coach._id}, function(err, ret){
+      res.redirect('back');
+    });
+
+  });
+}

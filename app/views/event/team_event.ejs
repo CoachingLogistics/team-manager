@@ -1,23 +1,25 @@
 <html>
 
-<head>
-<% include ../head_scripts %>
-</head>
+<head >
+
+	<link rel="stylesheet" href="/jqueryui/jquery-ui.custom.css"/>
+
+	<% include ../head_scripts %>
+
+	<script src="/jqueryui/jquery-ui-1.10.4.custom.min.js"></script>
+</head >
+
 
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
-<h1>New Event</h1>
-
+<h1><%= team.name %></h1>
+<h2>New Event</h2>
 	<form method="post" action="/events/new">
-	Team Name: <select name="team_id" class="formlist">
-	<% for (var i=0; i < teams.length; i++) { %>
-		<option value = <%= teams[i]._id %>><%= teams[i].name %></option>
-		<%= teams[i]._id + ' and ' + teams[i].name %>
-	<% } %>
-	</select>
-	<br />
+	<input type="hidden" name="team_id" value="<%=team._id%>"/>
+
+
 	<b>Date</b> <br />
 	Month: <select name="month" class="formlist">
 	<option></option>
@@ -47,23 +49,9 @@
 
 	<input type='submit' value='Create' />
 </form>
-
-
+<br><br>
 <form class="form-horizontal" action="/events/new" method="post" role="form">
-
-
-    <div class="form-group">
-        <label for="type" class="col-sm-2 control-label">Team</label>
-        <div class="col-sm-10">
-        	<select class="formcontrol" name="team_id" class="formlist">
-        		<% for (var i=0; i < teams.length; i++) { %>
-					<option value = <%= teams[i]._id %>><%= teams[i].name %></option>
-					<%= teams[i]._id + ' and ' + teams[i].name %>
-				<% } %>
-			</select>
-        </div>
-    </div>
-
+	<input type="hidden" name="team_id" value="<%=team._id%>" />
     <div class="form-group">
         <label for="type" class="col-sm-2 control-label">Event Type</label>
         <div class="col-sm-10">

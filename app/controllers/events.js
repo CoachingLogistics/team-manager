@@ -22,6 +22,17 @@ exports.new = function(req, res){
   });
 };
 
+exports.team_event = function(req, res){
+	Team.findById(req.params.id, function(err, team){
+    if(err) throw new Error(err);
+    res.render('event/team_event', {
+      team: team,
+      user:req.user
+    });
+  });
+};
+
+
 exports.create = function(req, res){
 
 	var hour = req.param('hour');
@@ -29,7 +40,11 @@ exports.create = function(req, res){
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
-
+	// var hour = req.param('time').getHours();
+	// var minute = req.param('time').getMinutes();
+	// var year = req.param('date').getFullYear();
+	// var month = req.param('date').getMonth();
+	// var day = req.param('date').getDate();
 	var newEvent = new Event({
 		team_id: req.param('team_id'),
 		date: date,
@@ -156,3 +171,6 @@ exports.delete = function(req, res) {
 		}
 	});
 }
+
+
+

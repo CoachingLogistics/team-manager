@@ -1,7 +1,7 @@
 $(function(){
 
-	var post_url = $(location).attr('pathname').replace('/roster-fill', '/roster-create');
-	var red_url = $(location).attr('pathname').replace('/roster-fill', '');
+	var post_url = $(location).attr('pathname').replace('/roster', '/roster-create');
+	var red_url = $(location).attr('pathname').replace('/roster', '');
 	var rows = 1;
 
 	//this creates more rows of players
@@ -57,5 +57,3 @@ $(function(){
 
 
 });
-
-
