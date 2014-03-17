@@ -91,7 +91,7 @@ exports.login = function(req, res, next){
     if (err) { return next(err) }
     if (!user) {
     	console.log(info.message);
-      req.session.messages =  [info.message];
+      req.session.messages =  "Invalid email address or password";
       return res.redirect('/login')
     }
     req.logIn(user, function(err) {
