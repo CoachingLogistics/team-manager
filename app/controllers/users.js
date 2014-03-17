@@ -11,10 +11,10 @@ var ForgottenEmail = require('../mailers/forgotten_email');
 exports.account = function(req, res){	//test non-access?
 
 	Family.getPlayersForUser(req.user._id, function(players){
-		
+
 		res.render('user/account', {
 			user: req.user,
-		  	title: 'My Account', 
+		  	title: 'My Account',
 		  	players: players
 		});
 
@@ -34,7 +34,7 @@ exports.index = function(req, res){			//delete this later
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
 		Family.getPlayersForUser(user._id, function(players){
-			
+
 			res.render('user/show', {
 				user: req.user,
 				user_show: user,
@@ -65,13 +65,13 @@ exports.register = function(req, res){
 	newUser.save(function(err, user){
 		if(err){
 			console.log(err);
-			res.render('user/register', {
+			return res.render('user/register', {
 				user: req.user,
 				title: 'Registration',
 				message: err
 			});
 		}
-		res.redirect('/');
+		return res.redirect('/');
 	});
 };
 
@@ -91,7 +91,7 @@ exports.login = function(req, res, next){
     if (err) { return next(err) }
     if (!user) {
     	console.log(info.message);
-      req.session.messages =  [info.message];
+      req.session.messages =  "Invalid email address or password";
       return res.redirect('/login')
     }
     req.logIn(user, function(err) {
@@ -210,7 +210,7 @@ exports.password_form = function(req, res){
 	}
 
 	User.findById(req.params.id, function(error, user) {
-			
+
 			res.render('user/password', {
 				user: user//or should this be req.user???
 			});
@@ -246,10 +246,6 @@ exports.password_change = function(req, res){
 				})
 			}
 		})
-			
+
 	});
 };
-
-
-
-
