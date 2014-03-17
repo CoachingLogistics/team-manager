@@ -71,7 +71,17 @@ exports.register = function(req, res){
 				message: err
 			});
 		}
-		return res.redirect('/');
+    req.logIn(user, function(err) {
+      if(err) {
+        console.log(err);
+        return res.render('user/register', {
+          user: req.user,
+          title: 'Registration',
+          message: 'registration unsuccessful'
+        });
+      }
+      return res.redirect('/');
+    });
 	});
 };
 
