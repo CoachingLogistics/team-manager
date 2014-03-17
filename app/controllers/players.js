@@ -4,7 +4,9 @@
  */
 var mongoose = require('mongoose'),
   Player = mongoose.model('Player');
-  Family = mongoose.model('Family');
+var Family = mongoose.model('Family');
+var Team = mongoose.model('Team');
+var RosterSpot = mongoose.model('RosterSpot');
 
 /*
  * Function for the players index page
@@ -150,3 +152,13 @@ exports.delete = function(req, res) {
 		}
 	});
 }
+
+//AJAX ONLY
+exports.teams = function(req, res){
+	RosterSpot.getTeamsForPlayer(req.params.id, function(teams){
+		res.send(teams);
+	})
+
+}
+
+

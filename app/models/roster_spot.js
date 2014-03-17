@@ -18,6 +18,8 @@ var RosterSpotSchema = new Schema({
 	player_id: {type: ObjectId, required: true}
 });
 
+//what are the point of these?  Why not call Player.find() and Team.find()?
+
 RosterSpotSchema.statics.getAllPlayers = function(callback){
 	Player.find(function(err, players){
 		callback(err, players);
@@ -42,7 +44,13 @@ RosterSpotSchema.method('getTeam', function(callback) {
 	});
 });
 
+//test this
+RosterSpotSchema.statics.getByIds = function(team_id, player_id, callback) {
+	this.findOne({ $and: [ {team_id: team_id}, {player_id: player_id}]}, function(err, roster_spot){
+		callback(err, roster_spot);
 
+	});
+};
 
 
 //to find connections
@@ -103,6 +111,8 @@ RosterSpotSchema.statics.getPlayersForTeam = function(team_id, callback) {
 		});
 	});
 };
+
+
 
 
 

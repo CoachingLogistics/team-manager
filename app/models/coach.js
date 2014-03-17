@@ -34,6 +34,14 @@ CoachSchema.statics.getByUserId = function(user_id, callback) {
 	});
 };
 
+//test this
+CoachSchema.statics.getByIds = function(team_id, user_id, callback) {
+	this.findOne({ $and: [ {team_id: team_id}, {user_id: user_id}]}, function(err, coach){
+		callback(err, coach);
+
+	});
+};
+
 // returns the users for a team
 CoachSchema.statics.getUsersForTeam = function(team_id, callback) {
 	var toReturn = new Array;

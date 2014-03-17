@@ -15,7 +15,7 @@ var Attendance = mongoose.model('Attendance');
 
 // finishing up tests
 after(function(done){
-  console.log("\ncoach tests done");
+  console.log("\nattendance tests done");
   done();
 });
 

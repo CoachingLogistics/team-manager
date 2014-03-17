@@ -96,7 +96,7 @@ exports.login = function(req, res, next){
     }
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect('/');
+      return res.redirect('back');;
     });
   })(req, res, next);
 };
@@ -104,7 +104,7 @@ exports.login = function(req, res, next){
 
 exports.logout = function(req, res){
   req.logout();
-  res.redirect('/');
+  res.redirect('back');
 };
 
 
