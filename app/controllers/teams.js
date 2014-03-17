@@ -12,7 +12,7 @@ exports.index = function(req, res){
     if(err) throw new Error(err);
     res.render('team/index', {
       teams: teams,
-      user:req.user
+      user: req.user
     });
   });
 };
@@ -21,16 +21,24 @@ exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){
   		//roster 
-  		//RosterSpot.findAll({ team_id: team._id}, rspot);
-		if(err) {
-			throw new Error(err);
-			//res.status(404).render('404');
-		}else{
-	    	res.render('team/show', {
-	    	  team: team,
-	    	  user:req.user
-	    	});			
-		}
+  		RosterSpot.find({ team_id: team._id}, function(error, rspots){
+  			var players = [];
+  			for (var i = 0; i < rspots.length; i++){
+  				rspots[i].getPlayer(function(err, player){
+  					players.push(player);
+  				})
+  			}
+			if(err) {
+				throw new Error(err);
+				//res.status(404).render('404');
+			}else{
+		    	res.render('team/show', {
+		    	  team: team,
+		    	  players: players,
+		    	  user: req.user
+		    	});			
+			}
+		});
 
   	});
 };
@@ -222,17 +230,17 @@ exports.roster_create = function(req, res){
 
 							fam.save(function(err, fam){	//new family created
 
-								// var spot = new RosterSpot({
-								// 	player_id: player._id,
-								// 	team_id: team._id
-								// });
+								var spot = new RosterSpot({
+								 	player_id: player._id,
+								 	team_id: team._id
+								});
 
-								// spot.save(function(err, roster_spot){	//roster spot created
+								spot.save(function(err, roster_spot){	//roster spot created
 
-								//  //SEND AN EMAIL TO LET THEM KNOW!!!!!!!!!!
-								//	//ALSO MENTION MAKING A PASSWORD
+								 //SEND AN EMAIL TO LET THEM KNOW!!!!!!!!!!
+									//ALSO MENTION MAKING A PASSWORD
 
-								// });
+								});
 							});
 						});
 
