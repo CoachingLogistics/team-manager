@@ -246,6 +246,7 @@ exports.create = function(req, res){
 					})
 				}
 				res.redirect('/teams/' + team._id);
+				//res.redirect('/teams/'+ team._id+'/roster-fill');
 			});//coach save
 
 

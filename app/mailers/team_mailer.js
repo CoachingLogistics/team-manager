@@ -134,7 +134,7 @@ exports.ask_attendance = function(email, attendance_id, callback) {
   var mail_options = {
     from: "Team Manager <team.manager.notification@gmail.com>",
     to: email,
-    subject "Attendance Information",
+    subject: "Attendance Information",
     text: "Are you going to this event?",
     html: "<b>Are you going to this event?</b>"
   };
