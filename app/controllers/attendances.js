@@ -28,7 +28,7 @@ exports.send_email = function(req, res) {
             var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
             team_mailer.ask_attendance(emailAddress, theAttendance._id, function(emailErr, message) {
-              res.redirect('attendance/emailSent');
+              res.render('attendance/emailSent', {user: req.user});
             });
           });
         });
