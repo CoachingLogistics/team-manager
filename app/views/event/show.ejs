@@ -31,7 +31,7 @@
 
 						</a></td>
 						<% if(access) {%>
-						<td><a href="/attendanceRemind/<%=event._id%>/<%=p._id%>">Send Reminder</a></td>
+						<td><a href="/attendanceRemind/<%=event._id%>/<%=p._id%>" class="btn btn-info">Send Reminder</a></td>
 						<% } %>
 					</tr>
 				<% }); if(players.length == 0){ %> No players <%}%>
@@ -42,7 +42,7 @@
 		<tr>
 			<th colspan="2">
 				<form action="/emailAll/<%=event._id%>" method="POST">
-					<input type="submit" value="Remind All">
+					<input type="submit" value="Remind All" class="btn btn-success">
 				</form>
 			</th>
 		</tr>
