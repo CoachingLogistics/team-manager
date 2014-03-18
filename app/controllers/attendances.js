@@ -9,6 +9,28 @@ var Attendance = mongoose.model('Attendance');
 var team_mailer = require('../mailers/team_mailer.js');
 // will work in email templates later, for now just get this working
 
+// sends emails to all players
+exports.email_all = function(req, res) {
+  var event_id = req.param('event_id');
+  console.log('here');
+  Attendance.getByEventId(event_id, function(err, attendances) {
+    attendances.forEach(function(att) {
+      RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
+        rs.getPlayer(function(err3, player) {
+          Family.getUsersForPlayer(player._id, function(users) {
+            var email = users[0].email;
+            team_mailer.ask_attendance(email, att._id, function(emailErr, message) {
+              // emails are sent
+              console.log('should be sending emails');
+            });
+          });
+        });
+      });
+    });
+    return res.render('attendance/emailSent', {user: req.user});
+  });
+}
+
 // finds an attendance for a player and an event and emails a reminder to them
 exports.send_email = function(req, res) {
   var event_id = req.param('event_id');
