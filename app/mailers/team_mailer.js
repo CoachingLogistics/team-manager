@@ -51,7 +51,7 @@ exports.added_to_team = function(email_address, team_id, callback) {
     var msg = "Welcome to the " + the_team.name + " " + the_team.sport + " team manager system! This email is informing you that you have been added to the team";
     // mail options. My name is in there for testing purposes
     var mailOptions = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
@@ -80,7 +80,7 @@ exports.player_and_spot_added = function(email_address, player_id, team_id, call
       var player_name = the_player.full_name;
       var msg = "You have successfully added " + player_name + " to the system, and " + player_name + " has been added to the team " + name + " " + sport + ". Thank you for using team manager";
       var mail_options = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
@@ -109,7 +109,7 @@ exports.family_added = function(email_address, player_id, team_id, callback) {
       var player_name = the_player.full_name;
       var msg = "You have successfully added " + player_name + " to the system under your account, and " + player_name + " has been added to " + name + " " + sport + ". Thank you for using team manager!";
       var mail_options = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
@@ -129,29 +129,22 @@ exports.family_added = function(email_address, player_id, team_id, callback) {
   });
 }
 
-// asks a user if they can attend
-exports.ask_attendance = function(user_id, event_id, callback) {
-  User.findById(user_id, function(err1, theUser) {
-    if(err1) {
-      console.log(err1);
-      return callback(err1, "User not found, message not sent");
+// asks a user if they can attend an event
+exports.ask_attendance = function(email, attendance_id, callback) {
+  var mail_options = {
+    from: "Team Manager <team.manager.notification@gmail.com>",
+    to: email,
+    subject "Attendance Information",
+    text: "Are you going to this event?",
+    html: "<b>Are you going to this event?</b>"
+  };
+  smtpTransport.sendMail(mail_options, function(err, response) {
+    if(err) {
+      console.log(err);
+      return callback(err, "Message not sent");
     }
-    var theEmail = theUser.email;
-    var mail_options = {
-      from: "Alex Egan <alexander.egan@gmail.com>",
-      to: theEmail,
-      subject: "Attendance Information",
-      text: "Are you going to this game? Here are links",
-      html: "Are you going to this game? Here are links"
-    };
-    smtpTransport.sendMail(mail_options, function(err2, response) {
-      if(err2) {
-        console.log(err2);
-        return callback(err2, "Message not sent");
-      }
-      else {
-        return callback(err2, response.message);
-      }
-    });
+    else {
+      return callback(err, response.message);
+    }
   });
 }
