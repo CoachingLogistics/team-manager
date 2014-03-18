@@ -39,14 +39,15 @@ exports.send_email = function(req, res) {
 
 // records the attendance response
 exports.record_response = function(req, res) {
-  var response = req.params.attending;
+  var response = req.params.response;
   var attendance_id = req.params.attendanceid;
   // the user can go
-  if(attending == 't') {
+  if(response == 't') {
     // find the attendance and update the response to be true
     Attendance.findById(attendance_id, function(err, a) {
       a.attending = true;
       a.save(function(err, saved_attendance) {
+        console.log('here');
         res.render('attendance/emailReturn', {user: req.user});
       });
     });

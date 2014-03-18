@@ -136,7 +136,7 @@ exports.ask_attendance = function(email, attendance_id, callback) {
     to: email,
     subject: "Attendance Information",
     text: "Are you going to this event?",
-    html: "<b>Are you going to this event?</b>"
+    html: "<b>Are you going to this event?</b> <a href='http://localhost:3000/attendance/" + attendance_id + "/t'>Yes</a><br /> <a href='http://localhost:3000/attendance/" + attendance_id + "/f'>No</a>"
   };
   smtpTransport.sendMail(mail_options, function(err, response) {
     if(err) {
