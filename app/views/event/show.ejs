@@ -2,6 +2,7 @@
 
 <head>
 <% include ../head_scripts %>
+<script type='text/javascript' src='/js/event_show.js'></script>
 </head>
 
 <body>
@@ -9,21 +10,61 @@
 <!--************************CONTENT**************************-->
 
 
-<h1> <%= event.type %> for team <%= team.name %></h1>
-<b>Date</b> <br />
-<%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
-<b>Time</b> <br />
-<%= hour %>:<%= event.date.getMinutes() %><%=time%><br />
-<b>Location</b> <br />
-<%= event.location %><br />
+<div class="row">
+	<div class="col-md-8">
+		<h1> <%= event.type %> for team <%= team.name %>  <small><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %></small></h1>
+		<div id="googleMap"></div>
+	</div>
+	<div class="col-md-4">
+		<table class="table">
+		<thead>
+			<th class="text-left">Players</th>
+			<th class="text-right">RSVP</th>
+		</thead>
 
-<form method='GET' action="<%= '/events/' + event._id + '/edit'%>" >
-	<input type="Submit" value="Edit"/>
-</form>
+		<tr>
+			<td colspan="2">
+				<div class="list-group">
+				<% players.forEach(function(p){ %>
+						<a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
+					  	
+					    </a>
+				<% }); if(players.length == 0){ %> No players <%}%>
+				</div>
+			</td>
+		</tr>
+		<%if(access){%>
+		<tr>
+			<th colspan="2">
+				BUTTON HERE
+			</th>
+		</tr>
+		<%}%>
 
-<form method='POST' action=<%= '/events/' + event._id + '/delete'%> >
-	<input type="Submit" value="Delete" />
-</form>
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-8">
+		<h1> <%= event.type %></h1>
+				<b>Date: </b><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
+				<div id="location"><b>Location: </b><%= event.location %><br /></div>
+				<b>Time: </b> <%= hour %>:<%= event.date.getMinutes() %><%=time%><br />
+				<b>For Team: </b><a href="/teams/<%=team._id%>"><%= team.name%></a><br>
+				<b>Details: </b><%= event.description%>
+
+		<% if(access){ %>
+		<br>
+		<a type="button" class="btn btn-default" href="/events/<%=event._id%>/edit">Edit Event Info</a>
+		<form method='POST' action=<%= '/events/' + event._id + '/delete'%> >
+			<input type="Submit" value="Delete" />
+		</form>
+
+		<% } %>
+
+	</div>
+</div>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

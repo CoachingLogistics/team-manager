@@ -124,10 +124,10 @@ describe('Attendance', function() {
     });
 
     // no response
-    it('should not allow an attendance to be created if it does not have a response', function(done) {
+    it('should allow an attendance to be created if it does not have a response', function(done) {
       var mattAttendance = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id});
       mattAttendance.save(function(err, mattAttendance_saved) {
-        should.exist(err);
+        mattAttendance_saved.should.have.property("attending", null);
         done();
       });
     });
@@ -227,6 +227,54 @@ describe('Attendance', function() {
       });
     });
   }); // describe getByRosterId
+
+  describe('#getByIds()', function(done) {
+    // these are the attendances we will be using for this
+    var mattGame;
+    var markGame;
+    var mattPrac;
+    var lukePrac;
+
+    beforeEach(function(done) {
+      mattGame = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id, 'attending': true});
+      mattGame.save(function(err, mattGame_saved) {
+        markGame = new Attendance({'event_id': game._id, 'roster_spot_id': markSpot._id, 'attending': true});
+        markGame.save(function(err, markGame_saved) {
+          mattPrac = new Attendance({'event_id': prac._id, 'roster_spot_id': mattSpot._id, 'attending': false});
+          mattPrac.save(function(err, mattPrac_saved) {
+            lukePrac = new Attendance({'event_id': prac._id, 'roster_spot_id': lukeSpot._id, 'attending': true});
+            lukePrac.save(function(err, lukePrac_saved) {
+              // now we can test
+              done();
+            });// lukePrac save
+          }); // mattPrac save
+        }); // markGame save
+      }); // mattGame save
+    }); // before each
+
+    // should work for Game
+    it('should have a function to get all of the attendances for a given event and roster spot (testing matt)', function(done) {
+      Attendance.getByIds(game._id, mattSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(1);
+        docs[0].should.have.property('roster_spot_id', mattSpot._id);
+        docs[0].should.have.property('event_id', game._id);
+        done();
+      });
+    });
+
+    // should work for Practice
+    it('should have a function to get all of the attendances for a given event and roster spot (testing luke)', function(done) {
+      Attendance.getByIds(prac._id, lukeSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(1);
+        docs[0].should.have.property('roster_spot_id', lukeSpot._id);
+        docs[0].should.have.property('event_id', prac._id);
+        docs[0].should.have.property('attending', true);
+        done();
+      });
+    });
+  }); // describe getByIds
 
   describe('#getPlayersForEvent()', function(done) {
     // these are the attendances we will be using for this
