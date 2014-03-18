@@ -16,7 +16,7 @@ fs.readdirSync(models_path).forEach(function (file) {
     date: {type: Date, required: true},
     location: {type: String, required: false},
     type: {type: String, required: false},
-    description: {type: String, required: false}
+    description: {type: String, default: "no description"}
  });
 
 
