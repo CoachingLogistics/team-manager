@@ -5,6 +5,8 @@ var Player = mongoose.model('Player');
 var Family = mongoose.model('Family');
 var User = mongoose.model('User');
 var Team = mongoose.model('Team');
+var Attendance = mongoose.model('Attendance');
+var team_mailer = require('../mailers/team_mailer.js');
 // will work in email templates later, for now just get this working
 
 // finds an attendance for a player and an event and emails a reminder to them
@@ -21,7 +23,8 @@ exports.send_email = function(req, res) {
           // this is the attendance we need to update
           var theAttendance = attendanceDocs[0];
           // find the email address
-          Family.getUsersForPlayer(player_id, function(err5, users) {
+          console.log('player_id is ' + player_id);
+          Family.getUsersForPlayer(player_id, function(users) {
             var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
             team_mailer.ask_attendance(emailAddress, theAttendance._id, function(emailErr, message) {

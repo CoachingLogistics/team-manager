@@ -99,7 +99,8 @@ module.exports = function(app){
 	app.get('/families', families.index);		//to be removed in production
 
 	// attendance
-	app.post('/attendance/:attendanceid/:response', attendances.record_response)
+	app.post('/attendance/:attendanceid/:response', attendances.record_response);
+	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
 
 	//
 	app.get('*', home.err);

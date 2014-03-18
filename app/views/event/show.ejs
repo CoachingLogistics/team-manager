@@ -26,12 +26,16 @@
 			<td colspan="2">
 				<div class="list-group">
 				<% players.forEach(function(p){ %>
-						<a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
-					  	
-					    </a>
+					<tr>
+						<td><a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
+
+						</a></td>
+						<td><a href="/attendanceRemind/<%=event._id%>/<%=p._id%>">Send Reminder</a></td>
+					</tr>
 				<% }); if(players.length == 0){ %> No players <%}%>
 				</div>
 			</td>
+			<td>Button</td>
 		</tr>
 		<%if(access){%>
 		<tr>
