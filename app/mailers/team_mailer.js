@@ -10,6 +10,7 @@ var mailer_options = require("../../config/mailer");
 var mongoose = require('mongoose');
 var Team = mongoose.model('Team');
 var Player = mongoose.model('Player');
+var User = mongoose.model('User');
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -50,7 +51,7 @@ exports.added_to_team = function(email_address, team_id, callback) {
     var msg = "Welcome to the " + the_team.name + " " + the_team.sport + " team manager system! This email is informing you that you have been added to the team";
     // mail options. My name is in there for testing purposes
     var mailOptions = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
@@ -79,7 +80,7 @@ exports.player_and_spot_added = function(email_address, player_id, team_id, call
       var player_name = the_player.full_name;
       var msg = "You have successfully added " + player_name + " to the system, and " + player_name + " has been added to the team " + name + " " + sport + ". Thank you for using team manager";
       var mail_options = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
@@ -108,7 +109,7 @@ exports.family_added = function(email_address, player_id, team_id, callback) {
       var player_name = the_player.full_name;
       var msg = "You have successfully added " + player_name + " to the system under your account, and " + player_name + " has been added to " + name + " " + sport + ". Thank you for using team manager!";
       var mail_options = {
-        from: "Alex Egan <alexander.egan@gmail.com>",
+        from: "Team Manager <team.manager.notification@gmail.com>",
         to: email_address,
         subject: the_team.name + " " + the_team.sport,
         text: msg,
