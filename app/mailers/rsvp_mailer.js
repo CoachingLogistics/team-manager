@@ -15,9 +15,9 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 });
 
 // asks a user if they can attend an event
-exports.ask_attendance = function(email, attendance_id, callback) {
+exports.ask_attendance = function(user, email, attendance_id, callback) {
   var mail_options = {
-    from: "Team Manager <team.manager.notification@gmail.com>",
+    from: "" + user.name + " <" + user.email + " >",
     to: email,
     subject: "Attendance Information",
     text: "Are you going to this event?",

@@ -13,16 +13,14 @@ var rsvp_mailer = require('../mailers/rsvp_mailer.js');
 // sends emails to all players
 exports.email_all = function(req, res) {
   var event_id = req.param('event_id');
-  console.log('here');
   Attendance.getByEventId(event_id, function(err, attendances) {
     attendances.forEach(function(att) {
       RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
         rs.getPlayer(function(err3, player) {
           Family.getUsersForPlayer(player._id, function(users) {
             var email = users[0].email;
-            rsvp_mailer.ask_attendance(email, att._id, function(emailErr, message) {
+            rsvp_mailer.ask_attendance(req.user, email, att._id, function(emailErr, message) {
               // emails are sent
-              console.log('should be sending emails');
             });
           });
         });
@@ -49,7 +47,7 @@ exports.send_email = function(req, res) {
           Family.getUsersForPlayer(player_id, function(users) {
             var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
-            rsvp_mailer.ask_attendance(emailAddress, theAttendance._id, function(emailErr, message) {
+            rsvp_mailer.ask_attendance(req.user, emailAddress, theAttendance._id, function(emailErr, message) {
               res.render('attendance/emailSent', {user: req.user});
             });
           });
@@ -69,7 +67,6 @@ exports.record_response = function(req, res) {
     Attendance.findById(attendance_id, function(err, a) {
       a.attending = true;
       a.save(function(err, saved_attendance) {
-        console.log('here');
         res.render('attendance/emailReturn', {user: req.user});
       });
     });
