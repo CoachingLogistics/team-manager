@@ -44,7 +44,6 @@ RosterSpotSchema.method('getTeam', function(callback) {
 	});
 });
 
-//test this
 RosterSpotSchema.statics.getByIds = function(team_id, player_id, callback) {
 	this.findOne({ $and: [ {team_id: team_id}, {player_id: player_id}]}, function(err, roster_spot){
 		callback(err, roster_spot);

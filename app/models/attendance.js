@@ -24,7 +24,7 @@ var Team = mongoose.model('Team');
 var AttendanceSchema = new Schema({
 	event_id: {type: ObjectId, required: true},
 	roster_spot_id: {type: ObjectId, required: true},
-  attending: {type: Boolean, required: true}
+  attending: {type: Boolean, default: null}
 });
 
 // returns an array of Attendance Objects with the specified event_id
@@ -37,6 +37,15 @@ AttendanceSchema.statics.getByEventId = function(event_id, callback) {
 // returns an array of Attendance Objects with the specified roster_spot_id
 AttendanceSchema.statics.getByRosterId = function(roster_spot_id, callback) {
 	this.find({roster_spot_id: roster_spot_id}, function(err, attendances){
+		callback(err, attendances);
+	});
+};
+
+
+
+//test this
+AttendanceSchema.statics.getByIds = function(event_id, roster_spot_id, callback) {
+	this.find({$and: [ {roster_spot_id: roster_spot_id}, {event_id: event_id}] }, function(err, attendances){
 		callback(err, attendances);
 	});
 };

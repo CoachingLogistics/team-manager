@@ -12,6 +12,7 @@ module.exports = function(app){
 	var coaches = require('../app/controllers/coaches');
 
 	var mail = require('../app/controllers/mail');
+	var attendances = require('../app/controllers/attendances');
 
 	//home stuff
 	app.get('/', home.index);
@@ -67,7 +68,10 @@ module.exports = function(app){
 	app.get('/events/:id/edit', events.edit);
 	app.post('/events/:id/edit', events.update);
 	app.post('/events/:id/delete', events.delete);
-	
+
+	//attendance
+	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)
+
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
 	app.post('/mail/test', mail.test);
@@ -94,6 +98,10 @@ module.exports = function(app){
 	app.post('/family/:id/delete', families.delete);
 	app.get('/families', families.index);		//to be removed in production
 
+	// attendance
+	app.get('/attendance/:attendanceid/:response', attendances.record_response);
+	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
+	app.post('/emailAll/:event_id', attendances.email_all);
 
 	//
 	app.get('*', home.err);
