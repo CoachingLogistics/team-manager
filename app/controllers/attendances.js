@@ -7,6 +7,7 @@ var User = mongoose.model('User');
 var Team = mongoose.model('Team');
 var Attendance = mongoose.model('Attendance');
 var team_mailer = require('../mailers/team_mailer.js');
+var rsvp_mailer = require('../mailers/rsvp_mailer.js');
 // will work in email templates later, for now just get this working
 
 // sends emails to all players
@@ -19,7 +20,7 @@ exports.email_all = function(req, res) {
         rs.getPlayer(function(err3, player) {
           Family.getUsersForPlayer(player._id, function(users) {
             var email = users[0].email;
-            team_mailer.ask_attendance(email, att._id, function(emailErr, message) {
+            rsvp_mailer.ask_attendance(email, att._id, function(emailErr, message) {
               // emails are sent
               console.log('should be sending emails');
             });
@@ -45,11 +46,10 @@ exports.send_email = function(req, res) {
           // this is the attendance we need to update
           var theAttendance = attendanceDocs[0];
           // find the email address
-          console.log('player_id is ' + player_id);
           Family.getUsersForPlayer(player_id, function(users) {
             var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
-            team_mailer.ask_attendance(emailAddress, theAttendance._id, function(emailErr, message) {
+            rsvp_mailer.ask_attendance(emailAddress, theAttendance._id, function(emailErr, message) {
               res.render('attendance/emailSent', {user: req.user});
             });
           });
