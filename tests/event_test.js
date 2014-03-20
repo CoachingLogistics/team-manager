@@ -14,6 +14,12 @@ var mongoose = require('mongoose');
 var Team = mongoose.model('Team');
 var Event = mongoose.model('Event');
 
+var today = new Date();
+var month = today.getMonth();
+var day = today.getDate();
+var year = today.getFullYear();
+var time = today.getTime();
+
 //mocha stuff
 after(function(done){
     // test_db.connection.db.dropDatabase(function(){
@@ -79,7 +85,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
             joes.save(function(err, avg){
                 ev1 = new Event({
                     team_id: avg._id,
-                    date : new Date(2014, 4, 15, 16, 20),
+                    date : new Date(year, month, day+7, 16, 20),
                     location : 'Average Joes Gymnasium',
                     type : 'Practice'
                 });
@@ -88,7 +94,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
 
                     ev2 = Event({
                         team_id: avg._id,
-                        date : new Date(2014, 10, 16, 4, 20),
+                        date : new Date(year, month, day-3, 4, 20),
                         location : 'Wiegand gym',
                         type : 'Practice'
                     });
@@ -97,7 +103,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                         cobras.save(function(err, purps){
                             ev3 = new Event({
                                 team_id: purps._id,
-                                date : new Date(2014, 4, 15, 12, 00),
+                                date : new Date(year, month-2, day-7, 12, 00),
                                 location : 'Globo Gym',
                                 type : 'Game'
                             });
@@ -120,7 +126,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                 // dont do this: if (err) throw err; - use a test
                 should.not.exist(err);
                 returned.should.have.property('team_id', joes._id);
-                returned.should.have.property('date', new Date(2014, 4, 15, 16, 20));
+                returned.should.have.property('date', new Date(year, month, day+7, 16, 20));
                 returned.should.have.property('location', 'Average Joes Gymnasium');
                 returned.should.have.property('type', 'Practice');
                 done();
@@ -140,15 +146,15 @@ describe('Event', function(){    //context, so we can see where tests happen in 
             Event.getByTeamId(cobras._id, function(err, events){
                 events.should.have.length(1);
                 events[0].should.have.property('team_id', cobras._id);
-                events[0].should.have.property('date', new Date(2014, 4, 15, 12, 00));
+                events[0].should.have.property('date', new Date(year, month-2, day-7, 12, 00));
                 events[0].should.have.property('location', 'Globo Gym');
                 events[0].should.have.property('type', 'Game');
 
                 Event.getByTeamId(joes._id, function(err, events){
                     events.should.have.length(2);
                     events[0].should.have.property('team_id', joes._id);
-                    events[0].should.have.property('date', new Date(2014, 4, 15, 16, 20));
-                    events[1].should.have.property('date', new Date(2014, 10, 16, 4, 20));
+                    events[0].should.have.property('date', new Date(year, month, day-3, 4, 20));
+                    events[1].should.have.property('date', new Date(year, month, day+7, 16, 20));
                 
                     done();
                 });
@@ -156,6 +162,24 @@ describe('Event', function(){    //context, so we can see where tests happen in 
             });
 
         });
+
+        it('should have a class method getUpcomingByTeamId', function(done){
+
+            Event.getUpcomingByTeamId(cobras._id, function(err, events){
+                events.should.have.length(0);
+
+                Event.getUpcomingByTeamId(joes._id, function(err, events){
+                    events.should.have.length(1);
+                    events[0].should.have.property('team_id', joes._id);
+                    events[0].should.have.property('date', new Date(year, month, day+7, 16, 20));
+                
+                    done();
+                });
+
+            });
+
+        });
+
 
         it('should have a method that returns the Team', function(done){
             ev1.getTeam(function(err, team1){

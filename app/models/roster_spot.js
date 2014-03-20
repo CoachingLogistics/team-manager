@@ -1,4 +1,4 @@
-
+//
 
 // Synchronously load model dependecies, so foreign model calls can be made
 var fs = require('fs');
@@ -12,6 +12,7 @@ var Schema = mongoose.Schema;
 var	ObjectId = Schema.ObjectId;
 var	Team = mongoose.model('Team');
 var	Player = mongoose.model('Player');
+// var	Attendance = mongoose.model('Attendance');
 
 var RosterSpotSchema = new Schema({
 	team_id: {type: ObjectId, required: true},
@@ -112,6 +113,27 @@ RosterSpotSchema.statics.getPlayersForTeam = function(team_id, callback) {
 };
 
 
+
+
+
+//don't know if this works
+// RosterSpotSchema.method('generateAttendances', function(callback) {
+// 	Event.getUpcomingByTeamId(this.team_id, function(err, events){	//get upcoming events
+// 		events.forEach(function(event){
+// 			var att = new Attendance();		//create new attendance
+// 			att.event_id = event._id;
+// 			att.roster_spot_id = this._id;
+
+// 			att.save(function(err, attendance){
+// 				if(err) console.log(err);
+// 				console.log(attendance);
+// 			})
+
+// 		})
+
+// 		callback(true);
+// 	})
+// });
 
 
 
