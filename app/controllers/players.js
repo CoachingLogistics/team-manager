@@ -50,7 +50,16 @@ exports.create_player = function(req, res) {
 			});
 		}
 		else {
-			return res.redirect("/players");
+      if(req.user) {
+        var newFamily = new Family({'user_id': req.user._id, 'player_id': created_object._id});
+        newFamily.save(function(err, savedFamily) {
+          // if this results in an error the family won't be created and it'll redirect to players anyway
+          return res.redirect('/players');
+        });
+      }
+      else {
+  			return res.redirect("/players");
+      }
 		}
 	});
 }
@@ -124,7 +133,7 @@ exports.update = function(req, res) {
 				var month_name = monthNames[the_player.date_of_birth.getMonth()];
 				return res.render('player/edit', {
 					player: the_player,
-					month: month_name, 
+					month: month_name,
 					error: "Must include first and last names",
 					user: req.user
 				});
@@ -145,7 +154,7 @@ exports.delete = function(req, res) {
 			return res.redirect('/players/' + req.params.id);
 		}
 		else {
-			
+
 			//delete dependent roster spots/attendances/families?
 
 			return res.redirect('/players');
@@ -160,5 +169,3 @@ exports.teams = function(req, res){
 	})
 
 }
-
-
