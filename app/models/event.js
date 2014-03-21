@@ -47,6 +47,16 @@ EventSchema.statics.getByTeamId = function(team_id, callback) {
 	});
 };
 
+
+
+var today = new Date();
+//tested
+EventSchema.statics.getUpcomingByTeamId = function(team_id, callback) {
+	this.find({$and : [{team_id: team_id}, {date: {$gte: today}}] }).sort({date: 1}).execFind(function(err,events){
+		callback(err, events);
+	});
+};
+
 //tested
 EventSchema.methods.getTeam = function (callback) {
 	Team.findOne({_id: this.team_id}, function(err, team){
