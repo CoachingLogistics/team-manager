@@ -101,6 +101,11 @@ exports.show = function(req, res){
 				hour = event.date.getHours()-12;
 				time="PM";
 			}
+			var minutes = event.date.getMinutes();
+			if(event.date.getMinutes() == 0){
+				minutes = "00";
+			}
+
 
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
@@ -123,6 +128,7 @@ exports.show = function(req, res){
 				    	  user:req.user,
 				    	  time: time,
 				    	  hour: hour,
+				    	  minutes: minutes,
 				    	  players: players,
 				    	  access: access
 				    	});

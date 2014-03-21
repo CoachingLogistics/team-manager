@@ -57,7 +57,7 @@
 		<h1> <%= event.type %></h1>
 				<b>Date: </b><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
 				<div id="location"><b>Location: </b><%= event.location %><br /></div>
-				<b>Time: </b> <%= hour %>:<%= event.date.getMinutes() %><%=time%><br />
+				<b>Time: </b> <%= hour %>:<%= minutes %><%=time%><br />
 				<b>For Team: </b><a href="/teams/<%=team._id%>"><%= team.name%></a><br>
 				<b>Details: </b><%= event.description%>
 
