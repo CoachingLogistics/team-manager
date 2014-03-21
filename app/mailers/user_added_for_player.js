@@ -35,7 +35,7 @@ exports.newUserCreated = function(new_user, password, existing_user, player, cal
   // mail options
   var mail_options = {
     'to': new_user.email,
-    'from': existing_user.first_name + " " + existing_user.last_name + "<" + existing_user.email">",
+    'from': existing_user.first_name + " " + existing_user.last_name + "<" + existing_user.email +">",
     'subject': 'Welcome to Team Manager',
     'text': text,
     'html': html

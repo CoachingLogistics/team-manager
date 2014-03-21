@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 var Family = mongoose.model('Family');
 var Team = mongoose.model('Team');
 var RosterSpot = mongoose.model('RosterSpot');
+var user_added_mailer = require('../mailers/user_added_for_player');
 
 /*
  * Function for the players index page
@@ -198,8 +199,20 @@ exports.createNewFamily = function(req, res) {
             // redirect back if there is a problem
             return redirect('back');
           }
-
-          res.redirect('/users/' + savedUser._id);
+          Player.findById(player_id, function(pfbid_error, thePlayer) {
+            if(pfbid_error) {
+              return res.redirect('back');
+            }
+            else {
+              user_added_mailer.newUserCreated(savedUser, random_password, req.user, thePlayer, function(err, message) {
+                if(err) {
+                  //email failed to send, but everything else worked, so not really an issue
+                }
+                return
+              });
+              return res.redirect('/users/' + savedUser._id);
+            }
+          });
         });
       });
     }
@@ -212,7 +225,19 @@ exports.createNewFamily = function(req, res) {
       });
       // save the new family with the found user and player
       newFamily.save(function(err, savedFamily) {
-        res.redirect('/players/' + player_id);
+        Player.findById(player_id, function(err, thePlayer) {
+          if(err) {
+            return res.redirect('back');
+          }
+          else {
+            user_added_mailer.emailExistingUser(user, req.user, thePlayer, function(mail_error) {
+              if(mail_error) {
+                // doesn't really matter
+              }
+              return res.redirect('/players/' + player_id);
+            });
+          }
+        });
       });
     }
   });
