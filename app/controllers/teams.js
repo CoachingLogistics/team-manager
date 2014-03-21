@@ -516,7 +516,12 @@ var timeFormat = function(date) {
 		hour =  date.getHours()-12;
 		time="PM";
 	}
-	return hour+":"+date.getMinutes()+" "+time;
+	var minutes = date.getMinutes();
+	if(date.getMinutes() == 0){
+		minutes = "00";
+	}
+
+	return hour+":"+minutes+" "+time;
 };
 
 
