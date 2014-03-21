@@ -19,8 +19,13 @@ exports.email_all = function(req, res) {
         rs.getPlayer(function(err3, player) {
           Family.getUsersForPlayer(player._id, function(users) {
             users.forEach(function(user) {
-              rsvp_mailer.ask_attendance(req.user, user.email, att._id, function(emailErr, message) {
-                // emails are sent
+              Event.findById(event_id, function(err, theEvent) {
+                Team.findById(theEvent.team_id, function(err, theTeam) {
+                  rsvp_mailer.ask_attendance(req.user, user, att._id, theTeam, theEvent, function(emailErr, message) {
+                    //sending emails
+                    console.log('sending emails');
+                  });
+                });
               });
             });
           });
@@ -48,8 +53,9 @@ exports.send_email = function(req, res) {
           Family.getUsersForPlayer(player_id, function(users) {
             // now I have the email address and attendance, so sent it to the mailer to ask for response
             users.forEach(function(user) {
-              rsvp_mailer.ask_attendance(req.user, user.email, theAttendance._id, function(emailErr, message) {
+              rsvp_mailer.ask_attendance(req.user, user, theAttendance._id, found_team, found_event, function(emailErr, message) {
                 // sending emails
+                console.log("sending emails");
               });
             });
           });

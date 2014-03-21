@@ -15,13 +15,22 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 });
 
 // asks a user if they can attend an event
-exports.ask_attendance = function(user, email, attendance_id, callback) {
+exports.ask_attendance = function(user, guardian, attendance_id, team, event, callback) {
+  var text = "Hello " + guardian.name + ", \n" + team.name + " " + team.sport + " has scheduled a " + event.type + " for " + event.date + ". This event will take place ";
+  text += "at " + event.location + ". \nPlease respond to this RSVP to let " + user.name + " know if you will be able to attend.\n";
+  text += "If you can attend, please go to this link: http://localhost:3000/attendance/" + attendance_id + "/t \n";
+  text += "If you can not attend, please go to this link: http://localhost:3000/attendance/" + attendance_id + "/f";
+
+  var html = "Hello " + guardian.name + ", <br>" + team.name + " " + team.sport + " has scheduled a " + event.type + " for " + event.date + ". This event will take place ";
+  html += "at " + event.location + ". <br>Please respond to this RSVP to let " + user.name + " know if you will be able to attend.<br>";
+  html += "<a href='http://localhost:3000/attendance/" + attendance_id + "/t'>I can attend this event</a> <br>";
+  html += "<a href='http://localhost:3000/attendance/" + attendance_id + "/f'>I can not attend this event</a> <br>";
   var mail_options = {
     from: "" + user.name + " <" + user.email + " >",
-    to: email,
+    to: guardian.email,
     subject: "Attendance Information",
-    text: "Are you going to this event?",
-    html: "<b>Are you going to this event?</b> <a href='http://localhost:3000/attendance/" + attendance_id + "/t'>Yes</a><br /> <a href='http://localhost:3000/attendance/" + attendance_id + "/f'>No</a>"
+    'text': text,
+    'html': html
   };
   smtpTransport.sendMail(mail_options, function(err, response) {
     if(err) {
@@ -29,7 +38,7 @@ exports.ask_attendance = function(user, email, attendance_id, callback) {
       return callback(err, "Message not sent");
     }
     else {
-      return callback(err, response.message);
+      callback(err, response);
     }
   });
 }
