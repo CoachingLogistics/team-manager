@@ -46,18 +46,17 @@ exports.send_email = function(req, res) {
           var theAttendance = attendanceDocs[0];
           // find the email address
           Family.getUsersForPlayer(player_id, function(users) {
-            var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
             users.forEach(function(user) {
-              rsvp_mailer.ask_attendance(req.user, emailAddress, theAttendance._id, function(emailErr, message) {
+              rsvp_mailer.ask_attendance(req.user, user.email, theAttendance._id, function(emailErr, message) {
                 // sending emails
               });
-              res.render('attendance/emailSent', {user: req.user});
             });
           });
         });
       });
     });
+    res.render('attendance/emailSent', {user: req.user});
   });
 }
 
