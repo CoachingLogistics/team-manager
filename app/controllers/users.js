@@ -2,12 +2,22 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').strategy;
+var Family = mongoose.model('Family');
+var Player = mongoose.model('Player');
+var Team = mongoose.model('Team');
+var ForgottenEmail = require('../mailers/forgotten_email');
+
 
 exports.account = function(req, res){	//test non-access?
 
-	res.render('user/account', {
-		user: req.user,
-	  	title: 'My Account'
+	Family.getPlayersForUser(req.user._id, function(players){
+
+		res.render('user/account', {
+			user: req.user,
+		  	title: 'My Account',
+		  	players: players
+		});
+
 	});
 };
 
@@ -23,10 +33,14 @@ exports.index = function(req, res){			//delete this later
 
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
+		Family.getPlayersForUser(user._id, function(players){
 
-		res.render('user/show', {
-			user: req.user,
-			user_show: user
+			res.render('user/show', {
+				user: req.user,
+				user_show: user,
+			  	players: players
+			});
+
 		});
 	});
 };
@@ -51,13 +65,13 @@ exports.register = function(req, res){
 	newUser.save(function(err, user){
 		if(err){
 			console.log(err);
-			res.render('user/register', {
+			return res.render('user/register', {
 				user: req.user,
 				title: 'Registration',
 				message: err
 			});
 		}
-		res.redirect('/');
+		return res.redirect('/');
 	});
 };
 
@@ -77,12 +91,12 @@ exports.login = function(req, res, next){
     if (err) { return next(err) }
     if (!user) {
     	console.log(info.message);
-      req.session.messages =  [info.message];
+      req.session.messages =  "Invalid email address or password";
       return res.redirect('/login')
     }
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect('/');
+      return res.redirect('back');;
     });
   })(req, res, next);
 };
@@ -90,7 +104,7 @@ exports.login = function(req, res, next){
 
 exports.logout = function(req, res){
   req.logout();
-  res.redirect('/');
+  res.redirect('back');
 };
 
 
@@ -134,6 +148,11 @@ exports.delete = function(req, res){
     		res.redirect('/users/'+req.params.id);
     	}
       // req.flash('info', 'User successfully deleted');
+
+      //delete dependent families/coaches?
+
+
+
       res.redirect('/');
     });
   }else{
@@ -144,8 +163,89 @@ exports.delete = function(req, res){
 
 
 
+exports.forget = function(req, res){
+  	res.render('user/forget', {
+		user: req.user,
+		message: req.session.messages
+	});
+};
+
+exports.remember = function(req, res){
+  	var email = req.param('email');
+
+  	User.getByEmail(email, function(err, user){
+
+  		if(err){
+  			res.render('user/login', {
+				user: req.user,
+			  	message: err
+			});
+  		}
+
+  		var random_password = User.generateRandomPassword();
+		user.password = random_password;
+
+		user.save(function(err, usr){
+			if(err){
+				console.log(err);
+				res.redirect('/404');
+			}
+
+			//can do email, or usr.email
+
+			ForgottenEmail.sendMail(email, usr, random_password, function(){
+					res.render('user/login', {
+					user: req.user,
+				  	message: 'Your new password has been sent.'
+				});
+			});
+		});
+	});
+};
 
 
+exports.password_form = function(req, res){
+	if(req.user._id != req.params.id){
+		res.redirect('/404');
+	}
+
+	User.findById(req.params.id, function(error, user) {
+
+			res.render('user/password', {
+				user: user//or should this be req.user???
+			});
+	});
+};
 
 
+exports.password_change = function(req, res){
 
+	User.findById(req.params.id, function(error, user) {
+
+		var old = req.param('old');
+		var password = req.param('password');
+
+		user.comparePassword(old, function(err, isMatch){
+			if(err || isMatch == false){
+				res.render('user/password', {
+					user: req.user,
+					message: "Old password was wrong"
+				});
+			}
+
+			if(isMatch){
+				user.password = password;
+				user.save(function(err, usr){
+					Family.getPlayersForUser(usr._id, function(players){
+						res.render('user/account', {
+							user: req.user,
+							message: "New password set",
+							players: players
+						});
+					});
+				})
+			}
+		})
+
+	});
+};

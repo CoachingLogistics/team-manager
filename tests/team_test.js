@@ -20,6 +20,7 @@
 after(function(done){
     //test_db.connection.db.dropDatabase(function(){
     //    test_db.connection.close(function(){
+        console.log("team tests done")
             done();
     //    });
     //});

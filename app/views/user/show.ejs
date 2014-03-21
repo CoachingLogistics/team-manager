@@ -2,6 +2,7 @@
 
 <head>
 <% include ../head_scripts %>
+<script type='text/javascript' src='/js/account.js'></script>
 </head>
 
 <body>
@@ -26,9 +27,40 @@ THIS USER
 <%= user_show.phone %>
 </div>
 
-<div>
-<%= user_show._id %>
-<div>
+
+
+
+
+<table class="table">
+<tr>
+	<th>Player</th><th>Teams</th><th></th><th></th>
+</tr>
+
+<!--PLAYERS, can either load these in via ajax, or here with EJS-->
+<% players.forEach(function(p){ %>
+<tr>
+	<td>
+		<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
+	</td>
+	<td class="teams">
+		<div id="<%=p._id%>">
+			none
+		</div>
+	</td>
+	<td>
+		<a href="/players/<%=p._id%>/edit">edit</a>
+	</td>
+	<td>
+		<form method='POST' action='/players/<%= p._id%>/delete'%><input type="Submit" value="Delete" /></form>
+	</td>	
+
+<% }); %>
+
+</table>
+
+
+
+
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

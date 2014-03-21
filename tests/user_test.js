@@ -25,7 +25,7 @@ var  User = mongoose.model('User');
 
 //mocha stuff
 after(function(done){
-	console.log("all done");
+	console.log("user tests done");
 	done();
 });
 
@@ -343,49 +343,49 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 
 
 
-        //don't know how to get this confirmed
-        it('user can edit their account', function(done){
-        	var id = ned._id;
+        // //don't know how to get this confirmed
+        // it('user can edit their account', function(done){
+        // 	var id = ned._id;
 
-        	agent.post('/login')
-        	.field('username', ned.email)
-        	.field('password', pass)
-        	.end(function(err, res){
-        		if(err) return done(err);
-	        	agent.post('/user/'+id+'/edit')
-            .field('first_name', 'Homer')
-            .field('last_name', 'Flanders')
-            .field('phone', '911')
-            .field('email', 'flanders@gmail.com')
-	        	.expect(302)
-	        	.end(function(err, res){
-	        		if(err) return done(err);
-	        		//ned.should.have.property('first_name', 'Homer');
-	        		done();
-	        	});
-	        });
-        });
+        // 	agent.post('/login')
+        // 	.field('username', ned.email)
+        // 	.field('password', pass)
+        // 	.end(function(err, res){
+        // 		if(err) return done(err);
+	       //  	agent.post('/user/'+id+'/edit')
+        //     .field('first_name', 'Homer')
+        //     .field('last_name', 'Flanders')
+        //     .field('phone', '911')
+        //     .field('email', 'flanders@gmail.com')
+	       //  	.expect(302)
+	       //  	.end(function(err, res){
+	       //  		if(err) return done(err)
+	       //  		//ned.should.have.property('first_name', 'Homer');
+	       //  		done();
+	       //  	});
+	       //  });
+        // });
 
 
 
-        //don't know how to get this confirmed
-        it('user can delete their account', function(done){
-        	var id = ned._id;
+        // //don't know how to get this confirmed
+        // it('user can delete their account', function(done){
+        // 	var id = ned._id;
 
-        	agent.post('/login')
-        	.field('username', ned.email)
-        	.field('password', pass)
-        	.end(function(err, res){
-        		if(err) return done(err);
+        // 	agent.post('/login')
+        // 	.field('username', ned.email)
+        // 	.field('password', pass)
+        // 	.end(function(err, res){
+        // 		if(err) return done(err);
 
-	        	agent.post('/users/'+id+'/delete')
-	        	.expect(302)
-	        	.end(function(err, res){
-	        		if(err) return done(err);
-	        		done();
-	        	});
-	        });
-        });
+	       //  	agent.post('/users/'+id+'/delete')
+	       //  	.expect(302)
+	       //  	.end(function(err, res){
+	       //  		if(err) return done(err);
+	       //  		done();
+	       //  	});
+	       //  });
+        // });
 
 
 

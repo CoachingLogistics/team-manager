@@ -10,11 +10,53 @@
 
 <h1>Edit <%= team.name %></h1>
 
-<form method="post" action='<%= "/teams/" + team._id + "/edit" %>'>
-	Team Name: <input type='text' name='name' value='<%= team.name %>' /><br />
-	Sport: <input type='text' name='sport' value='<%= team.sport %>' /><br />
-	<input type='submit' value='Update' />
-</form>
+
+<form id="team_form" method="post" action= "/teams/<%= team._id %>/edit" class="form-horizontal" role="form">
+
+        <div class="form-group">
+            <label for="inputName" class="col-sm-2 control-label">Team Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputName" value='<%= team.name %>' name="name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputSport" class="col-sm-2 control-label">Sport</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputSport" value='<%= team.sport %>' name="sport">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="coaches" class="col-sm-2 control-label">Current Managers</label>
+            <div class="col-sm-10">
+            	<table class="table table-hover">
+               <% coaches.forEach(function(c){%>
+	               <tr>
+	               		<td><a href="/users/<%=c._id%>"><%= c.first_name%> <%= c.last_name%></a></td>
+	               		<td><%= c.email%></td>
+	               		<td><form method="post" action="/teams/<%=team._id%>/user/<%=c._id%>/remove"><button id="submit" type="submit" class="btn btn-default">Remove Manager</button></form></td>
+               		</tr>
+               <% }) %>
+           		</table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="coaches" class="col-sm-2 control-label">Add Managers</label>
+            <div class="col-sm-10">
+                <p class="help-block">To add managers, giving them access to create events, set the roster, and edit the team information, enter their emails, separated by commas:</p>
+              <input type="text" class="form-control" id="coaches" placeholder="manager emails (separated by commas)" name="coaches">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-center">
+              <button id="submit" type="submit" class="btn btn-default">Create Team</button>
+            </div>
+        </div>
+
+    </form>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

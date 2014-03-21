@@ -29,7 +29,7 @@ require('./config/express')(app, config);
 require('./config/routes')(app);
 
 app.listen(config.port, ipaddress, function(){
-	console.log("listening on port "+config.port+"......")
+	console.log("listening on "+ipaddress+":"+config.port+"......")
 });
 
 

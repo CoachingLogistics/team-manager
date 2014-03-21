@@ -1,12 +1,23 @@
-// Example model
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+
+	var mongoose = require('mongoose');
+  	var Schema = mongoose.Schema;
+
+
+
+
+
+//cannot use dependent models in this?????
+// var Family = mongoose.model('Family');
+// var RosterSpot = require('./roster_spot.js').RosterSpot;
+//console.log(RosterSpot);
+
 
 var PlayerSchema = new Schema({
   first_name: {type: String, required: true},
   last_name: {type: String, required: true},
-  date_of_birth: Date
+  date_of_birth: Date,
+  active: {type: Boolean, default: true}
 });
 
 
@@ -33,4 +44,28 @@ PlayerSchema.virtual('age').get(function() {
 	return age;
 });
 
+
+//tested in family_test
+PlayerSchema.methods.getUsers = function (callback) {
+	Family.getUsersForPlayer(this._id, function(users){
+		callback(users);
+	})
+};
+
+//doesn't work
+// PlayerSchema.methods.getTeams = function (callback) {
+// 	RosterSpot.getTeamsForPlayer(this._id, function(teams){
+// 		callback(teams);
+// 	})
+// };
+
+// // test this
+// PlayerSchema.methods.getAttendance = function (callback) {
+// 
+// };
+
+
+
 mongoose.model('Player', PlayerSchema);
+module.exports.Player = mongoose.model('Player', PlayerSchema);
+module.exports.Schema = PlayerSchema;

@@ -372,6 +372,16 @@ describe('Coach', function() {
 				done();
 			});
 		});
+
+		//throwing in this test here
+		it('method to get by team_id and user_id', function(done) {
+			Coach.getByIds(prep._id, peter._id, function(err, coach) {
+				
+				coach.should.have.property('_id', prep_coach._id);
+				done();
+			});
+		});
+
 	});
 	
 

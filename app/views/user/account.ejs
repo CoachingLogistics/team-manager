@@ -2,6 +2,7 @@
 
 <head>
 <% include ../head_scripts %>
+<script type='text/javascript' src='/js/account.js'></script>
 </head>
 
 <body>
@@ -25,14 +26,6 @@ MY ACCOUNT
 <%= user.phone %>
 </div>
 
-<div>
-<%= user.password %>
-</div>
-
-<div>
-<%= user._id %>
-</div>
-
 <a href="/users/<%=user._id%>/edit">Edit</a>
 <form action="/users/<%=user._id%>/delete" method="post">
 	<input type="submit" value="Delete"/>
@@ -40,9 +33,32 @@ MY ACCOUNT
 
 
 
+<table class="table">
+<tr>
+	<th>Player</th><th>Teams</th><th></th><th></th>
+</tr>
 
+<!--PLAYERS, can either load these in via ajax, or here with EJS-->
+<% players.forEach(function(p){ %>
+<tr>
+	<td>
+		<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
+	</td>
+	<td class="teams">
+		<div id="<%=p._id%>">
+			none
+		</div>
+	</td>
+	<td>
+		<a href="/players/<%=p._id%>/edit">edit</a>
+	</td>
+	<td>
+		<form method='POST' action='/players/<%= p._id%>/delete'%><input type="Submit" value="Delete" /></form>
+	</td>	
 
+<% }); %>
 
+</table>
 
 
 

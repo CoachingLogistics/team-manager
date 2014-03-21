@@ -2,11 +2,14 @@ module.exports = function(app){
 
 	//home route
 	var home = require('../app/controllers/home');
+	var events = require('../app/controllers/events')
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
 	var players = require('../app/controllers/players');
 	var email_templates = require('../app/controllers/email_templates');
 	var families = require('../app/controllers/families');
+	var roster_spots = require('../app/controllers/roster_spots');
+	var coaches = require('../app/controllers/coaches');
 
 	var mail = require('../app/controllers/mail');
 
@@ -25,7 +28,11 @@ module.exports = function(app){
 	app.get('/logout', users.logout);
 	app.post('/users/:id/delete', users.delete);
 	app.get('/users/:id/edit', ensureAuthenticated, users.edit);
-	app.post('/user/:id/edit', users.update);
+	app.post('/users/:id/edit', users.update);
+	app.get('/forget', users.forget);
+	app.post('/forget', users.remember);
+	app.get('/users/:id/password-change', users.password_form);
+	app.post('/users/:id/password-change', users.password_change);
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
@@ -37,6 +44,8 @@ module.exports = function(app){
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
 
+	app.get('/players/:id/teams', players.teams);
+
 	// teams
 	app.get('/teams', teams.index);
 	app.get('/teams/new', teams.new);
@@ -45,10 +54,23 @@ module.exports = function(app){
 	app.get('/teams/:id/edit', teams.edit);
 	app.post('/teams/:id/edit', teams.update);
 	//app.post('/teams/:id/delete', teams.delete);
+	app.get('/teams/:id/event', events.team_event);
+	app.get('/teams/:id/calendar', teams.calendar);
+	app.get('/teams/:id/roster', teams.roster);
+
+
+	// events
+	app.get('/events', events.index);
+	app.get('/events/new', events.new);
+	app.post('/events/new', events.create);
+	app.get('/events/:id', events.show);
+	app.get('/events/:id/edit', events.edit);
+	app.post('/events/:id/edit', events.update);
+	app.post('/events/:id/delete', events.delete);
 	
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);
-	app.post('/mail/send', mail.send_mail);
+	app.post('/mail/test', mail.test);
 
 	// email templates
 	app.get('/teams/:id/templates/new', email_templates.new);
@@ -62,6 +84,10 @@ module.exports = function(app){
 	//filling the roster
 	app.get('/teams/:id/roster-fill', teams.roster_fill);
 	app.post('/teams/:id/roster-create', teams.roster_create);
+	app.post('/teams/:team_id/players/:player_id/remove', roster_spots.deleteByIds)
+
+	//coach
+	app.post('/teams/:team_id/user/:user_id/remove', coaches.deleteByIds)
 
 	//family
 	app.post('/family/new', families.new);

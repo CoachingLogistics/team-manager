@@ -78,7 +78,7 @@ exports.create = function(req, res){
 					console.log(err);
 					//render 404, this method should only be created when the user registers a player,
 					//either automatically upon registration of the user or when the user registers another player
-					});
+					//});
 				}else{
 					res.redirect('/teams/new/' //, {
 					//	team: team,
@@ -99,3 +99,20 @@ exports.delete = function (req, res){
 		}
 	})
 }
+
+
+
+exports.deleteByIds = function (req, res){
+	RosterSpot.getByIds(req.params.team_id, req.params.player_id, function(err, spot){
+		if(err) console.log(err);
+
+		RosterSpot.remove({_id:spot._id}, function(err, ret){
+			res.redirect('back');
+		});
+
+	});
+}
+
+
+
+

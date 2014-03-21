@@ -4,6 +4,9 @@
  */
 var mongoose = require('mongoose'),
   Player = mongoose.model('Player');
+var Family = mongoose.model('Family');
+var Team = mongoose.model('Team');
+var RosterSpot = mongoose.model('RosterSpot');
 
 /*
  * Function for the players index page
@@ -62,11 +65,16 @@ exports.show = function(req, res) {
 			res.status(404).render("404", {user:req.user});
 		}
 		else {
-			res.render('player/show', {
-				player: p,
-				user: req.user
-			});
-		}
+
+			//
+			//p.getTeams(function(teams){
+				res.render('player/show', {
+					player: p,
+					//teams: teams,
+					user: req.user
+				});
+			//});
+		};
 	});
 }
 
@@ -137,7 +145,20 @@ exports.delete = function(req, res) {
 			return res.redirect('/players/' + req.params.id);
 		}
 		else {
+			
+			//delete dependent roster spots/attendances/families?
+
 			return res.redirect('/players');
 		}
 	});
 }
+
+//AJAX ONLY
+exports.teams = function(req, res){
+	RosterSpot.getTeamsForPlayer(req.params.id, function(teams){
+		res.send(teams);
+	})
+
+}
+
+
