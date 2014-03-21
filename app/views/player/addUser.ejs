@@ -1,0 +1,52 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+<script type='text/javascript' src='/js/event_show.js'></script>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+  <h1>Add a new User for <%= player.full_name %> </h1>
+    <% if(notice) { %>
+      <p><%= notice %></p>
+    <% } %>
+      <form id="user_form" class="form-horizontal" action="/players/<%=player._id%>/addUser" method="post" role="form">
+
+          <div class="form-group">
+              <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+              <div class="col-sm-10">
+                <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email">
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputFirstName" placeholder="John" name="first_name">
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="inputLastName" class="col-sm-2 control-label">Last Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputLastName" placeholder="Smith" name="last_name">
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="inputPhone" class="col-sm-2 control-label">Phone Number</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputPhone" placeholder="555-123-1234" name="phone">
+              </div>
+          </div>
+          <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10 text-center">
+                <button type="submit" class="btn btn-default">Add User</button>
+              </div>
+          </div>
+
+      </form>
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+</html>

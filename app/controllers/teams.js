@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
   RosterSpot = mongoose.model('RosterSpot');
   Event = mongoose.model('Event');
   Coach = mongoose.model('Coach');
+  Attendance = mongoose.model('Attendance');
 
 var mailer = require('../mailers/team_mailer.js');
 var NewUserAdded = require('../mailers/new_added_user');
@@ -245,7 +246,8 @@ exports.create = function(req, res){
 						})
 					})
 				}
-				res.redirect('/teams/' + team._id);
+				// res.redirect('/teams/' + team._id);
+				res.redirect('/teams/'+ team._id+'/roster-fill');
 			});//coach save
 
 
@@ -325,11 +327,24 @@ exports.roster_create = function(req, res){
 						spot.save(function(err, roster_spot){	//roster spot created
 
 						 	//email sent
-						 	console.log("existing player");
-							ExistingPlayer.sendMail(req.user, team, existing_player, usr, function(){
-									res.redirect('teams/'+req.params.id);
-							});
+								Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+									events.forEach(function(event){
+										var att = new Attendance();		//create new attendance
+										att.event_id = event._id;
+										att.roster_spot_id = roster_spot._id;
 
+										att.save(function(err, attendance){
+											if(err) console.log(err);
+											console.log(attendance);
+										})
+
+									})
+								})//event upcoming
+
+							 	console.log("existing player");
+								ExistingPlayer.sendMail(req.user, team, existing_player, usr, function(){
+										res.redirect('teams/'+req.params.id);
+								});
 						});
 
 
@@ -356,11 +371,25 @@ exports.roster_create = function(req, res){
 								spot.save(function(err, roster_spot){	//roster spot created
 
 									//email sent
-									console.log("new player");
-									NewPlayer.sendMail(req.user, team, player, usr, function(){
-											res.redirect('teams/'+req.params.id);
-									});								 
+									Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+										events.forEach(function(event){
+											var att = new Attendance();		//create new attendance
+											att.event_id = event._id;
+											att.roster_spot_id = roster_spot._id;
 
+											att.save(function(err, attendance){
+												if(err) console.log(err);
+												console.log(attendance);
+											})
+
+										})
+									})//event upcoming
+									
+										console.log("new player");
+										NewPlayer.sendMail(req.user, team, player, usr, function(){
+												res.redirect('teams/'+req.params.id);
+										});								 
+									
 								});
 							});
 						});
@@ -401,11 +430,25 @@ exports.roster_create = function(req, res){
 								spot.save(function(err, roster_spot){	//roster spot created
 
 									//email sent
+									Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+										events.forEach(function(event){
+											var att = new Attendance();		//create new attendance
+											att.event_id = event._id;
+											att.roster_spot_id = roster_spot._id;
+
+											att.save(function(err, attendance){
+												if(err) console.log(err);
+												console.log(attendance);
+											})
+
+										})
+									})//event upcoming
+
 									console.log("new user");
 									NewUserAdded.sendMail(req.user, team, player, usr, random_password, function(){
 											res.redirect('teams/'+req.params.id);
 									});
-
+									
 								});
 							});
 						});
@@ -473,7 +516,12 @@ var timeFormat = function(date) {
 		hour =  date.getHours()-12;
 		time="PM";
 	}
-	return hour+":"+date.getMinutes()+" "+time;
+	var minutes = date.getMinutes();
+	if(date.getMinutes() == 0){
+		minutes = "00";
+	}
+
+	return hour+":"+minutes+" "+time;
 };
 
 
