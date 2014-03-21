@@ -219,25 +219,34 @@ exports.createNewFamily = function(req, res) {
     else {
       // user email does exist
       var user = docs[0];
-      var newFamily = new Family({
-        'user_id': user._id,
-        'player_id': player_id
-      });
-      // save the new family with the found user and player
-      newFamily.save(function(err, savedFamily) {
-        Player.findById(player_id, function(err, thePlayer) {
-          if(err) {
-            return res.redirect('back');
-          }
-          else {
-            user_added_mailer.emailExistingUser(user, req.user, thePlayer, function(mail_error) {
-              if(mail_error) {
-                // doesn't really matter
+      // make sure the user is not already a part of a family
+      Family.find({'user_id': user._id, 'player_id': player_id}, function(famErr, famDocs) {
+        if(famDocs.length == 0) {
+          var newFamily = new Family({
+            'user_id': user._id,
+            'player_id': player_id
+          });
+          // save the new family with the found user and player
+          newFamily.save(function(err, savedFamily) {
+            Player.findById(player_id, function(err, thePlayer) {
+              if(err) {
+                return res.redirect('back');
               }
-              return res.redirect('/players/' + player_id);
+              else {
+                user_added_mailer.emailExistingUser(user, req.user, thePlayer, function(mail_error) {
+                  if(mail_error) {
+                    // doesn't really matter
+                  }
+                  return res.redirect('/players/' + player_id);
+                });
+              }
             });
-          }
-        });
+          });
+        }
+        else {
+          // user is already a parent
+          res.redirect('back');
+        }
       });
     }
   });
