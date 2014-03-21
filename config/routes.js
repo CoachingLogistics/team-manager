@@ -44,7 +44,8 @@ module.exports = function(app){
 	app.get('/players/:id/edit', players.edit);
 	app.post('/players/:id/update', players.update);
 	app.post('/players/:id/delete', players.delete);
-
+	app.get('/players/:id/addUser', players.addUser);
+	app.post('/players/:id/addUser', players.createNewFamily);
 	app.get('/players/:id/teams', players.teams);
 
 	// teams

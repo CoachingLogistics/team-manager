@@ -18,9 +18,15 @@ exports.email_all = function(req, res) {
       RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
         rs.getPlayer(function(err3, player) {
           Family.getUsersForPlayer(player._id, function(users) {
-            var email = users[0].email;
-            rsvp_mailer.ask_attendance(req.user, email, att._id, function(emailErr, message) {
-              // emails are sent
+            users.forEach(function(user) {
+              Event.findById(event_id, function(err, theEvent) {
+                Team.findById(theEvent.team_id, function(err, theTeam) {
+                  rsvp_mailer.ask_attendance(req.user, user, att._id, theTeam, theEvent, function(emailErr, message) {
+                    //sending emails
+                    console.log('sending emails');
+                  });
+                });
+              });
             });
           });
         });
@@ -45,15 +51,18 @@ exports.send_email = function(req, res) {
           var theAttendance = attendanceDocs[0];
           // find the email address
           Family.getUsersForPlayer(player_id, function(users) {
-            var emailAddress = users[0].email;
             // now I have the email address and attendance, so sent it to the mailer to ask for response
-            rsvp_mailer.ask_attendance(req.user, emailAddress, theAttendance._id, function(emailErr, message) {
-              res.render('attendance/emailSent', {user: req.user});
+            users.forEach(function(user) {
+              rsvp_mailer.ask_attendance(req.user, user, theAttendance._id, found_team, found_event, function(emailErr, message) {
+                // sending emails
+                console.log("sending emails");
+              });
             });
           });
         });
       });
     });
+    res.render('attendance/emailSent', {user: req.user});
   });
 }
 
