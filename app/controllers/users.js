@@ -71,12 +71,25 @@ exports.register = function(req, res){
 				message: err
 			});
 		}
-		return res.redirect('/');
+    req.logIn(user, function(err) {
+      if(err) {
+        console.log(err);
+        return res.render('user/register', {
+          user: req.user,
+          title: 'Registration',
+          message: 'registration unsuccessful'
+        });
+      }
+      return res.redirect('/');
+    });
 	});
 };
 
 
 exports.signin = function(req, res){
+  if(req.user) {
+    return res.redirect('/');
+  }
 	res.render('user/login', {
 		user: req.user,
 		title: 'Login',
@@ -96,7 +109,7 @@ exports.login = function(req, res, next){
     }
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect('back');;
+      return res.redirect('back');
     });
   })(req, res, next);
 };

@@ -49,6 +49,7 @@ exports.create = function(req, res){
 		team_id: req.param('team_id'),
 		date: date,
 		location: req.body.location,
+		description: req.body.description,
   		type: req.param('type')
 	});
 

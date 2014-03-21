@@ -51,7 +51,16 @@ exports.create_player = function(req, res) {
 			});
 		}
 		else {
-			return res.redirect("/players");
+      if(req.user) {
+        var newFamily = new Family({'user_id': req.user._id, 'player_id': created_object._id});
+        newFamily.save(function(err, savedFamily) {
+          // if this results in an error the family won't be created and it'll redirect to players anyway
+          return res.redirect('/players');
+        });
+      }
+      else {
+  			return res.redirect("/players");
+      }
 		}
 	});
 }

@@ -32,7 +32,6 @@ $(function(){
 	});
 
 
-
 	$("#submit").click(function(){
 
 		for(var ii = 1; ii <=rows; ii++){
