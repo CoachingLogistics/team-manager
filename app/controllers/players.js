@@ -187,13 +187,18 @@ exports.createNewFamily = function(req, res) {
       newUser.save(function(err, savedUser) {
         if(err) {
           // redirect them back if there is a validation problem
-          res.redirect('back');
+          return res.redirect('back');
         }
         var newFamily = new Family({
           'user_id': savedUser._id,
           'player_id': player_id
         });
         newFamily.save(function(err, savedFamily) {
+          if(err) {
+            // redirect back if there is a problem
+            return redirect('back');
+          }
+
           res.redirect('/users/' + savedUser._id);
         });
       });
