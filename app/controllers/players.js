@@ -159,7 +159,7 @@ exports.delete = function(req, res) {
  */
 exports.addUser = function(req, res) {
   Player.findById(req.params.id, function(err, foundPlayer) {
-    res.render('player/addUser', {user: req.user, player: foundPlayer});
+    res.render('player/addUser', {user: req.user, player: foundPlayer, notice: undefined});
   });
 }
 
@@ -245,7 +245,9 @@ exports.createNewFamily = function(req, res) {
         }
         else {
           // user is already a parent
-          res.redirect('back');
+          Player.findById(player_id, function(err, foundPlayer) {
+            res.render('player/addUser', {user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
+          });
         }
       });
     }

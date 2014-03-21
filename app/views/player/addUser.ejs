@@ -10,7 +10,9 @@
 <!--************************CONTENT**************************-->
 
   <h1>Add a new User for <%= player.full_name %> </h1>
-
+    <% if(notice) { %>
+      <p><%= notice %></p>
+    <% } %>
       <form id="user_form" class="form-horizontal" action="/players/<%=player._id%>/addUser" method="post" role="form">
 
           <div class="form-group">
