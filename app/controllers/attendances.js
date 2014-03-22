@@ -15,23 +15,26 @@ exports.email_all = function(req, res) {
   var event_id = req.param('event_id');
   Attendance.getByEventId(event_id, function(err, attendances) {
     attendances.forEach(function(att) {
-      RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
-        rs.getPlayer(function(err3, player) {
-          Family.getUsersForPlayer(player._id, function(users) {
-            users.forEach(function(user) {
-              Event.findById(event_id, function(err, theEvent) {
-                Team.findById(theEvent.team_id, function(err, theTeam) {
-                  rsvp_mailer.ask_attendance(req.user, user, att._id, theTeam, theEvent, function(emailErr, message) {
-                    //sending emails
-                    console.log('sending emails');
+      // remind those who have not responded
+      if(att.attending == null) {
+        RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
+          rs.getPlayer(function(err3, player) {
+            Family.getUsersForPlayer(player._id, function(users) {
+              users.forEach(function(user) {
+                Event.findById(event_id, function(err, theEvent) {
+                  Team.findById(theEvent.team_id, function(err, theTeam) {
+                    rsvp_mailer.ask_attendance(req.user, user, att._id, theTeam, theEvent, function(emailErr, message) {
+                      //sending emails
+                      console.log('sending emails');
+                    });
                   });
                 });
               });
             });
           });
         });
-      });
-    });
+      }
+    }); // end attendances for each
     return res.render('attendance/emailSent', {user: req.user});
   });
 }
@@ -49,16 +52,18 @@ exports.send_email = function(req, res) {
         Attendance.find({'roster_spot_id': rosterSpot._id, 'event_id': event_id}, function(err4, attendanceDocs) {
           // this is the attendance we need to update
           var theAttendance = attendanceDocs[0];
-          // find the email address
-          Family.getUsersForPlayer(player_id, function(users) {
-            // now I have the email address and attendance, so sent it to the mailer to ask for response
-            users.forEach(function(user) {
-              rsvp_mailer.ask_attendance(req.user, user, theAttendance._id, found_team, found_event, function(emailErr, message) {
-                // sending emails
-                console.log("sending emails");
+          // find the email address and send the email if they haven't responded yet
+          if(theAttendance.attending == null) {
+            Family.getUsersForPlayer(player_id, function(users) {
+              // now I have the email address and attendance, so sent it to the mailer to ask for response
+              users.forEach(function(user) {
+                rsvp_mailer.ask_attendance(req.user, user, theAttendance._id, found_team, found_event, function(emailErr, message) {
+                  // sending emails
+                  console.log("sending emails");
+                });
               });
             });
-          });
+          }
         });
       });
     });
