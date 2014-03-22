@@ -76,7 +76,7 @@ exports.record_response = function(req, res) {
     Attendance.findById(attendance_id, function(err, a) {
       a.attending = true;
       a.save(function(err, saved_attendance) {
-        res.render('attendance/emailReturn', {user: req.user});
+        res.render('attendance/emailReturn', {user: req.user, attendance: a});
       });
     });
   }
