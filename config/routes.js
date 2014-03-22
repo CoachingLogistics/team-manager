@@ -100,7 +100,7 @@ module.exports = function(app){
 
 	//family
 	app.post('/family/new',  ensureAuthenticated, families.new);	//tbd?
-	app.post('/family/:id/delete',  ensureAuthenticated, families.delete);	//further auth
+	app.post('/family/:id/delete',  ensureAuthenticated, families.delete);	//is this used in prod??
 	app.get('/families', families.index);		//to be removed in production
 
 	// attendance
