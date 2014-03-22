@@ -1,5 +1,8 @@
 var mongoose = require('mongoose'),
   RosterSpot = mongoose.model('RosterSpot');
+  Coach = mongoose.model('Coach');
+  Team = mongoose.model('Team');
+  Family = mongoose.model('Family');
 
 // exports.index = function(req, res){
 //   Team.find(function(err, teams){
@@ -100,14 +103,39 @@ exports.delete = function (req, res){
 
 
 exports.deleteByIds = function (req, res){
-	RosterSpot.getByIds(req.params.team_id, req.params.player_id, function(err, spot){
-		if(err) console.log(err);
+	var access_ids =[];
+	Team.findById(req.params.team_id, function(err, team){
+		Coach.getUsersForTeam(team._id, function(err, coaches){
+			Family.getUserIdsForPlayer(req.params.player_id, function(parent_ids){
 
-		RosterSpot.remove({_id:spot._id}, function(err, ret){
-			res.redirect('back');
-		});
+				coaches.forEach(function(c){access_ids.push(c._id)});	//if user is a coach or parent
+				parent_ids.forEach(function(p){access_ids.push(p)});	//they get access
 
-	});
+	  			var access = false;
+	  			access_ids.forEach(function(id){	//check to see if the user is a coach
+	  				if(req.user){
+		  				if(req.user._id.equals(id)){
+		  					access = true;
+		  				}
+		  			}
+	  			});
+
+	  			 if(!access){
+	  				//not authorized
+	  				res.redirect('/');
+	  			}else{
+					RosterSpot.getByIds(req.params.team_id, req.params.player_id, function(err, spot){
+						if(err) console.log(err);
+
+						RosterSpot.remove({_id:spot._id}, function(err, ret){
+							res.redirect('back');
+						});
+
+					});
+	  			}
+  			});
+  		});
+	})
 }
 
 

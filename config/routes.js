@@ -27,76 +27,80 @@ module.exports = function(app){
 	app.get('/login', users.signin);
 	app.post('/login', users.login);
 	app.get('/logout', users.logout);
-	app.post('/users/:id/delete', users.delete);
+	app.post('/users/:id/delete', ensureAuthenticated, users.delete);
 	app.get('/users/:id/edit', ensureAuthenticated, users.edit);
-	app.post('/users/:id/edit', users.update);
+	app.post('/users/:id/edit', ensureAuthenticated, users.update);
 	app.get('/forget', users.forget);
 	app.post('/forget', users.remember);
-	app.get('/users/:id/password-change', users.password_form);
-	app.post('/users/:id/password-change', users.password_change);
+	app.get('/users/:id/password-change', ensureAuthenticated, users.password_form);
+	app.post('/users/:id/password-change', ensureAuthenticated, users.password_change);
+
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
 	app.get('/players', players.index);
-	app.get('/players/new', players.new_player);
-	app.post('/players/new', players.create_player);
+	app.get('/players/new', ensureAuthenticated, players.new_player);
+	app.post('/players/new', ensureAuthenticated, players.create_player);
 	app.get('/players/:id', players.show);
-	app.get('/players/:id/edit', players.edit);
-	app.post('/players/:id/update', players.update);
-	app.post('/players/:id/delete', players.delete);
-	app.get('/players/:id/addUser', players.addUser);
-	app.post('/players/:id/addUser', players.createNewFamily);
+	app.get('/players/:id/edit', ensureAuthenticated, players.edit);
+	app.post('/players/:id/update', ensureAuthenticated, players.update);
+	app.post('/players/:id/delete', ensureAuthenticated, players.delete);
+	app.get('/players/:id/addUser', ensureAuthenticated, players.addUser);
+	app.post('/players/:id/addUser', ensureAuthenticated, players.createNewFamily);
+
+	//AJAX
 	app.get('/players/:id/teams', players.teams);
 
 	// teams
 	app.get('/teams', teams.index);
-	app.get('/teams/new', teams.new);
-	app.post('/teams/new', teams.create);
+	app.get('/teams/new', ensureAuthenticated, teams.new);
+	app.post('/teams/new', ensureAuthenticated, teams.create);
 	app.get('/teams/:id', teams.show);
-	app.get('/teams/:id/edit', teams.edit);
-	app.post('/teams/:id/edit', teams.update);
+	app.get('/teams/:id/edit', ensureAuthenticated, teams.edit);
+	app.post('/teams/:id/edit', ensureAuthenticated, teams.update);
 	//app.post('/teams/:id/delete', teams.delete);
-	app.get('/teams/:id/event', events.team_event);
+
+	app.get('/teams/:id/event', ensureAuthenticated, events.team_event);
 	app.get('/teams/:id/calendar', teams.calendar);
-	app.get('/teams/:id/roster', teams.roster);
+	app.get('/teams/:id/roster', ensureAuthenticated, teams.roster);	//further auth?????
 
 
 	// events
-	app.get('/events', events.index);
-	app.get('/events/new', events.new);
-	app.post('/events/new', events.create);
+	app.get('/events', events.index);	//tbd
 	app.get('/events/:id', events.show);
-	app.get('/events/:id/edit', events.edit);
-	app.post('/events/:id/edit', events.update);
-	app.post('/events/:id/delete', events.delete);
+	app.get('/events/new', ensureAuthenticated, events.new);
+	app.post('/events/new', ensureAuthenticated, events.create);
+	app.get('/events/:id/edit', ensureAuthenticated, events.edit);
+	app.post('/events/:id/edit', ensureAuthenticated, events.update);
+	app.post('/events/:id/delete', ensureAuthenticated, events.delete);
 
-	//attendance
+	//attendance AJAX
 	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)
 
 	// mailer
-	app.get('/mail/compose', mail.compose_mail);
-	app.post('/mail/test', mail.test);
+	app.get('/mail/compose', mail.compose_mail);	//authentication?
+	app.post('/mail/test', mail.test);		//authentication?
 
 	// email templates
-	app.get('/teams/:id/templates/new', email_templates.new);
-	app.post('/teams/:id/templates/new', email_templates.create);
-	app.get('/teams/:id/templates', email_templates.index);
-	app.get('/teams/:id/templates/:temp_id', email_templates.show);
-	app.post('/teams/:id/templates/:temp_id/delete', email_templates.delete);
-	app.get('/teams/:id/templates/:temp_id/edit', email_templates.edit);
-	app.post('/teams/:id/templates/:temp_id/update', email_templates.update);
+	app.get('/teams/:id/templates/new', ensureAuthenticated, email_templates.new);	//authentication? only coaches?
+	app.post('/teams/:id/templates/new', ensureAuthenticated, email_templates.create);
+	app.get('/teams/:id/templates', ensureAuthenticated, email_templates.index);
+	app.get('/teams/:id/templates/:temp_id', ensureAuthenticated, email_templates.show);
+	app.post('/teams/:id/templates/:temp_id/delete', ensureAuthenticated, email_templates.delete);
+	app.get('/teams/:id/templates/:temp_id/edit', ensureAuthenticated, email_templates.edit);
+	app.post('/teams/:id/templates/:temp_id/update', ensureAuthenticated, email_templates.update);
 
 	//filling the roster
-	app.get('/teams/:id/roster-fill', teams.roster_fill);
-	app.post('/teams/:id/roster-create', teams.roster_create);
-	app.post('/teams/:team_id/players/:player_id/remove', roster_spots.deleteByIds)
+	app.get('/teams/:id/roster-fill', ensureAuthenticated, teams.roster_fill);
+	app.post('/teams/:id/roster-create', ensureAuthenticated, teams.roster_create);
+	app.post('/teams/:team_id/players/:player_id/remove', ensureAuthenticated, roster_spots.deleteByIds);
 
 	//coach
-	app.post('/teams/:team_id/user/:user_id/remove', coaches.deleteByIds)
+	app.post('/teams/:team_id/user/:user_id/remove', ensureAuthenticated, coaches.deleteByIds)
 
 	//family
-	app.post('/family/new', families.new);
-	app.post('/family/:id/delete', families.delete);
+	app.post('/family/new',  ensureAuthenticated, families.new);	//tbd?
+	app.post('/family/:id/delete',  ensureAuthenticated, families.delete);	//further auth
 	app.get('/families', families.index);		//to be removed in production
 
 	// attendance

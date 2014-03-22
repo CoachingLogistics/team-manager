@@ -122,40 +122,52 @@ exports.logout = function(req, res){
 
 
 exports.edit = function(req, res){		//ONLY A PERSON CAN EDIT THEIR OWN ACCOUNT
-	if(req.user._id == req.params.id){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
+	
 		res.render('user/edit', {
 			user: req.user,
 			title: 'Edit User',
 		  	message: req.session.messages
 		  	//MORE STUFF
 		});
-	}else{
-		res.redirect("/404");
-	}
+
 };
 
 exports.update = function(req, res){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
 
-	User.findById(req.params.id, function(err, user){
-		user.email = req.param('email');
-		user.first_name = req.param('first_name');
-		user.last_name = req.param('last_name');
-		user.phone = req.param('phone');
-		//user.password = req.param('password');
-		user.save(function(err, user){
-			if(err){
-				console.log(err);
-				res.redirect('/404');
-			}
-			res.redirect('/account');
+		User.findById(req.params.id, function(err, user){
+			user.email = req.param('email');
+			user.first_name = req.param('first_name');
+			user.last_name = req.param('last_name');
+			user.phone = req.param('phone');
+			//user.password = req.param('password');
+			user.save(function(err, user){
+				if(err){
+					console.log(err);
+					res.redirect('/404');
+				}
+				res.redirect('/account');
+			});
+
 		});
 
-	});
+
 };
 
 
 exports.delete = function(req, res){
-  if(req.user._id == req.params.id){
+  	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
+
     User.remove({_id: req.params.id}, function(error, docs) {
     	if(error){
     		res.redirect('/users/'+req.params.id);
@@ -168,10 +180,7 @@ exports.delete = function(req, res){
 
       res.redirect('/');
     });
-  }else{
-    // req.flash('info', 'You are not authorized to delete this user');
-    res.redirect('/')
-  }
+
 };
 
 
@@ -219,6 +228,7 @@ exports.remember = function(req, res){
 
 exports.password_form = function(req, res){
 	if(req.user._id != req.params.id){
+		//not authorized
 		res.redirect('/404');
 	}
 
@@ -232,6 +242,10 @@ exports.password_form = function(req, res){
 
 
 exports.password_change = function(req, res){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
 
 	User.findById(req.params.id, function(error, user) {
 
