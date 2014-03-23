@@ -5,19 +5,23 @@ var LocalStrategy = require('passport-local').strategy;
 var Family = mongoose.model('Family');
 var Player = mongoose.model('Player');
 var Team = mongoose.model('Team');
+var Coach = mongoose.model('Coach');
 var ForgottenEmail = require('../mailers/forgotten_email');
 
 
 exports.account = function(req, res){	//test non-access?
 
-	Family.getPlayersForUser(req.user._id, function(players){
+	Coach.getTeamsForUser(req.user._id, function(err, teams){
+		Family.getPlayersForUser(req.user._id, function(players){
 
-		res.render('user/account', {
-			user: req.user,
-		  	title: 'My Account',
-		  	players: players
+			res.render('user/account', {
+				user: req.user,
+			  	title: 'My Account',
+			  	players: players,
+			  	teams: teams
+			});
+
 		});
-
 	});
 };
 
