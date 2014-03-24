@@ -46,8 +46,14 @@
 	<option   <%if(time == "PM"){%> selected="selected" <%}%>  value = "pm">PM</option>
 	</select>
 	<br />		
-	Location: <input type='text' name='location'/><br />
-	Type: <input type='text' name='type'/><br />
+	Location: <input type='text' name='location' value='<%= event.location%>'/><br />
+	Type: <input type='text' name='type' value='<%= event.type%>'/><br />
+	<div class="form-group">
+			<label for="details" class="col-sm-2 control-label">Details</label>
+			<div class="col-sm-10">
+				<textarea name='description' class="form-control" rows="3" ><%= event.description%></textarea>
+			</div>
+	</div>
 
 	<input type="submit" value="Update" />
 </form>
