@@ -92,175 +92,251 @@ exports.show = function(req, res) {
  * Player edit page
  */
 exports.edit = function(req, res) {
-	Player.findById(req.params.id, function(err, p) {
-		if(err) {
-			res.status(404).render("404", {user:req.user});
-		}
-		else {
-			var month_name;
-			if(p.date_of_birth) {
-				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-				month_name = monthNames[p.date_of_birth.getMonth()];
-			}
-			return res.render('player/edit', {
-				player: p,
-				month: month_name,
-				error: null,
-				user: req.user
-			});
-		}
-	})
+
+  Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
+    var access=false;
+
+    user_ids.forEach(function(p){ //check to see if the user is parent
+      if(req.user._id.equals(p)){
+        access = true;
+      }
+    });
+
+    if(!access){
+      //not authorized
+      res.redirect('/')
+    };
+
+    Player.findById(req.params.id, function(err, p) {
+      if(err) {
+        res.status(404).render("404", {user:req.user});
+      }
+      else {
+        var month_name;
+        if(p.date_of_birth) {
+          var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+          month_name = monthNames[p.date_of_birth.getMonth()];
+        }
+        return res.render('player/edit', {
+          player: p,
+          month: month_name,
+          error: null,
+          user: req.user
+        });
+      }
+    })
+
+
+  })//family
 }
 
 /*
  * Attempts to update a player
  */
 exports.update = function(req, res) {
-	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-	var d = new Date(date_string);
-	Player.findById(req.params.id, function(err, the_player) {
-		var saved_fname = the_player.first_name;
-		var saved_lname = the_player.last_name;
-		var saved_dob = the_player.date_of_birth;
-		the_player.first_name = req.body.first_name;
-		the_player.last_name = req.body.last_name;
-		the_player.date_of_birth = d;
-		the_player.save(function(err, saved_player) {
-			if(err || !req.body.year) {
-				the_player.first_name = saved_fname;
-				the_player.last_name = saved_lname;
-				the_player.date_of_birth = saved_dob;
-				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-				var month_name = monthNames[the_player.date_of_birth.getMonth()];
-				return res.render('player/edit', {
-					player: the_player,
-					month: month_name,
-					error: "Must include first and last names",
-					user: req.user
-				});
-			}
-			else {
-				return res.redirect('/players/' + req.params.id);
-			}
-		});
-	});
+  Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
+    var access=false;
+
+    user_ids.forEach(function(p){ //check to see if the user is parent
+      if(req.user._id.equals(p)){
+        access = true;
+      }
+    });
+
+    if(!access){
+      //not authorized
+      res.redirect('/')
+    };
+
+  	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
+  	var d = new Date(date_string);
+  	Player.findById(req.params.id, function(err, the_player) {
+  		var saved_fname = the_player.first_name;
+  		var saved_lname = the_player.last_name;
+  		var saved_dob = the_player.date_of_birth;
+  		the_player.first_name = req.body.first_name;
+  		the_player.last_name = req.body.last_name;
+  		the_player.date_of_birth = d;
+  		the_player.save(function(err, saved_player) {
+  			if(err || !req.body.year) {
+  				the_player.first_name = saved_fname;
+  				the_player.last_name = saved_lname;
+  				the_player.date_of_birth = saved_dob;
+  				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+  				var month_name = monthNames[the_player.date_of_birth.getMonth()];
+  				return res.render('player/edit', {
+  					player: the_player,
+  					month: month_name,
+  					error: "Must include first and last names",
+  					user: req.user
+  				});
+  			}
+  			else {
+  				return res.redirect('/players/' + req.params.id);
+  			}
+  		});
+  	});
+  });//family
 }
 
 /*
  * attempts to delete player
  */
 exports.delete = function(req, res) {
-	Player.remove({_id: req.params.id}, function(err, docs) {
-		if(err) {
-			return res.redirect('/players/' + req.params.id);
-		}
-		else {
+    Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
+    var access=false;
 
-			//delete dependent roster spots/attendances/families?
+    user_ids.forEach(function(p){ //check to see if the user is parent
+      if(req.user._id.equals(p)){
+        access = true;
+      }
+    });
 
-			return res.redirect('/players');
-		}
-	});
+    if(!access){
+      //not authorized
+      res.redirect('/')
+    };
+
+  	Player.remove({_id: req.params.id}, function(err, docs) {
+  		if(err) {
+  			return res.redirect('back');
+  		}
+  		else {
+
+  			//delete dependent roster spots/attendances/families?
+
+  			return res.redirect('back');
+  		}
+  	});
+  });//family
 }
 
 /*
  * Renders a page to let a user add another use to for a player
  */
 exports.addUser = function(req, res) {
-  Player.findById(req.params.id, function(err, foundPlayer) {
-    res.render('player/addUser', {user: req.user, player: foundPlayer, notice: undefined});
-  });
+  Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
+    var access=false;
+
+    user_ids.forEach(function(p){ //check to see if the user is parent
+      if(req.user._id.equals(p)){
+        access = true;
+      }
+    });
+
+    if(!access){
+      //not authorized
+      res.redirect('/')
+    };
+    Player.findById(req.params.id, function(err, foundPlayer) {
+      res.render('player/addUser', {user: req.user, player: foundPlayer, notice: undefined});
+    });
+  });//family
 }
 
 exports.createNewFamily = function(req, res) {
-  // making variables from request that are easier to access
-  var player_id = req.params.id;
-  var email = req.body.email;
-  var first_name = req.body.first_name;
-  var last_name = req.body.last_name;
-  var phone = req.body.phone;
-  // attempt to find the user
-  User.find({'email': email}, function(err, docs) {
-    if(docs.length == 0) {
-      // user email does not exist
-      // generate random password for a new user
-      var random_password = User.generateRandomPassword();
-      console.log(random_password);
-      var newUser = new User({
-        'first_name': first_name,
-        'last_name': last_name,
-        'email': email,
-        'phone': phone,
-        'password': random_password
-      });
-      // create the new user and family
-      newUser.save(function(err, savedUser) {
-        if(err) {
-          // redirect them back if there is a validation problem
-          return res.redirect('back');
-        }
-        var newFamily = new Family({
-          'user_id': savedUser._id,
-          'player_id': player_id
+  Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
+    var access=false;
+
+    user_ids.forEach(function(p){ //check to see if the user is parent
+      if(req.user._id.equals(p)){
+        access = true;
+      }
+    });
+
+    if(!access){
+      //not authorized
+      res.redirect('/')
+    };
+    // making variables from request that are easier to access
+    var player_id = req.params.id;
+    var email = req.body.email;
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var phone = req.body.phone;
+    // attempt to find the user
+    User.find({'email': email}, function(err, docs) {
+      if(docs.length == 0) {
+        // user email does not exist
+        // generate random password for a new user
+        var random_password = User.generateRandomPassword();
+        console.log(random_password);
+        var newUser = new User({
+          'first_name': first_name,
+          'last_name': last_name,
+          'email': email,
+          'phone': phone,
+          'password': random_password
         });
-        newFamily.save(function(err, savedFamily) {
+        // create the new user and family
+        newUser.save(function(err, savedUser) {
           if(err) {
-            // redirect back if there is a problem
-            return redirect('back');
+            // redirect them back if there is a validation problem
+            return res.redirect('back');
           }
-          Player.findById(player_id, function(pfbid_error, thePlayer) {
-            if(pfbid_error) {
-              return res.redirect('back');
-            }
-            else {
-              user_added_mailer.newUserCreated(savedUser, random_password, req.user, thePlayer, function(err, message) {
-                if(err) {
-                  //email failed to send, but everything else worked, so not really an issue
-                }
-                return
-              });
-              return res.redirect('/users/' + savedUser._id);
-            }
-          });
-        });
-      });
-    }
-    else {
-      // user email does exist
-      var user = docs[0];
-      // make sure the user is not already a part of a family
-      Family.find({'user_id': user._id, 'player_id': player_id}, function(famErr, famDocs) {
-        if(famDocs.length == 0) {
           var newFamily = new Family({
-            'user_id': user._id,
+            'user_id': savedUser._id,
             'player_id': player_id
           });
-          // save the new family with the found user and player
           newFamily.save(function(err, savedFamily) {
-            Player.findById(player_id, function(err, thePlayer) {
-              if(err) {
+            if(err) {
+              // redirect back if there is a problem
+              return redirect('back');
+            }
+            Player.findById(player_id, function(pfbid_error, thePlayer) {
+              if(pfbid_error) {
                 return res.redirect('back');
               }
               else {
-                user_added_mailer.emailExistingUser(user, req.user, thePlayer, function(mail_error) {
-                  if(mail_error) {
-                    // doesn't really matter
+                user_added_mailer.newUserCreated(savedUser, random_password, req.user, thePlayer, function(err, message) {
+                  if(err) {
+                    //email failed to send, but everything else worked, so not really an issue
                   }
-                  return res.redirect('/players/' + player_id);
+                  return
                 });
+                return res.redirect('/users/' + savedUser._id);
               }
             });
           });
-        }
-        else {
-          // user is already a parent
-          Player.findById(player_id, function(err, foundPlayer) {
-            res.render('player/addUser', {user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
-          });
-        }
-      });
-    }
-  });
+        });
+      }
+      else {
+        // user email does exist
+        var user = docs[0];
+        // make sure the user is not already a part of a family
+        Family.find({'user_id': user._id, 'player_id': player_id}, function(famErr, famDocs) {
+          if(famDocs.length == 0) {
+            var newFamily = new Family({
+              'user_id': user._id,
+              'player_id': player_id
+            });
+            // save the new family with the found user and player
+            newFamily.save(function(err, savedFamily) {
+              Player.findById(player_id, function(err, thePlayer) {
+                if(err) {
+                  return res.redirect('back');
+                }
+                else {
+                  user_added_mailer.emailExistingUser(user, req.user, thePlayer, function(mail_error) {
+                    if(mail_error) {
+                      // doesn't really matter
+                    }
+                    return res.redirect('/players/' + player_id);
+                  });
+                }
+              });
+            });
+          }
+          else {
+            // user is already a parent
+            Player.findById(player_id, function(err, foundPlayer) {
+              res.render('player/addUser', {user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
+            });
+          }
+        });
+      }
+    });
+  });//family
 }
 
 //AJAX ONLY

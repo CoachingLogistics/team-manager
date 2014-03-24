@@ -42,12 +42,32 @@ exports.delete = function(req, res){	//post
 
 
 exports.deleteByIds = function (req, res){
-  Coach.getByIds(req.params.team_id, req.params.user_id, function(err, coach){
-    if(err) console.log(err);
+  Team.findById(req.params.team_id, function(err, team){
+    Coach.getUsersForTeam(team._id, function(err, coaches){
+      var access = false;
+      coaches.forEach(function(c){  //check to see if the user is a coach
+        if(req.user){
+          if(req.user._id.equals(c._id)){
+            access = true;
+          }
+        }
+      });
+      if(req.user._id == req.params.user_id){access=true;}
+      
+      if(!access){
+        //not authorized
+        res.redirect('/');
+      }else{
 
-    Coach.remove({_id:coach._id}, function(err, ret){
-      res.redirect('back');
+        Coach.getByIds(req.params.team_id, req.params.user_id, function(err, coach){
+          if(err) console.log(err);
+
+          Coach.remove({_id:coach._id}, function(err, ret){
+            res.redirect('back');
+          });
+
+        });
+      }
     });
-
   });
 }

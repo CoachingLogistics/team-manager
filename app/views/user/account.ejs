@@ -26,7 +26,8 @@ MY ACCOUNT
 <%= user.phone %>
 </div>
 
-<a href="/users/<%=user._id%>/edit">Edit</a>
+<a type="button" class="btn btn-default"href="/users/<%=user._id%>/edit">Edit</a>
+<a type="button" class="btn btn-default" href="/users/<%=user._id%>/password-change">Change Password</a>
 <form action="/users/<%=user._id%>/delete" method="post">
 	<input type="submit" value="Delete"/>
 </form>
@@ -38,7 +39,7 @@ MY ACCOUNT
 	<th>Player</th><th>Teams</th><th></th><th></th>
 </tr>
 
-<!--PLAYERS, can either load these in via ajax, or here with EJS-->
+
 <% players.forEach(function(p){ %>
 <tr>
 	<td>
@@ -55,6 +56,26 @@ MY ACCOUNT
 	<td>
 		<form method='POST' action='/players/<%= p._id%>/delete'%><input type="Submit" value="Delete" /></form>
 	</td>	
+
+<% }); %>
+
+</table>
+
+<table class="table">
+<tr>
+	<th>Managing Team</th><th>Sport</th>
+</tr>
+
+
+<% teams.forEach(function(t){ %>
+<tr>
+	<td>
+		<a href="/teams/<%=t._id%>"><%= t.name%></a>
+	</td>
+	<td>
+		<%= t.sport%>
+	</td>
+</tr>
 
 <% }); %>
 

@@ -121,15 +121,31 @@ exports.calendar = function(req, res) {	//probably not needed
 exports.edit = function(req, res){
 	Team.findById(req.params.id, function(error, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
-			if(error) {
-				throw new Error(error);
-				//res.status(404).render('404');
-			}else{
-				res.render('team/edit', {
-					team: team,
-					user: req.user,
-					coaches: coaches
-				})
+
+  			var access = false;
+  			coaches.forEach(function(c){	//check to see if the user is a coach
+  				if(req.user){
+	  				if(req.user._id.equals(c._id)){
+	  					access = true;
+	  				}
+	  			}
+  			});
+  			if(!access){
+  				//not authorized
+  				res.redirect('/');
+  			}else{
+
+
+				if(error) {
+					throw new Error(error);
+					//res.status(404).render('404');
+				}else{
+					res.render('team/edit', {
+						team: team,
+						user: req.user,
+						coaches: coaches
+					})
+				}
 			}
 		});
 	});
@@ -143,24 +159,40 @@ exports.new = function(req, res){
 
 exports.update = function(req, res){
 	Team.findById(req.params.id, function(error, team){
+		Coach.getUsersForTeam(team._id, function(err, coaches){
+
+  			var access = false;
+  			coaches.forEach(function(c){	//check to see if the user is a coach
+  				if(req.user){
+	  				if(req.user._id.equals(c._id)){
+	  					access = true;
+	  				}
+	  			}
+  			});
+  			if(!access){
+  				//not authorized
+  				res.redirect('/');
+  			}else{
 		
-		var oldTeam = JSON.parse(JSON.stringify( team ));
+				var oldTeam = JSON.parse(JSON.stringify( team ));
 
-		team.name = req.body.name;
-		team.sport = req.body.sport;
+				team.name = req.body.name;
+				team.sport = req.body.sport;
 
-		team.save(function(err, team){
-			if(err){
-				res.render('team/edit', {
-					team: oldTeam,
-					message: err,
-					user: req.user
-				});
-			}else{
-				res.redirect('/teams/' + team._id);	
-			}
-		})
-	})
+				team.save(function(err, team){
+					if(err){
+						res.render('team/edit', {
+							team: oldTeam,
+							message: err,
+							user: req.user
+						});
+					}else{
+						res.redirect('/teams/' + team._id);	
+					}
+				})
+			}//else
+		});//coaches
+	});//team
 };
 
 exports.create = function(req, res){
@@ -278,16 +310,31 @@ exports.delete = function (req, res){
 
 exports.roster_fill = function(req, res){
   	Team.findById(req.params.id, function(err, team){
-		if(err) {
-			// throw new Error(err);
-			res.redirect("/404");
-		}else{
-	    	res.render('team/roster_fill', {
-	    	  team: team,
-	    	  user: req.user
-	    	});			
-		}
+		Coach.getUsersForTeam(team._id, function(err, coaches){
 
+			var access = false;
+			coaches.forEach(function(c){	//check to see if the user is a coach
+				if(req.user){
+					if(req.user._id.equals(c._id)){
+						access = true;
+					}
+				}
+			});
+			if(!access){
+				//not authorized
+				res.redirect('/');
+			}else{
+				if(err) {
+					// throw new Error(err);
+					res.redirect("/404");
+				}else{
+			    	res.render('team/roster_fill', {
+			    	  team: team,
+			    	  user: req.user
+			    	});			
+				}
+			}
+		});
   	});
 
 };
@@ -299,165 +346,181 @@ exports.roster_create = function(req, res){
 	//res.send();
 
 	Team.findById(req.params.id, function(err, team){
-		User.getByEmail(req.param('email'), function(err, usr){
-			if(err) res.redirect("/404");
+		Coach.getUsersForTeam(team._id, function(err, coaches){
+  			var access = false;
+  			coaches.forEach(function(c){	//check to see if the user is a coach
+  				if(req.user){
+	  				if(req.user._id.equals(c._id)){
+	  					access = true;
+	  				}
+	  			}
+  			});
+  			if(!access){
+  				//not authorized
+  				res.redirect('/');
+  			}else{
+
+				User.getByEmail(req.param('email'), function(err, usr){
+					if(err) res.redirect("/404");
 
 
-			if(usr){//user exists
-				//find player by user and name
-				var index = null;
-				Family.getPlayersForUser(usr._id, function(players){
-					//console.log(players);
+					if(usr){//user exists
+						//find player by user and name
+						var index = null;
+						Family.getPlayersForUser(usr._id, function(players){
+							//console.log(players);
 
-					for(var ii=0; ii<players.length; ii++){
-						//console.log(players[ii].first_name + " : "+ req.param("first_name"));
-						if(players[ii].first_name == req.param('first_name')){
-							index = ii;
-						}
-					}
+							for(var ii=0; ii<players.length; ii++){
+								//console.log(players[ii].first_name + " : "+ req.param("first_name"));
+								if(players[ii].first_name == req.param('first_name')){
+									index = ii;
+								}
+							}
 
-					if(index != null){	//if it exists, link it to team
-						var existing_player = players[index];
-
-						var spot = new RosterSpot({
-							player_id: existing_player._id,
-							team_id: team._id
-						});
-
-						spot.save(function(err, roster_spot){	//roster spot created
-
-						 	//email sent
-								Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
-									events.forEach(function(event){
-										var att = new Attendance();		//create new attendance
-										att.event_id = event._id;
-										att.roster_spot_id = roster_spot._id;
-
-										att.save(function(err, attendance){
-											if(err) console.log(err);
-											console.log(attendance);
-										})
-
-									})
-								})//event upcoming
-
-							 	console.log("existing player");
-								ExistingPlayer.sendMail(req.user, team, existing_player, usr, function(){
-										res.redirect('teams/'+req.params.id);
-								});
-						});
-
-
-					}else{		//if it don't, create it and link it to family and roster
-						var new_player = new Player({
-							first_name: req.param('first_name'),
-							last_name: req.param('last_name')
-						});
-
-						new_player.save(function(err, player){	//new player created
-							console.log(player);
-							var fam = new Family({
-								user_id: usr._id,
-								player_id: player._id
-							});
-
-							fam.save(function(err, fam){	//new family created
+							if(index != null){	//if it exists, link it to team
+								var existing_player = players[index];
 
 								var spot = new RosterSpot({
-									player_id: player._id,
+									player_id: existing_player._id,
 									team_id: team._id
 								});
 
 								spot.save(function(err, roster_spot){	//roster spot created
 
-									//email sent
-									Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
-										events.forEach(function(event){
-											var att = new Attendance();		//create new attendance
-											att.event_id = event._id;
-											att.roster_spot_id = roster_spot._id;
+								 	//email sent
+										Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+											events.forEach(function(event){
+												var att = new Attendance();		//create new attendance
+												att.event_id = event._id;
+												att.roster_spot_id = roster_spot._id;
 
-											att.save(function(err, attendance){
-												if(err) console.log(err);
-												console.log(attendance);
+												att.save(function(err, attendance){
+													if(err) console.log(err);
+													console.log(attendance);
+												})
+
 											})
+										})//event upcoming
 
-										})
-									})//event upcoming
-									
-										console.log("new player");
-										NewPlayer.sendMail(req.user, team, player, usr, function(){
+									 	console.log("existing player");
+										ExistingPlayer.sendMail(req.user, team, existing_player, usr, function(){
 												res.redirect('teams/'+req.params.id);
-										});								 
-									
-								});
-							});
-						});
-					}
-				});
-
-			}else{	//user does not exist
-				
-				var random_password = User.generateRandomPassword();
-
-				var new_user = new User({		//user's password needs to be sent to them
-					email: req.param('email'),
-					active: false,
-					password: random_password,
-					last_name: req.param('last_name')//assuming they have the same last name as the player
-				});
-
-				new_user.save(function(err, usr){	//new user created
-
-					var new_player = new Player({
-							first_name: req.param('first_name'),
-							last_name: req.param('last_name')
-						});
-
-						new_player.save(function(err, player){	//new player created
-							var fam = new Family({
-								user_id: usr._id,
-								player_id: player._id
-							});
-
-							fam.save(function(err, fam){	//new family created
-
-								var spot = new RosterSpot({
-									player_id: player._id,
-									team_id: team._id
+										});
 								});
 
-								spot.save(function(err, roster_spot){	//roster spot created
 
-									//email sent
-									Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
-										events.forEach(function(event){
-											var att = new Attendance();		//create new attendance
-											att.event_id = event._id;
-											att.roster_spot_id = roster_spot._id;
+							}else{		//if it don't, create it and link it to family and roster
+								var new_player = new Player({
+									first_name: req.param('first_name'),
+									last_name: req.param('last_name')
+								});
 
-											att.save(function(err, attendance){
-												if(err) console.log(err);
-												console.log(attendance);
-											})
-
-										})
-									})//event upcoming
-
-									console.log("new user");
-									NewUserAdded.sendMail(req.user, team, player, usr, random_password, function(){
-											res.redirect('teams/'+req.params.id);
+								new_player.save(function(err, player){	//new player created
+									console.log(player);
+									var fam = new Family({
+										user_id: usr._id,
+										player_id: player._id
 									});
-									
+
+									fam.save(function(err, fam){	//new family created
+
+										var spot = new RosterSpot({
+											player_id: player._id,
+											team_id: team._id
+										});
+
+										spot.save(function(err, roster_spot){	//roster spot created
+
+											//email sent
+											Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+												events.forEach(function(event){
+													var att = new Attendance();		//create new attendance
+													att.event_id = event._id;
+													att.roster_spot_id = roster_spot._id;
+
+													att.save(function(err, attendance){
+														if(err) console.log(err);
+														console.log(attendance);
+													})
+
+												})
+											})//event upcoming
+											
+												console.log("new player");
+												NewPlayer.sendMail(req.user, team, player, usr, function(){
+														res.redirect('teams/'+req.params.id);
+												});								 
+											
+										});
+									});
 								});
-							});
+							}
 						});
 
+					}else{	//user does not exist
+						
+						var random_password = User.generateRandomPassword();
+
+						var new_user = new User({		//user's password needs to be sent to them
+							email: req.param('email'),
+							active: false,
+							password: random_password,
+							last_name: req.param('last_name')//assuming they have the same last name as the player
+						});
+
+						new_user.save(function(err, usr){	//new user created
+
+							var new_player = new Player({
+									first_name: req.param('first_name'),
+									last_name: req.param('last_name')
+								});
+
+								new_player.save(function(err, player){	//new player created
+									var fam = new Family({
+										user_id: usr._id,
+										player_id: player._id
+									});
+
+									fam.save(function(err, fam){	//new family created
+
+										var spot = new RosterSpot({
+											player_id: player._id,
+											team_id: team._id
+										});
+
+										spot.save(function(err, roster_spot){	//roster spot created
+
+											//email sent
+											Event.getUpcomingByTeamId(team._id, function(err, events){	//get upcoming events
+												events.forEach(function(event){
+													var att = new Attendance();		//create new attendance
+													att.event_id = event._id;
+													att.roster_spot_id = roster_spot._id;
+
+													att.save(function(err, attendance){
+														if(err) console.log(err);
+														console.log(attendance);
+													})
+
+												})
+											})//event upcoming
+
+											console.log("new user");
+											NewUserAdded.sendMail(req.user, team, player, usr, random_password, function(){
+													res.redirect('teams/'+req.params.id);
+											});
+											
+										});
+									});
+								});
+
+						});
+
+
+					}//end else
 				});
-
-
-			}//end else
-		});
+			}//auth else
+		});//coaches
 	});
 };
 
@@ -473,6 +536,7 @@ exports.roster = function(req, res){
 	  				}
 	  			}
   			});
+  			
 
   			Event.getByTeamId(team._id, function(err, events){	//get events
 
