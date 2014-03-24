@@ -79,6 +79,13 @@ exports.record_response = function(req, res) {
   if(response == 't') {
     // find the attendance and update the response to be true
     Attendance.findById(attendance_id, function(err, a) {
+      if(err) {
+        // if there is an error finding the attendance redirect to home
+        // I can see this happening in development when responding to an email for the production enviornment
+        // and the ID isn't found, so adding this here
+        console.log('error finding attendance: ' + a);
+        return res.redirect('/');
+      }
       a.attending = true;
       a.save(function(err, saved_attendance) {
         res.render('attendance/emailReturn', {user: req.user, attendance: a});
