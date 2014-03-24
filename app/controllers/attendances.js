@@ -102,3 +102,31 @@ exports.record_response = function(req, res) {
     });
   }
 }
+
+// updates an attendance from the web interface
+exports.web_update = function(req, res) {
+  var response = req.params.response;
+  var event_id = req.params.event_id;
+  var player_id = req.params.player_id;
+  Event.findById(event_id, function(err, foundEvent) {
+    var team_id = foundEvent.team_id;
+    RosterSpot.getByIds(team_id, player_id, function(err, roster_spot) {
+      Attendance.getByIds(event_id, roster_spot._id, function(err, attendances) {
+        var theAttendance = attendances[0];
+        if(response == 't') {
+          theAttendance.attending = true;
+          theAttendance.save(function(saveError, saved) {
+            return res.redirect('/events/' + event_id);
+          });
+        }
+        else {
+          theAttendance.attending = false;
+          theAttendance.save(function(saveError, saved) {
+            return res.redirect('/events/' + event_id);
+          });
+        }
+      });
+    });
+
+  }); // end Event findById
+}

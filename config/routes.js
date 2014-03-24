@@ -106,6 +106,7 @@ module.exports = function(app){
 	// attendance
 	app.get('/attendance/:attendanceid/:response', attendances.record_response);
 	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
+	app.get('/attendanceUpdate/:event_id/:player_id/:response', attendances.web_update);
 	app.post('/emailAll/:event_id', attendances.email_all);
 
 	//
