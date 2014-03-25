@@ -1,8 +1,11 @@
+//app generated with yeomen generator-express
+
 var express = require('express'),
   mongoose = require('mongoose'),
   fs = require('fs'),
   config = require('./config/config');
 
+//for deployment indication
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
     if(typeof ipaddress === "undefined") {
 	    console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
@@ -16,6 +19,7 @@ db.on('error', function () {
   throw new Error('unable to connect to database at ' + config.db);
 });
 
+//requiring models
 var modelsPath = __dirname + '/app/models';
 fs.readdirSync(modelsPath).forEach(function (file) {
   if (file.indexOf('.js') >= 0) {
@@ -33,5 +37,5 @@ app.listen(config.port, ipaddress, function(){
 });
 
 
-//needed for testing
+//needed for testing (superagent)
 module.exports = app;
