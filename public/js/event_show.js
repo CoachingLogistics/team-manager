@@ -2,12 +2,12 @@ $(function(){
 
 	var event_id = $(location).attr('pathname').replace('/events/', '');
 
-	$(".playah").each(function(){
+	$(".playah").each(function(index){
 		var player_id = $(this).attr("id");
 		console.log(player_id);
 
 		//right now I have the player_id and the event_id
-		//I need the 
+		//I need the
 
 		$.get('/events/'+event_id+'/players/'+player_id+'/attendance', function(doc, err){
 			//console.log(doc[0]);
@@ -19,6 +19,7 @@ $(function(){
 				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-remove'></span>").trigger('create');
 			}else if(doc[0].attending == null){
 				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-minus'></span>").trigger('create');
+				$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + event_id + "/" + player_id + "' class='btn btn-info'>Send Reminder</a>");
 			}else{
 				console.log(player_id+ " has not been invited");
 			}
@@ -58,7 +59,7 @@ $(function(){
 			// var map = new google.maps.Map(document.getElementById("googleMap")//jquery here?
 			//   ,mapProp);
 
-			
+
 			// var directionsDisplay = new google.maps.DirectionsRenderer();
 
 
