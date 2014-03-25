@@ -1,8 +1,9 @@
-var mongoose = require('mongoose'),
-  RosterSpot = mongoose.model('RosterSpot');
-  Coach = mongoose.model('Coach');
-  Team = mongoose.model('Team');
-  Family = mongoose.model('Family');
+var mongoose = require('mongoose');
+var Player = mongoose.model('Player');
+var Coach = mongoose.model('Coach');
+var Team = mongoose.model('Team');
+var Family = mongoose.model('Family');
+var RosterSpot = mongoose.model('RosterSpot');
 
 // exports.index = function(req, res){
 //   Team.find(function(err, teams){
@@ -75,8 +76,9 @@ exports.create = function(req, res){
 		player_id: req.body.player_id
 	});
 	newRosterSpot.save(function(err, roster_spot){
-		RosterSpot.getAllPlayers(err, function(err, players){
-			RosterSpot.getAllTeams(err, function(err, teams){
+		Player.find(function(err, players){
+
+			Team.find(function(err, teams){
 				if(err){
 					console.log(err);
 					//render 404, this method should only be created when the user registers a player,
