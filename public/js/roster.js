@@ -1,7 +1,9 @@
 $(function(){
 
 	var post_url = $(location).attr('pathname').replace('/roster-fill', '/roster-create');
+	//should get "/teams/:id/roster-create"
 	var red_url = $(location).attr('pathname').replace('/roster-fill', '');
+	//should get "/teams/:id"
 	var rows = 1;
 
 	//this creates more rows of players
@@ -31,7 +33,8 @@ $(function(){
 
 	});
 
-
+	
+	//submits the individual forms, which are rows
 	$("#submit").click(function(){
 
 		for(var ii = 1; ii <=rows; ii++){

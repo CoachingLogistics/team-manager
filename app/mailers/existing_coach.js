@@ -30,6 +30,9 @@ exports.sendMail = function(creator, team, user, callback) {
   var creator_email = creator.first_name + " " + creator.last_name + "<"+ creator.email+">";
   var subject = "You're a manager on the " + team.name + " Team Manager app";
 
+
+  //we make the from the current coach of the team
+
   var mailOptions = {
     from: creator_email,
     to: user.email,
