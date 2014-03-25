@@ -1,5 +1,7 @@
 
-//this is for users who are invited to join the 
+//this is for users who are invited to join the team
+//it tells them that their player was added to a team
+//and also that a user account was created for them
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
@@ -14,6 +16,8 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 });
 
 // send mail with defined transport object
+// password should be the randomly generated password
+// user is the new user account
 exports.sendMail = function(coach, team, player, user, password, callback) {
 
   var text = "Hello Mr./Mrs. User,\n You are recieving this email because "+ player.first_name + " "+ player.last_name + " has just been added to the "+ team.name+ " " + team.sport + " team on Team Manager, by " + coach.first_name + " " +coach.last_name;
@@ -37,6 +41,8 @@ exports.sendMail = function(coach, team, player, user, password, callback) {
 
   var coach_email = coach.first_name + " " + coach.last_name + "<"+ coach.email+">";
   var subject = "You've been added to the " + team.name + " Team Manager app";
+
+//we make the from the current coach of the team
 
   var mailOptions = {
     from: coach_email,

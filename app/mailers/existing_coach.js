@@ -1,5 +1,5 @@
 //this is for new players added to a team
-// (this is the same as existing user code)
+// (this is similar to existing user mailer)
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
