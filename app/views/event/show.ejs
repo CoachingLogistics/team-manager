@@ -32,6 +32,8 @@
 						</a></td>
 						<% if(access) {%>
 						<td><a href="/attendanceUpdate/<%= event._id %>/<%= p._id%>/t" class="btn btn-tiny btn-success glyphicon glyphicon-ok"></a><a href='/attendanceUpdate/<%= event._id %>/<%= p._id%>/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a><span class="buttonPlacement"></span></td>
+						<% } else if(loggedIn) { %>
+							<td class="guardianButtons"></td>
 						<% } %>
 					</tr>
 				<% }); if(players.length == 0){ %> No players <%}%>
@@ -46,7 +48,7 @@
 				</form>
 			</th>
 		</tr>
-		<%}%>
+		<%} %>
 
 		</table>
 	</div>

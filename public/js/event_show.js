@@ -27,7 +27,18 @@ $(function(){
 		})
 	})
 
+$(".playah").each(function(index) {
+	var player_id = $(this).attr("id");
+	$.get("/players/" + player_id + "/guardians", function(data) {
 
+		var guardians = data.guardians;
+		var user_id = data.user_id;
+		console.log("user id is " + user_id);
+		if(guardians.indexOf(user_id) != -1) {
+			$($('.guardianButtons')[index]).append("Guardian");
+		}
+	});
+});
 
 
 

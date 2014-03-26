@@ -105,7 +105,7 @@ exports.create = function(req, res){
 									var att = new Attendance({
 										roster_spot_id: spot._id,
 										event_id:event._id,
-										attendance: null 
+										attendance: null
 									});
 
 									att.save(function(err, attendance){
@@ -161,7 +161,10 @@ exports.show = function(req, res){
 			  				}
 			  			}
 		  			});
-
+            var loggedIn = false;
+            if(req.user) {
+              loggedIn = true;
+            }
 	    			//find Attendances for this Event
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
 				    	res.render('event/show', {
@@ -172,11 +175,12 @@ exports.show = function(req, res){
 				    	  hour: hour,
 				    	  minutes: minutes,
 				    	  players: players,
-				    	  access: access
+				    	  access: access,
+                loggedIn: loggedIn
 				    	});
 	    			})
 		    	})
-		    })		 	
+		    })
 		}
   	});
 }
@@ -273,7 +277,7 @@ exports.update = function(req, res){
 								console.log(err);
 								res.redirect('/');
 							}else{
-								res.redirect('/events/' + event._id);	
+								res.redirect('/events/' + event._id);
 							}
 						})
 					}

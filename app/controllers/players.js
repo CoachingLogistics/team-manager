@@ -355,6 +355,13 @@ exports.guardians = function(req, res) {
   var player_id = req.params.player_id;
   Family.getUserIdsForPlayer(player_id, function(userIds) {
     // return the user ids to be used in client side JS for attendances
-    res.send(userIds);
+    var userId = undefined;
+    if(req.user) {
+      userId = req.user._id;
+    }
+    res.send({
+      'guardians': userIds,
+      'user_id': userId
+    });
   });
 }
