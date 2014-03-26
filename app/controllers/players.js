@@ -346,3 +346,15 @@ exports.teams = function(req, res){
 	})
 
 }
+
+
+// gets all of the guardians for a player. This is used in event show
+// as an ajax call to determine if a logged in user can respond for a player
+exports.guardians = function(req, res) {
+  //given the player ID
+  var player_id = req.params.player_id;
+  Family.getUserIdsForPlayer(player_id, function(userIds) {
+    // return the user ids to be used in client side JS for attendances
+    res.send(userIds);
+  });
+}

@@ -77,6 +77,9 @@ module.exports = function(app){
 	//attendance AJAX
 	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)
 
+	// email AJAX
+	app.get('/players/:player_id/guardians', players.guardians);
+
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);	//authentication?
 	app.post('/mail/test', mail.test);		//authentication?
