@@ -138,21 +138,25 @@ exports.guardianResponse = function(req, res) {
   //given the player ID and event ID
   var player_id = req.params.player_id;
   var event_id = req.params.event_id;
+  // get the family in order determine if the user is the guardian
   Family.getUserIdsForPlayer(player_id, function(userIds) {
+    // get the event, roster spot, and attendance to allow the user to record the response
     Event.findById(event_id, function(err, theEvent) {
       RosterSpot.getByIds(theEvent.team_id, player_id, function(err3, rosterSpot) {
         Attendance.find({event_id: event_id, roster_spot_id: rosterSpot._id}, function(err4, attendances) {
           // return the user ids to be used in client side JS for attendances
           var attendance = attendances[0];
           var attendance_id = undefined;
+          // in some cases the attendance won't exist because the player was added post event
           if(attendance) {
             attendance_id = attendance._id;
           }
-          console.log('the attendance id is ' + attendance_id);
+          // determine if a user is logged in
           var userId = undefined;
           if(req.user) {
             userId = req.user._id;
           }
+          // send the necessary information to the client
           res.send({
             'guardians': userIds,
             'attendance_id': attendance_id,
