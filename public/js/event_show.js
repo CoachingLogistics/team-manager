@@ -29,11 +29,12 @@ $(function(){
 
 $(".playah").each(function(index) {
 	var player_id = $(this).attr("id");
-	$.get("/players/" + player_id + "/guardians", function(data) {
+	$.get("/players/" + player_id + "/" + event_id + "/guardians", function(data) {
 
 		var guardians = data.guardians;
 		var user_id = data.user_id;
-		console.log("user id is " + user_id);
+		var attendance_id = data.attendance_id;
+		console.log("The attendnace id is " + attendance_id)
 		if(guardians.indexOf(user_id) != -1) {
 			$($('.guardianButtons')[index]).append("Guardian");
 		}

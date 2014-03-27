@@ -8,7 +8,7 @@ var Family = mongoose.model('Family');
 var Team = mongoose.model('Team');
 var RosterSpot = mongoose.model('RosterSpot');
 var user_added_mailer = require('../mailers/user_added_for_player');
-
+var Attendance = mongoose.model('Attendance');
 /*
  * Function for the players index page
  * sends all of the players to players/index.ejs
@@ -345,23 +345,4 @@ exports.teams = function(req, res){
 		res.send(teams);
 	})
 
-}
-
-
-// gets all of the guardians for a player. This is used in event show
-// as an ajax call to determine if a logged in user can respond for a player
-exports.guardians = function(req, res) {
-  //given the player ID
-  var player_id = req.params.player_id;
-  Family.getUserIdsForPlayer(player_id, function(userIds) {
-    // return the user ids to be used in client side JS for attendances
-    var userId = undefined;
-    if(req.user) {
-      userId = req.user._id;
-    }
-    res.send({
-      'guardians': userIds,
-      'user_id': userId
-    });
-  });
 }

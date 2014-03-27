@@ -130,3 +130,36 @@ exports.web_update = function(req, res) {
 
   }); // end Event findById
 }
+
+
+// gets all of the guardians for a player. This is used in event show
+// as an ajax call to determine if a logged in user can respond for a player
+exports.guardianResponse = function(req, res) {
+  //given the player ID and event ID
+  var player_id = req.params.player_id;
+  var event_id = req.params.event_id;
+  Family.getUserIdsForPlayer(player_id, function(userIds) {
+    Event.findById(event_id, function(err, theEvent) {
+      RosterSpot.getByIds(theEvent.team_id, player_id, function(err3, rosterSpot) {
+        Attendance.find({event_id: event_id, roster_spot_id: rosterSpot._id}, function(err4, attendances) {
+          // return the user ids to be used in client side JS for attendances
+          var attendance = attendances[0];
+          var attendance_id = undefined;
+          if(attendance) {
+            attendance_id = attendance._id;
+          }
+          console.log('the attendance id is ' + attendance_id);
+          var userId = undefined;
+          if(req.user) {
+            userId = req.user._id;
+          }
+          res.send({
+            'guardians': userIds,
+            'attendance_id': attendance_id,
+            'user_id': userId
+          });
+        });
+      });
+    });
+  });
+}
