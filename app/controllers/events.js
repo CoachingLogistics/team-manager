@@ -28,12 +28,13 @@ exports.new = function(req, res){	//not used in production
   });
 };
 
-exports.team_event = function(req, res){
+
+exports.team_event = function(req, res){	//renders the team-event create page
 	Team.findById(req.params.id, function(err, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
 
   			var access = false;
-  			coaches.forEach(function(c){	//check to see if the user is a coach
+  			coaches.forEach(function(c){	//check to see if the user is a coach, deny if they aren't
   				if(req.user){
 	  				if(req.user._id.equals(c._id)){
 	  					access = true;
@@ -56,6 +57,7 @@ exports.team_event = function(req, res){
 };
 
 
+//post create
 exports.create = function(req, res){
 
 	var hour = req.param('hour');
@@ -102,6 +104,7 @@ exports.create = function(req, res){
 							RosterSpot.getByTeamId(team._id, function(err, spots){
 								spots.forEach(function(spot){
 
+									//create attendances for this event for all current roster_spots of team
 									var att = new Attendance({
 										roster_spot_id: spot._id,
 										event_id:event._id,
@@ -111,11 +114,8 @@ exports.create = function(req, res){
 									att.save(function(err, attendance){
 										//nothing
 									});
-								})//foreach all attendances generated
+								})//all attendances generated
 							})
-
-
-
 
 						})
 
@@ -130,30 +130,19 @@ exports.create = function(req, res){
 
 
 
-
+//get
 exports.show = function(req, res){
   	Event.findById(req.params.id, function(err, event){
 		if(err) {
 			throw new Error(err);
 		}else{
 
-			var time = "AM";
-			var hour = event.date.getHours();
-			if(event.date.getHours()>=12){
-				hour = event.date.getHours()-12;
-				time="PM";
-			}
-			var minutes = event.date.getMinutes();
-			if(event.date.getMinutes() == 0){
-				minutes = "00";
-			}
-
-
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
 
-    			Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
-		  			var access = false;
+    			Coach.getUsersForTeam(team._id, function(err, coaches){	//get coaches
+
+		  			var access = false;	//variable to check authorization
 		  			coaches.forEach(function(c){	//check to see if the user is a coach
 		  				if(req.user){
 			  				if(req.user._id.equals(c._id)){
@@ -162,17 +151,17 @@ exports.show = function(req, res){
 			  			}
 		  			});
 
-	    			//find Attendances for this Event
+	    			//(Attendances are loaded in AJAX in the page)
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
 				    	res.render('event/show', {
 				    	  event: event,
 				    	  team: team,
 				    	  user:req.user,
-				    	  time: time,
-				    	  hour: hour,
+				    	  time: timeFormat(event.date),
 				    	  minutes: minutes,
 				    	  players: players,
-				    	  access: access
+				    	  access: access,
+				    	  date: dateFormat(event.date)
 				    	});
 	    			})
 		    	})
@@ -181,12 +170,15 @@ exports.show = function(req, res){
   	});
 }
 
+
+//get
 exports.edit = function(req, res) {
-	Event.findById(req.params.id, function(err, event) {
+	Event.findById(req.params.id, function(err, event) {	//get event
 		if(err) {
 			return res.status(404).render('404', {user:req.user});
 		}else {
-			Team.findById(event.team_id, function(err, team){
+
+			Team.findById(event.team_id, function(err, team){	//get team
 				if(err) throw new Error(err);
 				Coach.getUsersForTeam(team._id, function(err, coaches){
 
@@ -203,8 +195,6 @@ exports.edit = function(req, res) {
 		  				res.redirect('/');
 				  	}else{
 
-						Team.find(function(err, teams){
-		    				if(err) throw new Error(err);
 
 							var month_name;
 							if(event.date) {
@@ -223,13 +213,11 @@ exports.edit = function(req, res) {
 								event: event,
 								month: month_name,
 								team: team,
-								teams: teams,
 								user:req.user,
 								'error': null,
 								time: time,
 								hour: hour
 							});
-						})
 
 					}//auth else
 				});//coaches
@@ -238,7 +226,11 @@ exports.edit = function(req, res) {
 	});
 }
 
+
+//post
 exports.update = function(req, res){
+
+	//breaking down the time input to  DATETIME format
 	var hour = req.param('hour');
 	if(req.param('time')=="pm"){ hour= +hour + 12; }
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
@@ -319,8 +311,10 @@ exports.delete = function(req, res) {
 
 
 //AJAX
+
+//event_id and player_id is passed in, returns the attendance for that player & event
 exports.attendance = function(req, res){
-	//i need the roster_spot_id
+	
 	Event.findById(req.params.event_id, function(err, event){
 		Team.findById(event.team_id, function(err, team){
 			RosterSpot.getByIds(team._id, req.params.player_id, function(err, spot){
@@ -332,9 +326,30 @@ exports.attendance = function(req, res){
 
 		})
 	})
-	// Attendance.findById(req.params.event_id, function(err, event){
-	// 	Pl
-	// })
-
 
 }
+
+
+
+//helpers
+var dateFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    return month+"/"+day+"/"+year;
+};
+
+var timeFormat = function(date) {
+    var time = "AM";
+	var hour = date.getHours();
+	if( date.getHours()>=12){
+		hour =  date.getHours()-12;
+		time="PM";
+	}
+	var minutes = date.getMinutes();
+	if(date.getMinutes() == 0){
+		minutes = "00";
+	}
+
+	return hour+":"+minutes+" "+time;
+};

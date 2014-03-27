@@ -5,71 +5,8 @@ var Team = mongoose.model('Team');
 var Family = mongoose.model('Family');
 var RosterSpot = mongoose.model('RosterSpot');
 
-// exports.index = function(req, res){
-//   Team.find(function(err, teams){
-//     if(err) throw new Error(err);
-//     res.render('team/index', {
-//       teams: teams
-//     });
-//   });
-// };
 
-// exports.show = function(req, res){
-// 	//remember to put the id of the team in the request data
-//   	Team.findById(req.params.id, function(err, team){
-//   		//roster 
-//   		//RosterSpot.findAll({ team_id: team._id}, rspot);
-// 		if(err) {
-// 			throw new Error(err);
-// 			//res.status(404).render('404');
-// 		}else{
-// 	    	res.render('team/show', {
-// 	    	  team: team
-// 	    	});			
-// 		}
-
-//   	});
-// };
-
-// exports.edit = function(req, res){
-// 	Team.findById(req.params.id, function(error, team){
-// 		if(error) {
-// 			throw new Error(error);
-// 			//res.status(404).render('404');
-// 		}else{
-// 			res.render('team/edit', {
-// 				team: team
-// 			})
-// 		}
-// 	});
-// }
-
- // exports.new = function(req, res){
-
- // 	res.render('roster_spot/new', );
- // }
-
-// exports.update = function(req, res){
-// 	RosterSpot.findById(req.params.id, function(error, roster_spot){
-		
-// 		var oldTeam = JSON.parse(JSON.stringify( roster_spot ));
-
-// 		roster_spot.team = req.body.team;
-// 		roster_spot.player_id = req.body.player_id;
-
-// 		team.save(function(err, team){
-// 			if(err){
-// 				res.render('team/edit', {
-// 					team: oldTeam,
-// 					message: err
-// 				});
-// 			}else{
-// 				res.redirect('/teams/' + team._id);	
-// 			}
-// 		})
-// 	})
-// };
-
+//not used in production
 exports.create = function(req, res){
 	var newRosterSpot = new RosterSpot({
 		team_id: req.body.team_id,
@@ -96,6 +33,7 @@ exports.create = function(req, res){
 	});
 };
 
+//not functioning yet.  do we even want to delete roster spots?
 exports.delete = function (req, res){
 	Team.findById(req.params.id, function(error, team){
 		//if team doesn't have any players associated with it, can delete
@@ -103,7 +41,7 @@ exports.delete = function (req, res){
 }
 
 
-
+//deletes a roster spot for a given team and player
 exports.deleteByIds = function (req, res){
 	var access_ids =[];
 	Team.findById(req.params.team_id, function(err, team){

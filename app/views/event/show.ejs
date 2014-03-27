@@ -12,7 +12,7 @@
 
 <div class="row">
 	<div class="col-md-8">
-		<h1> <%= event.type %> for team <%= team.name %>  <small><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %></small></h1>
+		<h1> <%= event.type %> for team <%= team.name %>  <small><%= date %></small></h1>
 		<div id="googleMap"></div>
 	</div>
 	<div class="col-md-4">
@@ -55,9 +55,9 @@
 <div class="row">
 	<div class="col-md-8">
 		<h1> <%= event.type %></h1>
-				<b>Date: </b><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
+				<b>Date: </b><%= date %><br />
 				<div id="location"><b>Location: </b><%= event.location %><br /></div>
-				<b>Time: </b> <%= hour %>:<%= minutes %><%=time%><br />
+				<b>Time: </b> <%= time %><br />
 				<b>For Team: </b><a href="/teams/<%=team._id%>"><%= team.name%></a><br>
 				<b>Details: </b><%= event.description%>
 
