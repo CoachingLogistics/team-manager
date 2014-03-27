@@ -34,9 +34,8 @@ $(".playah").each(function(index) {
 		var guardians = data.guardians;
 		var user_id = data.user_id;
 		var attendance_id = data.attendance_id;
-		console.log("The attendnace id is " + attendance_id)
-		if(guardians.indexOf(user_id) != -1) {
-			$($('.guardianButtons')[index]).append("Guardian");
+		if(guardians.indexOf(user_id) != -1 && attendance_id) {
+			$($('.guardianButtons')[index]).append("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' class='btn btn-tiny btn-success glyphicon glyphicon-ok'></a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a>");
 		}
 	});
 });
