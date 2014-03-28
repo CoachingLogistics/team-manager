@@ -13,11 +13,6 @@
 <div class="row">
 	<div class="col-md-8">
 		<h1> <%= event.type %> for team <%= team.name %>  <small><%= event.date.getMonth() + 1 %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %></small></h1>
-		<% if(upcoming) { %>
-		<h2>Upcoming</h2>
-		<% } else { %>
-			<h2>Past</h2>
-		<% } %>
 		<div id="googleMap"></div>
 	</div>
 	<div class="col-md-4">
