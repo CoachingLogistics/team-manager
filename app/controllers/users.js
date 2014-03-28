@@ -39,6 +39,7 @@ exports.index = function(req, res){			//delete this later
 	});
 };
 
+
 //should limit the information shown on this page
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
