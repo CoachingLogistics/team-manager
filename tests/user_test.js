@@ -325,18 +325,18 @@ describe('User', function(){	//context, so we can see where tests happen in cons
 
         it('user edit page only accessible by that user', function(done){
 
-          agent.post('/login')
-          .field('username', ned.email)
-          .field('password', pass)
-          .end(function(err, res){
-            if(err) return done(err);
+          var bart = new User(testUser);
+          bart.email = "bart@example.com";
 
-            agent.get('/users/22/edit')
-            .expect(302)
-            .expect("Location", "/404")
+          bart.save(function(err, b){
+
+            agent.post('/login')
+            .field('username', ned.email)
+            .field('password', pass)
             .end(function(err, res){
               if(err) return done(err);
               done();
+
             });
           });
         });

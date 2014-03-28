@@ -19,7 +19,7 @@ var UserSchema = new Schema({
   first_name: { type:String, default:"Mr./Ms." },
   last_name: { type:String, default: "User" },
   phone : { type:String },
-  password : { type:String },
+  password : { type:String, required:true },
   accessToken: { type: String }, // Used for Remember Me sessions
   active: { type: Boolean, default: false }
 });
