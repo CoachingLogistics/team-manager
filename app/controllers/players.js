@@ -8,7 +8,7 @@ var Family = mongoose.model('Family');
 var Team = mongoose.model('Team');
 var RosterSpot = mongoose.model('RosterSpot');
 var user_added_mailer = require('../mailers/user_added_for_player');
-
+var Attendance = mongoose.model('Attendance');
 /*
  * Function for the players index page
  * sends all of the players to players/index.ejs

@@ -19,7 +19,7 @@ $(function(){
 				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-remove'></span>").trigger('create');
 			}else if(doc[0].attending == null){
 				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-minus'></span>").trigger('create');
-				$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + event_id + "/" + player_id + "' class='btn btn-info'>Send Reminder</a>");
+				$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + event_id + "/" + player_id + "' class='btn btn-info btn-tiny glyphicon glyphicon-envelope'></a>");
 			}else{
 				console.log(player_id+ " has not been invited");
 			}
@@ -27,7 +27,23 @@ $(function(){
 		})
 	})
 
-
+/*
+ * Goes through every player and determines if a guardian is logged on. If so it will add buttons
+ * that will allow the logged in user to update attendances statuses on the website
+ */
+$(".playah").each(function(index) {
+	var player_id = $(this).attr("id");
+	$.get("/players/" + player_id + "/" + event_id + "/guardians", function(data) {
+		// getting the data to easy to use params
+		var guardians = data.guardians;
+		var user_id = data.user_id;
+		var attendance_id = data.attendance_id;
+		// add the buttons if the user is a guardian and the attendance exists
+		if(guardians.indexOf(user_id) != -1 && attendance_id) {
+			$($('.guardianButtons')[index]).append("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' class='btn btn-tiny btn-success glyphicon glyphicon-ok'></a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a>");
+		}
+	});
+});
 
 
 

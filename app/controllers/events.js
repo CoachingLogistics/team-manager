@@ -108,7 +108,7 @@ exports.create = function(req, res){
 									var att = new Attendance({
 										roster_spot_id: spot._id,
 										event_id:event._id,
-										attendance: null 
+										attendance: null
 									});
 
 									att.save(function(err, attendance){
@@ -137,6 +137,33 @@ exports.show = function(req, res){
 			throw new Error(err);
 		}else{
 
+      // so default < = > comparisons aren't working, so
+      var upcoming = false;
+      var today = new Date();
+      var date = event.date;
+      if(today.getFullYear() < date.getFullYear()) {
+        upcoming = true;
+      }
+      else if(today.getFullYear() == date.getFullYear() && today.getMonth() < date.getMonth()) {
+        upcoming = true;
+      }
+      else if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && today.getDate() <= date.getDate()) {
+        upcoming = true;
+      }
+      else {
+        upcoming = false;
+      }
+			var time = "AM";
+			var hour = event.date.getHours();
+			if(event.date.getHours()>=12){
+				hour = event.date.getHours()-12;
+				time="PM";
+			}
+			var minutes = event.date.getMinutes();
+			if(event.date.getMinutes() == 0){
+				minutes = "00";
+			}
+
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
 
@@ -151,7 +178,15 @@ exports.show = function(req, res){
 			  			}
 		  			});
 
+
 	    			//(Attendances are loaded in AJAX in the page)
+
+            var loggedIn = false;
+            if(req.user) {
+              loggedIn = true;
+            }
+	    			//find Attendances for this Event
+
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
 				    	res.render('event/show', {
 				    	  event: event,
@@ -161,11 +196,14 @@ exports.show = function(req, res){
 				    	  minutes: minutes,
 				    	  players: players,
 				    	  access: access,
-				    	  date: dateFormat(event.date)
+				    	  date: dateFormat(event.date),
+                		  loggedIn: loggedIn,
+                		  upcoming: upcoming
+
 				    	});
 	    			})
 		    	})
-		    })		 	
+		    })
 		}
   	});
 }
@@ -265,7 +303,7 @@ exports.update = function(req, res){
 								console.log(err);
 								res.redirect('/');
 							}else{
-								res.redirect('/events/' + event._id);	
+								res.redirect('/events/' + event._id);
 							}
 						})
 					}

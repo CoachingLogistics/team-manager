@@ -77,6 +77,9 @@ module.exports = function(app){
 	//attendance AJAX
 	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)
 
+	// email AJAX
+	app.get('/players/:player_id/:event_id/guardians', attendances.guardianResponse);
+
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);	//authentication?
 	app.post('/mail/test', mail.test);		//authentication?
@@ -106,6 +109,7 @@ module.exports = function(app){
 	// attendance
 	app.get('/attendance/:attendanceid/:response', attendances.record_response);
 	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
+	app.get('/attendanceUpdate/:event_id/:player_id/:response', attendances.web_update);
 	app.post('/emailAll/:event_id', attendances.email_all);
 
 	//
