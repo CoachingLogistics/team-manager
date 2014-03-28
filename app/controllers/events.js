@@ -136,7 +136,22 @@ exports.show = function(req, res){
 		if(err) {
 			throw new Error(err);
 		}else{
-
+      // so default < = > comparisons aren't working, so
+      var upcoming = false;
+      var today = new Date();
+      var date = event.date;
+      if(today.getFullYear() < date.getFullYear()) {
+        upcoming = true;
+      }
+      else if(today.getFullYear() == date.getFullYear() && today.getMonth() < date.getMonth()) {
+        upcoming = true;
+      }
+      else if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && today.getDate() <= date.getDate()) {
+        upcoming = true;
+      }
+      else {
+        upcoming = false;
+      }
 			var time = "AM";
 			var hour = event.date.getHours();
 			if(event.date.getHours()>=12){
@@ -176,7 +191,8 @@ exports.show = function(req, res){
 				    	  minutes: minutes,
 				    	  players: players,
 				    	  access: access,
-                loggedIn: loggedIn
+                loggedIn: loggedIn,
+                upcoming: upcoming
 				    	});
 	    			})
 		    	})
