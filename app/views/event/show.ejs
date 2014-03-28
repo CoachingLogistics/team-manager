@@ -12,7 +12,7 @@
 
 <div class="row">
 	<div class="col-md-8">
-		<h1> <%= event.type %> for team <%= team.name %>  <small><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %></small></h1>
+		<h1> <%= event.type %> for team <%= team.name %>  <small><%= event.date.getMonth() + 1 %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %></small></h1>
 		<div id="googleMap"></div>
 	</div>
 	<div class="col-md-4">
@@ -30,15 +30,17 @@
 						<td><a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
 
 						</a></td>
-						<% if(access) {%>
-						<td class="buttonPlacement"></td>
+						<% if(access && upcoming) {%>
+						<td><a href="/attendanceUpdate/<%= event._id %>/<%= p._id%>/t" class="btn btn-tiny btn-success glyphicon glyphicon-ok"></a><a href='/attendanceUpdate/<%= event._id %>/<%= p._id%>/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a><span class="buttonPlacement"></span></td>
+						<% } else if(loggedIn && upcoming) { %>
+							<td class="guardianButtons"></td>
 						<% } %>
 					</tr>
 				<% }); if(players.length == 0){ %> No players <%}%>
 				</div>
 			</td>
 		</tr>
-		<%if(access){%>
+		<%if(access && upcoming){%>
 		<tr>
 			<th colspan="2">
 				<form action="/emailAll/<%=event._id%>" method="POST">
@@ -46,7 +48,7 @@
 				</form>
 			</th>
 		</tr>
-		<%}%>
+		<%} %>
 
 		</table>
 	</div>
@@ -55,7 +57,7 @@
 <div class="row">
 	<div class="col-md-8">
 		<h1> <%= event.type %></h1>
-				<b>Date: </b><%= event.date.getMonth() %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
+				<b>Date: </b><%=event.date.getMonth() + 1 %>/<%= event.date.getDate() %>/<%= event.date.getFullYear() %><br />
 				<div id="location"><b>Location: </b><%= event.location %><br /></div>
 				<b>Time: </b> <%= hour %>:<%= minutes %><%=time%><br />
 				<b>For Team: </b><a href="/teams/<%=team._id%>"><%= team.name%></a><br>
