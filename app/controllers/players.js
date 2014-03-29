@@ -13,6 +13,7 @@ var Attendance = mongoose.model('Attendance');
  * Function for the players index page
  * sends all of the players to players/index.ejs
  */
+ //not used in production
 exports.index = function(req, res) {
 	Player.find(function(err, players) {
 		res.render("player/index", {
@@ -22,18 +23,25 @@ exports.index = function(req, res) {
 	});
 }
 
+
+
 /*
  * renders a page for a new player
  */
+//functional yet?
 exports.new_player = function(req, res) {
 	res.render("player/new", {
 		user: req.user
 	});
 }
 
+
+
+
 /*
  * attemps to insert a new player
  */
+//post
 exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
@@ -65,6 +73,8 @@ exports.create_player = function(req, res) {
 	});
 }
 
+
+
 /*
  * Player show page
  */
@@ -76,17 +86,20 @@ exports.show = function(req, res) {
 		}
 		else {
 
-			//
-			//p.getTeams(function(teams){
+			//teams loaded in via page AJAX
+
+      var dob = dateFormat(p.date_of_birth);
+
 				res.render('player/show', {
 					player: p,
-					//teams: teams,
+          dob: dob,
 					user: req.user
 				});
-			//});
 		};
 	});
 }
+
+
 
 /*
  * Player edit page
@@ -128,11 +141,15 @@ exports.edit = function(req, res) {
 
 
   })//family
-}
+};
+
+
 
 /*
  * Attempts to update a player
  */
+
+ //post
 exports.update = function(req, res) {
   Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
     var access=false;
@@ -151,25 +168,15 @@ exports.update = function(req, res) {
   	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
   	var d = new Date(date_string);
   	Player.findById(req.params.id, function(err, the_player) {
-  		var saved_fname = the_player.first_name;
-  		var saved_lname = the_player.last_name;
-  		var saved_dob = the_player.date_of_birth;
+
   		the_player.first_name = req.body.first_name;
   		the_player.last_name = req.body.last_name;
   		the_player.date_of_birth = d;
+
   		the_player.save(function(err, saved_player) {
   			if(err || !req.body.year) {
-  				the_player.first_name = saved_fname;
-  				the_player.last_name = saved_lname;
-  				the_player.date_of_birth = saved_dob;
-  				var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-  				var month_name = monthNames[the_player.date_of_birth.getMonth()];
-  				return res.render('player/edit', {
-  					player: the_player,
-  					month: month_name,
-  					error: "Must include first and last names",
-  					user: req.user
-  				});
+            console.log(err);
+            res.redirect('back');
   			}
   			else {
   				return res.redirect('/players/' + req.params.id);
@@ -179,9 +186,13 @@ exports.update = function(req, res) {
   });//family
 }
 
+
+
+
 /*
  * attempts to delete player
  */
+
 exports.delete = function(req, res) {
     Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
     var access=false;
@@ -211,9 +222,13 @@ exports.delete = function(req, res) {
   });//family
 }
 
+
+
+
 /*
  * Renders a page to let a user add another use to for a player
  */
+//get
 exports.addUser = function(req, res) {
   Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
     var access=false;
@@ -234,6 +249,8 @@ exports.addUser = function(req, res) {
   });//family
 }
 
+
+//post for the above get
 exports.createNewFamily = function(req, res) {
   Family.getUserIdsForPlayer(req.params.id, function(user_ids){ //checks if req.user is a parent
     var access=false;
@@ -339,10 +356,36 @@ exports.createNewFamily = function(req, res) {
   });//family
 }
 
+
 //AJAX ONLY
+//returns the teams for a given player_id
 exports.teams = function(req, res){
 	RosterSpot.getTeamsForPlayer(req.params.id, function(teams){
 		res.send(teams);
 	})
 
 }
+
+
+//helpers
+var dateFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    return month+"/"+day+"/"+year;
+};
+
+var timeFormat = function(date) {
+    var time = "AM";
+  var hour = date.getHours();
+  if( date.getHours()>=12){
+    hour =  date.getHours()-12;
+    time="PM";
+  }
+  var minutes = date.getMinutes();
+  if(date.getMinutes() == 0){
+    minutes = "00";
+  }
+
+  return hour+":"+minutes+" "+time;
+};

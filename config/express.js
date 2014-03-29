@@ -19,7 +19,8 @@ module.exports = function(app, config) {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
 
-    //passport stuff
+
+    //passport.js stuff
     app.use(express.session({secret:'my secret phrase'}));
       // Remember Me middleware
     app.use( function (req, res, next) {
@@ -35,7 +36,7 @@ module.exports = function(app, config) {
 
     app.use(passport.initialize());
     app.use(passport.session());
-
+    //end of passport stuff
 
 
     app.use(app.router);
@@ -46,6 +47,8 @@ module.exports = function(app, config) {
 };
 
 
+
+//function to create sessions when a user logs in
 passport.serializeUser(function(user, done) {
 
   var createAccessToken = function () {
@@ -69,14 +72,14 @@ passport.serializeUser(function(user, done) {
   }
 });
 
-
+//log out
 passport.deserializeUser(function(token, done) {
   User.findOne( {accessToken: token } , function (err, user) {
     done(err, user);
   });
 });
 
-
+// describing authentication scheme (we use a create-your-own account with email and password)
 passport.use(new LocalStrategy(function(email, password, done) {
   User.findOne({ email: email }, function(err, user) {
     if (err) { return done(err); }

@@ -6,8 +6,8 @@ $(function(){
 		var player_id = $(this).attr("id");
 		console.log(player_id);
 
-		//right now I have the player_id and the event_id
-		//I need the
+		
+		//AJAX fetches the player's attendance for an event
 
 		$.get('/events/'+event_id+'/players/'+player_id+'/attendance', function(doc, err){
 			//console.log(doc[0]);

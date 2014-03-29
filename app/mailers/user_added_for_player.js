@@ -1,5 +1,6 @@
 
-//this is for users who are invited to join the
+//this is for users who have been added as a parent to an existing player
+//creates a new account for them
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
@@ -14,6 +15,8 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 });
 
 // send an email to a user that was just created
+// password should be the randomly generated password
+
 exports.newUserCreated = function(new_user, password, existing_user, player, callback) {
   var text = "Hello " + new_user.first_name + " " + new_user.last_name + ",\n You are recieving this email because you have been added as a guardian for "+ player.first_name + " "+ player.last_name + " by " + existing_user.first_name + " " +existing_user.last_name + " in the Team Manager system.";
   text+= "\nNothing else is required for you to start benefiting from the features of the Team Manager app, which include:\n ";
@@ -31,7 +34,9 @@ exports.newUserCreated = function(new_user, password, existing_user, player, cal
   html+= "<br>To view your profile please visit "+" <a href='http://production-teammanager.rhcloud.com/account'>http://production-teammanager.rhcloud.com/account</a> <br>";
   html+= "You can use the following credentials to login to your account and view your teams: <br>email: "+new_user.email+"<br> password: "+ password+ "<br>";
   html+= "Please be sure to change your password and update your information once you are logged in.<br><br>"
-  text+= "Be on the lookout for Team Manager emails regarding the the teams that" + player.first_name + " is a part of.  And thanks for using Team Manager!";
+  html+= "Be on the lookout for Team Manager emails regarding the the teams that" + player.first_name + " is a part of.  And thanks for using Team Manager!";
+
+
   // mail options
   var mailOptions = {
     'to': new_user.email,

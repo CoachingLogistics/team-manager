@@ -10,6 +10,7 @@ var team_mailer = require('../mailers/team_mailer.js');
 var rsvp_mailer = require('../mailers/rsvp_mailer.js');
 // will work in email templates later, for now just get this working
 
+
 // sends emails to all players
 exports.email_all = function(req, res) {
   var event_id = req.param('event_id');

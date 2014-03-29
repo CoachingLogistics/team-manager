@@ -16,7 +16,7 @@ var NewCoach = require('../mailers/new_coach');
 var ExistingCoach = require('../mailers/existing_coach');
 
 
-
+//in production, but should it be?
 exports.index = function(req, res){
   Team.find(function(err, teams){
     if(err) throw new Error(err);
@@ -28,6 +28,7 @@ exports.index = function(req, res){
 };
 
 
+//get
 exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){	//get team
@@ -43,6 +44,7 @@ exports.show = function(req, res){
 
   			Event.getByTeamId(team._id, function(err, evs){	//get events
   				var events = [];
+  				//formatting the event objects to be displayed in the calendar (fullcalendar.js -- google it)
 				evs.forEach(function(obj){
 					var noob = {};
 				    noob.title = obj.type+'\n'+timeFormat(obj.date)+'\n'+obj.location;
@@ -64,12 +66,13 @@ exports.show = function(req, res){
 
 				
 
-  				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players
+  				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players to show roster
 
 					if(err) {
 						throw new Error(err);
 						//res.status(404).render('404');
 					}else{
+
 				    	res.render('team/show', {
 				    	  team: team,
 				    	  user:req.user,
@@ -87,7 +90,10 @@ exports.show = function(req, res){
   	});
 };
 
-exports.calendar = function(req, res) {	//probably not needed
+
+//this is an AJAX call, which returns the fullcalendar.js formatted events
+//not used in production
+exports.calendar = function(req, res) {
 	Event.getByTeamId(req.params.id, function(err, evs){	//get events
 
 		var events = [];
@@ -117,7 +123,7 @@ exports.calendar = function(req, res) {	//probably not needed
 
 
 
-
+//get
 exports.edit = function(req, res){
 	Team.findById(req.params.id, function(error, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -151,12 +157,14 @@ exports.edit = function(req, res){
 	});
 }
 
+//get
 exports.new = function(req, res){
 	res.render('team/new',{
 		user: req.user
 	});
 }
 
+//post
 exports.update = function(req, res){
 	Team.findById(req.params.id, function(error, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -195,6 +203,7 @@ exports.update = function(req, res){
 	});//team
 };
 
+//post
 exports.create = function(req, res){
 	var newTeam = new Team({
 		name: req.body.name,
@@ -216,27 +225,28 @@ exports.create = function(req, res){
 
 			var coaches = [];
 
-			if(req.param('coaches')){
+			if(req.param('coaches')){	//string of comma separated emails, to be given coach status
 				var co = req.param('coaches').split(",");
 				
 				co.forEach(function(c){
 					c = c.replace(' ', '');
 					coaches.push(c);
 				})
+				//split the string to get individual emails
 			}
 			
 			
 
-			coach.save(function(err, coach){
-				if(coaches.length>0){
+			coach.save(function(err, coach){	//save the original coach
+				if(coaches.length>0){			//more coaches
 					coaches.forEach(function(cmail){
 
-						User.getByEmail(cmail, function(err, user){
+						User.getByEmail(cmail, function(err, user){	//see if the email is linke to a user
 							if(err) console.log(err);
 
 							if(user){	//user exists
 								
-								var manager = new Coach({
+								var manager = new Coach({	//create new coach
 									user_id: user._id,
 									team_id: team._id
 								});
@@ -278,20 +288,18 @@ exports.create = function(req, res){
 						})
 					})
 				}
-				// res.redirect('/teams/' + team._id);
+				//better to redirect to the roster fill page than the team page, better flow
 				res.redirect('/teams/'+ team._id+'/roster-fill');
 			});//coach save
 
-
-			// {
-			//	team: team,
-			//	message: "You have successfully created team " + team.name
-			//}
 		}
 
 	});
 };
 
+
+//do we want to delete a team?
+//not currently used
 exports.delete = function (req, res){
 	Team.findById(req.params.id, function(error, team){
 		//if team doesn't have any players associated with it, can delete
@@ -306,8 +314,10 @@ exports.delete = function (req, res){
 
 
 
-//roster stuff
+//******TEAM ROSTER PAGES**************
 
+
+//initial roster page, where coach first puts in his roster
 exports.roster_fill = function(req, res){
   	Team.findById(req.params.id, function(err, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -340,10 +350,8 @@ exports.roster_fill = function(req, res){
 };
 
 
-
+//post
 exports.roster_create = function(req, res){
-	//console.log(req.param('first_name')+ " "+ req.param("last_name")+" : "+ req.param("email"));
-	//res.send();
 
 	Team.findById(req.params.id, function(err, team){
 		Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -360,7 +368,7 @@ exports.roster_create = function(req, res){
   				res.redirect('/');
   			}else{
 
-				User.getByEmail(req.param('email'), function(err, usr){
+				User.getByEmail(req.param('email'), function(err, usr){	//need to check if supplied email is a user
 					if(err) res.redirect("/404");
 
 
@@ -368,16 +376,14 @@ exports.roster_create = function(req, res){
 						//find player by user and name
 						var index = null;
 						Family.getPlayersForUser(usr._id, function(players){
-							//console.log(players);
 
 							for(var ii=0; ii<players.length; ii++){
-								//console.log(players[ii].first_name + " : "+ req.param("first_name"));
-								if(players[ii].first_name == req.param('first_name')){
+								if(players[ii].first_name == req.param('first_name')){	//only checking the first name
 									index = ii;
 								}
 							}
 
-							if(index != null){	//if it exists, link it to team
+							if(index != null){	//if player already exists, link it to team
 								var existing_player = players[index];
 
 								var spot = new RosterSpot({
@@ -409,7 +415,7 @@ exports.roster_create = function(req, res){
 								});
 
 
-							}else{		//if it don't, create it and link it to family and roster
+							}else{		//if player doesn't exist, create it and link it to family and roster
 								var new_player = new Player({
 									first_name: req.param('first_name'),
 									last_name: req.param('last_name')
@@ -457,7 +463,7 @@ exports.roster_create = function(req, res){
 							}
 						});
 
-					}else{	//user does not exist
+					}else{	//user does not exist, so make one so we can email them through the system
 						
 						var random_password = User.generateRandomPassword();
 
@@ -524,10 +530,11 @@ exports.roster_create = function(req, res){
 	});
 };
 
+//get page, which lists current roster and also accepts additions to roster
 exports.roster = function(req, res){
-	//remember to put the id of the team in the request data
+
   	Team.findById(req.params.id, function(err, team){	//get team
-  		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
+  		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coaches
   			var access = false;
   			coaches.forEach(function(c){	//check to see if the user is a coach
   				if(req.user){
@@ -565,7 +572,7 @@ exports.roster = function(req, res){
 
 
 
-
+//helpers
 var dateFormat = function(date) {
     var day = date.getDate();
     var month = date.getMonth();

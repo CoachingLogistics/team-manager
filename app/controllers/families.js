@@ -4,6 +4,7 @@ var Player = mongoose.model('Player');
 var Family = mongoose.model('Family');
 
 
+//not used in production
 exports.new = function(req, res){	//post       //test
 	var newFamily = new Family({
 		user_id: req.param('user_id'),
@@ -20,6 +21,7 @@ exports.new = function(req, res){	//post       //test
 };
 
 
+//not used in production
 exports.delete = function(req, res){	//post       //test
   //if(req.user._id == req.params.id){	//authorize
     Family.remove({_id: req.params.id}, function(error, docs) {
@@ -37,6 +39,7 @@ exports.delete = function(req, res){	//post       //test
 };
 
 
+//not used in production
 exports.index = function(req, res){
   Family.find({}, function(error, families) {
 
