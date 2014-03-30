@@ -27,28 +27,28 @@ var CarpoolSchema = new Schema({
 	event_id: {type: ObjectId, required: true},
 	location: {type: String},
 	time: {type: Date},
-	size: {type: Number}
+	size: {type: Number, required: true}
 });
 
 
 
 //returns the user object for a carpool
-CarpoolSchema.method('getUser', function(callback) {
+CarpoolSchema.methods.getUser =  function(callback) {
 	User.findById(this.user_id, function(err, user){
 		callback(err, user);
 	});
-});
+};
 
 //returns the event object for a carpool
-CarpoolSchema.method('getEvent', function(callback) {
+CarpoolSchema.methods.getEvent =  function(callback) {
 	Event.findById(this.event_id, function(err, event){
 		callback(err, event);
 	});
-});
+};
 
 
 //get time formatted string
-CarpoolSchema.method('getTime', function(callback) {
+CarpoolSchema.methods.getTime =  function(callback) {
 	var date = this.time;
 	var time = "AM";
   	var hour = date.getHours();
@@ -62,7 +62,7 @@ CarpoolSchema.method('getTime', function(callback) {
   	}
 
   	return hour+":"+minutes+" "+time;
-});
+};
 
 
 
@@ -76,14 +76,14 @@ CarpoolSchema.statics.getByIds = function(user_id, event_id, callback) {
 
 
 //  returns an array of carpool Objects for a user_id
-CarpoolSchema.statics.getByuserId = function(user_id, callback) {
+CarpoolSchema.statics.getByUserId = function(user_id, callback) {
 	this.find({user_id: user_id}, function(err, rosters){
 		callback(err, rosters);
 	});
 };
 
 //  returns an array of carpool Objects for a given event_id
-CarpoolSchema.statics.getByeventId = function(event_id, callback) {
+CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 	this.find({event_id: event_id}, function(err, rosters){
 		callback(err, rosters);
 	});
