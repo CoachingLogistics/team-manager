@@ -96,7 +96,7 @@ RosterSpotSchema.statics.getTeamIdsForPlayer = function(player_id, callback) {
 RosterSpotSchema.statics.getTeamsForPlayer = function(player_id, callback) {
 	this.getTeamIdsForPlayer(player_id, function(ids){
 		Team.find({ _id: { $in: ids } }, function(err, teams){
-			callback(teams);
+			callback(teams);//yo
 		});
 	});
 };
@@ -120,7 +120,7 @@ RosterSpotSchema.statics.getPlayerIdsForTeam = function(team_id, callback) {
 RosterSpotSchema.statics.getPlayersForTeam = function(team_id, callback) {
 	this.getPlayerIdsForTeam(team_id, function(ids){
 		Player.find({ _id: { $in: ids } }, function(err, players){
-			callback(players);
+			callback(players);//yo
 		});
 	});
 };

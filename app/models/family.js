@@ -59,7 +59,7 @@ FamilySchema.statics.getUsersForPlayer = function(player_id, callback) {
 	//should this be in user? or player?
 	this.getUserIdsForPlayer(player_id, function(ids){
 		User.find({ _id: { $in: ids } }, function(err, users){
-			callback(users);
+			callback(users);//yo
 		});
 	});
 };
@@ -82,7 +82,7 @@ FamilySchema.statics.getPlayerIdsForUser = function(user_id, callback) {
 FamilySchema.statics.getPlayersForUser = function(user_id, callback) {
 	this.getPlayerIdsForUser(user_id, function(ids){
 		Player.find({ _id: { $in: ids } }, function(err, players){
-			callback(players);
+			callback(players);//yo
 		});
 	});
 };

@@ -47,7 +47,7 @@ PlayerSchema.virtual('age').get(function() {
 //tested in family_test
 PlayerSchema.methods.getUsers = function (callback) {
 	Family.getUsersForPlayer(this._id, function(users){
-		callback(users);
+		callback(users);//yo
 	})
 };
 
