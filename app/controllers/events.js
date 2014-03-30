@@ -4,6 +4,7 @@ var  Team = mongoose.model('Team');
 var  Attendance = mongoose.model('Attendance');
 var  RosterSpot = mongoose.model('RosterSpot');
 var  Coach = mongoose.model('Coach');
+var  Carpool = mongoose.model('Carpool');
 
 
 
@@ -188,19 +189,22 @@ exports.show = function(req, res){
 	    			//find Attendances for this Event
 
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
-				    	res.render('event/show', {
-				    	  event: event,
-				    	  team: team,
-				    	  user:req.user,
-				    	  time: timeFormat(event.date),
-				    	  minutes: minutes,
-				    	  players: players,
-				    	  access: access,
-				    	  date: dateFormat(event.date),
-                		  loggedIn: loggedIn,
-                		  upcoming: upcoming
+	    				Carpool.getByEventId(event._id, function(err, carpools){
+					    	res.render('event/show', {
+					    	  event: event,
+					    	  team: team,
+					    	  user:req.user,
+					    	  time: timeFormat(event.date),
+					    	  minutes: minutes,
+					    	  players: players,
+					    	  access: access,
+					    	  date: dateFormat(event.date),
+	                		  loggedIn: loggedIn,
+	                		  upcoming: upcoming,
+	                		  carpools: carpools
 
-				    	});
+					    	});
+					    })
 	    			})
 		    	})
 		    })
@@ -241,6 +245,10 @@ exports.edit = function(req, res) {
 							}
 
 							var time = "AM";
+							var minutes = event.date.getMinutes();
+							if(minutes == 0){
+								minutes = "00";
+							}
 							var hour = event.date.getHours();
 							if(event.date.getHours()>=12){
 								hour = event.date.getHours()-12;
@@ -254,7 +262,8 @@ exports.edit = function(req, res) {
 								user:req.user,
 								'error': null,
 								time: time,
-								hour: hour
+								hour: hour,
+								minutes: minutes
 							});
 
 					}//auth else

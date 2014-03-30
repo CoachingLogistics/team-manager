@@ -17,7 +17,7 @@
 	<b>Date</b> <br />
 	<% if(month) { %>
 		Month: <select name="month" class="formlist">
-		<option value=<%= event.date.getMonth() + 1 %>><%= month%></option>
+		<option value=<%= event.date.getMonth()%>><%= month%></option>
 		<option value = "0">January</option>
 		<option value = "1">February</option>
 		<option value = "2">March</option>
@@ -34,7 +34,7 @@
 		Day:<input type="number" max="31" min="1" name="day", value="<%= event.date.getDate() %>" />
 		Year:<input type="number" max="<%= new Date().getFullYear()+3 %>" min="1950" name="year" value="<%= event.date.getFullYear() %>"> <br />
 	<% } %>
-	Time: <input type="number" max="23" min="0" name="hour" value="<%=hour%>"/>:<input type="number" max="59" min="0" name="minute" value="<%=event.date.getMinutes()%>">
+	Time: <input type="number" max="23" min="0" name="hour" value="<%=hour%>"/>:<input type="number" max="59" min="0" name="minute" value="<%= minutes %>">
 	<select name="time" class="formlist">
 	<option value="am">AM</option>
 	<option   <%if(time == "PM"){%> selected="selected" <%}%>  value = "pm">PM</option>
