@@ -22,7 +22,7 @@ exports.index = function(req, res){
     if(err) throw new Error(err);
     res.render('team/index', {
       teams: teams,
-      user:req.user
+      user: req.user
     });
   });
 };
@@ -64,7 +64,7 @@ exports.show = function(req, res){
 				    events.push(noob);
 				});
 
-				
+
 
   				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players to show roster
 
@@ -367,7 +367,6 @@ exports.roster_create = function(req, res){
   				//not authorized
   				res.redirect('/');
   			}else{
-
 				User.getByEmail(req.param('email'), function(err, usr){	//need to check if supplied email is a user
 					if(err) res.redirect("/404");
 
