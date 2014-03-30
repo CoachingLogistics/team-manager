@@ -1,0 +1,52 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+<script type='text/javascript' src='/js/event_show.js'></script>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
+<div class="row">
+	<div class="col-md-8">
+		<h1> Team: <%= team.name %></h1>
+		<h1> Carpool for <%= event.type %> on <%= date %></h1>
+
+		<div id="googleMap"></div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-8">
+		<h1> Carpool Information</h1>
+				
+				<b>Team: </b><a href='/teams/<%= team._id %>'><%= team.name %></a><br>
+				<b>Event: </b><a href='/events/<%= event._id %>'><%= event.type+' on '+ date%></a><br>
+				<b>Driver: </b><a href='/users/<%= driver._id %>'><%= driver.first_name+' '+driver.last_name %></a><br>
+				<div id="location"><b>Location: </b><%= carpool.location %><br /></div>
+				<b>Time: </b> <%= time %><br />
+				<b>Capacity: </b> <%= carpool.size %><br />
+				<b>Notes: </b><%= carpool.notes%>
+
+		<% if(access){ %>
+		<br>
+		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
+		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
+			<input type="Submit" value="Delete" />
+		</form>
+
+		<% } %>
+
+	</div>
+</div>
+<hr>
+Riders
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

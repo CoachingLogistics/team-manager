@@ -78,6 +78,27 @@
 
 	</div>
 </div>
+<hr>
+<div class="row">
+	<div class="col-md-8">
+		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a> <%}%></h3>
+
+		<% if(carpools.length>0){ %>
+
+			<% carpools.forEach(function(c){ %>
+						<br><a href='/carpools/<%=c._id%>'><%= c %></a>
+			<% }) %>
+
+		<% }else{ %>
+
+			No drivers
+
+		<% } %>
+
+
+
+	</div>
+</div>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

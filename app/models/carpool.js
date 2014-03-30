@@ -26,6 +26,7 @@ var CarpoolSchema = new Schema({
 	user_id: {type: ObjectId, required: true},
 	event_id: {type: ObjectId, required: true},
 	location: {type: String},
+	notes: {type: String},
 	time: {type: Date},
 	size: {type: Number, required: true}
 });

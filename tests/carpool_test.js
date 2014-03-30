@@ -88,7 +88,8 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
     //event: event1
     location: "500 Forbes Avenue",
     time: new Date(2014, 2, 24, 12, 20),
-    size: 3
+    size: 3,
+    notes: 'Hello'
   });
 
   var carp_s_2= new Carpool({
@@ -194,6 +195,7 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
             carp_e_1.should.have.property('location', "500 Forbes Avenue");
             carp_e_1.should.have.property('time', new Date(2014, 2, 24, 16, 20));
             carp_e_1.should.have.property('size', 4);
+            carp_s_1.should.have.property('notes', 'Hello');
 
 
             done();
