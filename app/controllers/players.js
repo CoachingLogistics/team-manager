@@ -87,8 +87,9 @@ exports.show = function(req, res) {
 		else {
 
 			//teams loaded in via page AJAX
-
-      var dob = dateFormat(p.date_of_birth);
+      if (p.date_of_birth){
+        var dob = dateFormat(p.date_of_birth);  
+      } 
 
 				res.render('player/show', {
 					player: p,

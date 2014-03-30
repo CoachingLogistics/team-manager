@@ -36,7 +36,9 @@ exports.create = function(req, res){
 //not functioning yet.  do we even want to delete roster spots?
 exports.delete = function (req, res){
 	RosterSpot.remove({_id: req.params.id}, function(error, rosterSpot){
-		if err throw new Error(error);
+		if (error){
+			console.log(error);
+		}
 		else{
 			res.redirect('/teams/');
 		}
