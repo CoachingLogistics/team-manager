@@ -35,8 +35,13 @@ exports.create = function(req, res){
 
 //not functioning yet.  do we even want to delete roster spots?
 exports.delete = function (req, res){
-	Team.findById(req.params.id, function(error, team){
-		//if team doesn't have any players associated with it, can delete
+	RosterSpot.remove({_id: req.params.id}, function(error, rosterSpot){
+		if (error){
+			console.log(error);
+		}
+		else{
+			res.redirect('/teams/');
+		}
 	})
 }
 

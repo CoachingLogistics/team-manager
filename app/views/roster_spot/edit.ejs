@@ -1,7 +1,0 @@
-<h1>Edit <%= team.name %></h1>
-
-<form method="post" action='<%= "/teams/" + team._id + "/edit" %>'>
-	Team Name: <input type='text' name='name' value='<%= team.name %>' /><br />
-	Sport: <input type='text' name='sport' value='<%= team.sport %>' /><br />
-	<input type='submit' value='Update' />
-</form>
