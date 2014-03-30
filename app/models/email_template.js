@@ -1,3 +1,10 @@
+/*
+ * This is the email_template model, used for team email templates
+ *
+ */
+
+
+
 // Synchronously load model dependecies, so foreign model calls can be made
 var fs = require('fs');
 var models_path = __dirname;

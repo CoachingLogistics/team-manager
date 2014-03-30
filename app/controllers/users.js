@@ -5,22 +5,30 @@ var LocalStrategy = require('passport-local').strategy;
 var Family = mongoose.model('Family');
 var Player = mongoose.model('Player');
 var Team = mongoose.model('Team');
+var Coach = mongoose.model('Coach');
 var ForgottenEmail = require('../mailers/forgotten_email');
 
 
+//like a show page, except with editing options and personal info about players, teams
+//only a user can access their own account page
 exports.account = function(req, res){	//test non-access?
 
-	Family.getPlayersForUser(req.user._id, function(players){
+	Coach.getTeamsForUser(req.user._id, function(err, teams){
+		Family.getPlayersForUser(req.user._id, function(players){
 
-		res.render('user/account', {
-			user: req.user,
-		  	title: 'My Account',
-		  	players: players
+			res.render('user/account', {
+				user: req.user,
+			  	title: 'My Account',
+			  	players: players,
+			  	teams: teams
+			});
+
 		});
-
 	});
 };
 
+
+//not used in production
 exports.index = function(req, res){			//delete this later
 	User.find({}, function(error, users) {
 
@@ -31,6 +39,8 @@ exports.index = function(req, res){			//delete this later
 	});
 };
 
+
+//should limit the information shown on this page
 exports.show = function(req, res){
 	User.findById(req.params.id, function(error, user) {
 		Family.getPlayersForUser(user._id, function(players){
@@ -45,6 +55,7 @@ exports.show = function(req, res){
 	});
 };
 
+//get for new users
 exports.registration = function(req, res){
 	res.render('user/register', {
 		user: req.user,
@@ -53,6 +64,7 @@ exports.registration = function(req, res){
 	});
 };
 
+//post, creates new user
 exports.register = function(req, res){
 	var newUser = new User({
 		email: req.param('email'),
@@ -85,7 +97,7 @@ exports.register = function(req, res){
 	});
 };
 
-
+//login page
 exports.signin = function(req, res){
   if(req.user) {
     return res.redirect('/');
@@ -97,7 +109,8 @@ exports.signin = function(req, res){
 	});
 };
 
-
+//post
+//passport login function
 exports.login = function(req, res, next){
   passport.authenticate('local', function(err, user, info) {
 
@@ -115,67 +128,78 @@ exports.login = function(req, res, next){
 };
 
 
+//get
+//passport logout function
 exports.logout = function(req, res){
   req.logout();
   res.redirect('back');
 };
 
 
+//get
 exports.edit = function(req, res){		//ONLY A PERSON CAN EDIT THEIR OWN ACCOUNT
-	if(req.user._id == req.params.id){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
+	
 		res.render('user/edit', {
 			user: req.user,
 			title: 'Edit User',
 		  	message: req.session.messages
 		  	//MORE STUFF
 		});
-	}else{
-		res.redirect("/404");
-	}
+
 };
 
+//post
 exports.update = function(req, res){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
 
-	User.findById(req.params.id, function(err, user){
-		user.email = req.param('email');
-		user.first_name = req.param('first_name');
-		user.last_name = req.param('last_name');
-		user.phone = req.param('phone');
-		//user.password = req.param('password');
-		user.save(function(err, user){
-			if(err){
-				console.log(err);
-				res.redirect('/404');
-			}
-			res.redirect('/account');
+		User.findById(req.params.id, function(err, user){
+			user.email = req.param('email');
+			user.first_name = req.param('first_name');
+			user.last_name = req.param('last_name');
+			user.phone = req.param('phone');
+			//user.password = req.param('password');
+			user.save(function(err, user){
+				if(err){
+					console.log(err);
+					res.redirect('/404');
+				}
+				res.redirect('/account');
+			});
+
 		});
 
-	});
+
 };
 
 
+//need to check dependencies
 exports.delete = function(req, res){
-  if(req.user._id == req.params.id){
+  	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
+
     User.remove({_id: req.params.id}, function(error, docs) {
     	if(error){
     		res.redirect('/users/'+req.params.id);
     	}
-      // req.flash('info', 'User successfully deleted');
 
       //delete dependent families/coaches?
 
-
-
       res.redirect('/');
     });
-  }else{
-    // req.flash('info', 'You are not authorized to delete this user');
-    res.redirect('/')
-  }
+
 };
 
 
-
+//the "forgot my password" page
 exports.forget = function(req, res){
   	res.render('user/forget', {
 		user: req.user,
@@ -183,19 +207,20 @@ exports.forget = function(req, res){
 	});
 };
 
+//post for the above page
 exports.remember = function(req, res){
   	var email = req.param('email');
 
-  	User.getByEmail(email, function(err, user){
+  	User.getByEmail(email, function(err, user){	//find user
 
   		if(err){
   			res.render('user/login', {
 				user: req.user,
-			  	message: err
+			  	message: err 		//should probably tell them if email is not found
 			});
   		}
 
-  		var random_password = User.generateRandomPassword();
+  		var random_password = User.generateRandomPassword();	//create a new password
 		user.password = random_password;
 
 		user.save(function(err, usr){
@@ -204,9 +229,9 @@ exports.remember = function(req, res){
 				res.redirect('/404');
 			}
 
-			//can do email, or usr.email
-
+			//send them the new email
 			ForgottenEmail.sendMail(email, usr, random_password, function(){
+
 					res.render('user/login', {
 					user: req.user,
 				  	message: 'Your new password has been sent.'
@@ -216,9 +241,10 @@ exports.remember = function(req, res){
 	});
 };
 
-
+//change your password page
 exports.password_form = function(req, res){
 	if(req.user._id != req.params.id){
+		//not authorized
 		res.redirect('/404');
 	}
 
@@ -230,15 +256,19 @@ exports.password_form = function(req, res){
 	});
 };
 
-
+//post for above
 exports.password_change = function(req, res){
+	if(req.user._id != req.params.id){
+		//not authorized
+		res.redirect('/404');
+	}
 
 	User.findById(req.params.id, function(error, user) {
 
 		var old = req.param('old');
 		var password = req.param('password');
 
-		user.comparePassword(old, function(err, isMatch){
+		user.comparePassword(old, function(err, isMatch){	//old password must match the one they gave
 			if(err || isMatch == false){
 				res.render('user/password', {
 					user: req.user,
@@ -246,8 +276,8 @@ exports.password_change = function(req, res){
 				});
 			}
 
-			if(isMatch){
-				user.password = password;
+			if(isMatch){	//old password matches
+				user.password = password;	//update password
 				user.save(function(err, usr){
 					Family.getPlayersForUser(usr._id, function(players){
 						res.render('user/account', {

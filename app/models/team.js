@@ -1,19 +1,14 @@
-// Synchronously load model dependecies, so foreign model calls can be made
-// var fs = require('fs');
-// var models_path = __dirname;
-// fs.readdirSync(models_path).forEach(function (file) {
-//   if (~file.indexOf('.js')) require(models_path + '/' + file);
-// })
+/*
+ * This is the team model
+ *
+ */
 
 
+//required
  var mongoose = require('mongoose'),
    Schema = mongoose.Schema;
 
-// var RosterSpot = require('./roster_spot');
-// var RosterSpot = mongoose.model('RosterSpot');
-   
-// console.log(RosterSpot);
-
+//model
  var TeamSchema = new Schema({
    name: {type: String, required: true},
    sport: {type: String, required: true},
@@ -21,9 +16,10 @@
  });
 
 
+//don't think we can call other models, like Event or RosterSpot, from this file
 
+//none of these work
 
-//doesn't work
 // TeamSchema.methods.getPlayers = function (callback) {
 // 	RosterSpot.getPlayersForTeam(this._id, function(players){
 // 		callback(players);
@@ -31,16 +27,14 @@
 // };
 
 
-//test this
-TeamSchema.methods.getEvents = function (callback) {
+// TeamSchema.methods.getEvents = function (callback) {
 	//Event.getByTeam(this._id, function(events){
 		//callback(events);
 	//})
-};
+// };
 
 
-//test this
-TeamSchema.methods.getUsers = function (callback) {
+// TeamSchema.methods.getUsers = function (callback) {
 	// var user_array = [];
 	// this.getPlayers(function(players){
 	// 	//get the user for each player...
@@ -57,7 +51,7 @@ TeamSchema.methods.getUsers = function (callback) {
 	// 	}//async this?
 
 	// });
-};
+// };
 
 
 

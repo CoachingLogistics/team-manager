@@ -1,5 +1,5 @@
 //this is for new players added to a team
-// (this is the same as existing user code)
+// (this is similar to existing user mailer)
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
@@ -29,6 +29,9 @@ exports.sendMail = function(creator, team, user, callback) {
 
   var creator_email = creator.first_name + " " + creator.last_name + "<"+ creator.email+">";
   var subject = "You're a manager on the " + team.name + " Team Manager app";
+
+
+  //we make the from the current coach of the team
 
   var mailOptions = {
     from: creator_email,

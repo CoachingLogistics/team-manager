@@ -1,6 +1,5 @@
 /*
  * This is an attendance model, which connects a roster spot to an event for a team.
- * This is fairly barebones as the project does not have an event yet
  *
  */
 
@@ -20,12 +19,16 @@ var Player = mongoose.model('Player');
 var Roster_Spot = mongoose.model('RosterSpot');
 var Team = mongoose.model('Team');
 
+
+
 // the attendance
 var AttendanceSchema = new Schema({
 	event_id: {type: ObjectId, required: true},
 	roster_spot_id: {type: ObjectId, required: true},
-  attending: {type: Boolean, default: null}
+  	attending: {type: Boolean, default: null}	//true: respond yes, false: respond no, null: no repsonse yet
 });
+
+
 
 // returns an array of Attendance Objects with the specified event_id
 AttendanceSchema.statics.getByEventId = function(event_id, callback) {
@@ -43,7 +46,7 @@ AttendanceSchema.statics.getByRosterId = function(roster_spot_id, callback) {
 
 
 
-//test this
+//returns an array of Attendances given an event_id and roster_spot_id, most likely be 1 object or none
 AttendanceSchema.statics.getByIds = function(event_id, roster_spot_id, callback) {
 	this.find({$and: [ {roster_spot_id: roster_spot_id}, {event_id: event_id}] }, function(err, attendances){
 		callback(err, attendances);

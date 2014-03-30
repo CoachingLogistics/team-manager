@@ -1,3 +1,8 @@
+/*
+ * This is the event model, which creates an event connected to a team.
+ *
+ */
+
 
 // Synchronously load model dependecies, so foreign model calls can be made
 var fs = require('fs');
@@ -6,21 +11,21 @@ fs.readdirSync(models_path).forEach(function (file) {
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 })
 
- var mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
    Schema = mongoose.Schema,
    ObjectId = Schema.ObjectId;
- var Team = mongoose.model('Team');
+var Team = mongoose.model('Team');
 
- var EventSchema = new Schema({
+var EventSchema = new Schema({
     team_id: {type: ObjectId, required: true},
     date: {type: Date, required: true},
     location: {type: String, required: false},
     type: {type: String, required: false},
     description: {type: String, default: "no description"}
- });
+});
 
 
-//tested
+//returns the "HH:MM AM/PM" format for an event's Date object
 EventSchema.virtual('time').get(function() {
 	var hours = this.date.getHours();
 	var time = "AM";
@@ -40,7 +45,7 @@ EventSchema.virtual('time').get(function() {
 });
 
 
-//tested
+//returns events for a given team_id
 EventSchema.statics.getByTeamId = function(team_id, callback) {
 	this.find({team_id: team_id}).sort({date: 1}).execFind(function(err,events){
 		callback(err, events);
@@ -50,14 +55,14 @@ EventSchema.statics.getByTeamId = function(team_id, callback) {
 
 
 var today = new Date();
-//tested
+//returns events that happen today or in the future for a given team_id
 EventSchema.statics.getUpcomingByTeamId = function(team_id, callback) {
 	this.find({$and : [{team_id: team_id}, {date: {$gte: today}}] }).sort({date: 1}).execFind(function(err,events){
 		callback(err, events);
 	});
 };
 
-//tested
+//returns an events team
 EventSchema.methods.getTeam = function (callback) {
 	Team.findOne({_id: this.team_id}, function(err, team){
 		callback(err, team);
@@ -70,9 +75,4 @@ EventSchema.methods.getTeam = function (callback) {
 
 
 mongoose.model('Event', EventSchema);
-
-
-
-// Event = mongoose.model('Event', EventSchema);
-// //check
-// module.exports = Event;
+module.exports = mongoose.model('Event', EventSchema);

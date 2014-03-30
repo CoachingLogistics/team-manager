@@ -1,6 +1,6 @@
 
-
 //this is for existing players added to a team
+//tells users that their player was added to a team
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
@@ -28,6 +28,8 @@ exports.sendMail = function(coach, team, player, user, callback) {
 
   var coach_email = coach.first_name + " " + coach.last_name + "<"+ coach.email+">";
   var subject = "You've been added to the " + team.name + " Team Manager app";
+
+//we make the from the current coach of the team
 
   var mailOptions = {
     from: coach_email,

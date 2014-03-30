@@ -1,4 +1,5 @@
 
+//this is a password reset email, which informs the user of a password reset
 
 var nodemailer = require("nodemailer");
 var mailer_options = require("../../config/mailer");
@@ -13,6 +14,7 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 });
 
 // send mail with defined transport object
+//here, password should be the randomly generated password
 exports.sendMail = function(to, user, password, callback) {
 
   var text = "Hello " + user.first_name +",\n This is your new password for your account on Team Manager: \n email: "+user.email+"\n password: "+ password+ "\n";
