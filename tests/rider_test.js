@@ -336,5 +336,49 @@ describe('Rider', function() {
       });
     });
   });
-  
+
+  describe("#getByRosterSpotId", function() {
+    it('should have a method to get all of the Riders for a roster spot', function(done) {
+      Rider.getByRosterSpotId(mikeSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(2);
+        docs[0].should.have.property('roster_spot_id', mikeSpot._id);
+        docs[1].should.have.property('roster_spot_id', mikeSpot._id);
+        done();
+      });
+    });
+    it('should have a method to get all of the Riders for a roster spot', function(done) {
+      Rider.getByRosterSpotId(markSpot._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(2);
+        docs[0].should.have.property('roster_spot_id', markSpot._id);
+        docs[1].should.have.property('roster_spot_id', markSpot._id);
+        done();
+      });
+    });
+  });
+
+  describe('#getByCarpoolId', function() {
+    it('should have a method to get all of the riders for a carpool', function(done) {
+      Rider.getByCarpoolId(gameCarpool._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(3);
+        docs[0].should.have.property('carpool_id', gameCarpool._id);
+        docs[1].should.have.property('carpool_id', gameCarpool._id);
+        docs[2].should.have.property('carpool_id', gameCarpool._id);
+        done();
+      });
+    });
+
+    it('should have a method to get all of the riders for a carpool', function(done) {
+      Rider.getByCarpoolId(practiceCarpool._id, function(err, docs) {
+        should.not.exist(err);
+        docs.should.have.length(3);
+        docs[0].should.have.property('carpool_id', practiceCarpool._id);
+        docs[1].should.have.property('carpool_id', practiceCarpool._id);
+        docs[2].should.have.property('carpool_id', practiceCarpool._id);
+        done();
+      });
+    });
+  });
 });
