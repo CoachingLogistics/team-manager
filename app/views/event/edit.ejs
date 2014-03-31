@@ -6,6 +6,7 @@
 
 <body>
 <% include ../head %>
+
 <!--************************CONTENT**************************-->
 
 <h1>Edit <%= event.type %> for team <%= team.name %></h1>
@@ -17,7 +18,7 @@
 	<b>Date</b> <br />
 	<% if(month) { %>
 		Month: <select name="month" class="formlist">
-		<option value=<%= event.date.getMonth() + 1 %>><%= month%></option>
+		<option value=<%= event.date.getMonth() %>><%= month%></option>
 		<option value = "0">January</option>
 		<option value = "1">February</option>
 		<option value = "2">March</option>
