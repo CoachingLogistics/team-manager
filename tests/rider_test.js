@@ -381,4 +381,20 @@ describe('Rider', function() {
       });
     });
   });
+
+  describe('#getByIds', function() {
+    Rider.getByIds(gameCarpool._id, mikeSpot._id, function(err, docs) {
+      should.not.exist(err);
+      docs.should.have.property('roster_spot_id', mikeSpot._id);
+      docs.should.have.property('carpool_id', gameCarpool._id);
+      done();
+    });
+
+    Rider.getByIds(practiceCarpool._id, mattSpot._id, function(err, docs) {
+      should.not.exist(err);
+      docs.should.have.property('roster_spot_id', mattSpot._id);
+      docs.should.have.property('carpool_id', practiceCarpool._id);
+      done();
+    });
+  });
 });
