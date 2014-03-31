@@ -289,6 +289,52 @@ describe('Rider', function() {
         done();
       });
     });
-
   });
+
+  describe("#getCarpool", function() {
+    it('should have a method to get the carpool for a rider', function(done) {
+      mikeGame.getCarpool(function(err, carpool) {
+        should.not.exist(err);
+        carpool.should.have.property('location', "5000 Forbes Avenue");
+        carpool.should.have.property('size', 4);
+        carpool.should.have.property('_id', gameCarpool._id);
+      });
+    });
+    it('should have a method to get the carpool for a rider part 2', function(done) {
+      mattPractice.getCarpool(function(err, carpool) {
+        should.not.exist(err);
+        carpool.should.have.property('location', "5000 Forbes Avenue");
+        carpool.should.have.property('size', 4);
+        carpool.should.have.property('_id', practiceCarpool._id);
+      });
+    });
+  });
+
+  describe('#getRosterSpot', function() {
+    it('should have a method to get the roster spot for the rider', function(done) {
+      mikeGame.getRosterSpot(function(err, rosterSpot) {
+        should.not.exist(err);
+        rosterSpot.should.have.property('_id', mikeSpot._id);
+        done();
+      });
+    });
+  });
+
+  describe('#getRider', function() {
+    it('should have a method to get the player for the rider', function(done) {
+      mikeGame.getRider(function(err, player) {
+        should.not.exist(err);
+        player.should.have.property('_id', mike._id);
+        done();
+      });
+    });
+    it('should have a method to get the player for the rider x2', function(done) {
+      mattPrac.getRider(function(err, player) {
+        should.not.exist(err);
+        player.should.have.property('_id', matt._id);
+        done();
+      });
+    });
+  });
+  
 });
