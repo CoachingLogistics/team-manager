@@ -10,6 +10,7 @@ module.exports = function(app){
 	var families = require('../app/controllers/families');
 	var roster_spots = require('../app/controllers/roster_spots');
 	var coaches = require('../app/controllers/coaches');
+	var carpools = require('../app/controllers/carpools');
 
 	var mail = require('../app/controllers/mail');
 	var attendances = require('../app/controllers/attendances');
@@ -111,6 +112,18 @@ module.exports = function(app){
 	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
 	app.get('/attendanceUpdate/:event_id/:player_id/:response', attendances.web_update);
 	app.post('/emailAll/:event_id', attendances.email_all);
+
+	//carpools
+	app.get('/events/:event_id/carpools/new', ensureAuthenticated, carpools.new);
+	app.post('/carpools/new', ensureAuthenticated, carpools.create);
+	app.get('/carpools/:id', carpools.show);
+
+	app.get('/carpools/:id/edit', ensureAuthenticated, carpools.edit);
+	app.post('/carpools/:id/edit', ensureAuthenticated, carpools.update);
+
+	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
+
+
 
 	//
 	app.get('*', home.err);
