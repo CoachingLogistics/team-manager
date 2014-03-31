@@ -242,5 +242,53 @@ describe('Rider', function() {
       mattGame.should.have.property('confirmed', true);
       done();
     });
+
+    it('should not require a carpool_id to be set', function(done) {
+      var noCarpool = new Rider({
+        location: "my house",
+        roser_spot_id: mattSpot._id,
+        date: new Date(2014, 6, 25, 12),
+        confirmed: true
+      });
+      noCarpool.save(function(err, noCarpoolSaved) {
+        should.not.exist(err);
+        noCarpoolSaved.should.have.property('location', 'my house');
+        noCarpoolSaved.should.have.property('roster_spot_id', matt._id);
+        noCarpoolSaved.should.have.property('event_id', game._id);
+        noCarpoolSaved.should.have.property('date', new Date(2014, 6, 25, 12));
+        noCarpoolSaved.should.have.property('confirmed', true);
+        Rider.remove({_id: noCarpoolSaved._id}, function(err, docs) {
+          done();
+        });
+      });
+    });
+
+    it('should require a roster spot id to be created', function(done) {
+      var noRosterSpot = new Rider({
+        location: "my house",
+        carpool_id: gameCarpool._id,
+        date: new Date(2014, 6, 25, 12),
+        confirmed: true
+      });
+      noRosterSpot.save(function(err, savedNoRosterSpot) {
+        err.should.be.ok();
+        done();
+      });
+    });
+
+    it('confirmed should default to false when created', function(done) {
+      var basic = new Rider({
+        location: "my house",
+        carpool_id: gameCarpool._id,
+        date: new Date(2014, 6, 25, 12),
+        roster_spot_id: mikeSpot._id
+      });
+      basic.save(function(err, basicSaved) {
+        should.not.exist(err);
+        basicSaved.should.have.property('confirmed', false);
+        done();
+      });
+    });
+
   });
 });
