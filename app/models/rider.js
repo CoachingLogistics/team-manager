@@ -3,24 +3,25 @@
  */
 
 
- // Synchronously load model dependecies, so foreign model calls can be made
- var fs = require('fs');
- var models_path = __dirname;
- fs.readdirSync(models_path).forEach(function (file) {
-   if (~file.indexOf('.js')) require(models_path + '/' + file);
- });
+// Synchronously load model dependecies, so foreign model calls can be made
+var fs = require('fs');
+var models_path = __dirname;
+fs.readdirSync(models_path).forEach(function (file) {
+  if (~file.indexOf('.js')) {
+     require(models_path + '/' + file);
+   }
+});
 
  // necessary packages, models, etc
  var mongoose = require('mongoose');
  var Schema = mongoose.Schema;
  var ObjectId = Schema.ObjectId;
- var Carpool = mongoose.model('Carpool');
  var RosterSpot = mongoose.model('RosterSpot');
  var Player = mongoose.model('Player');
  var Carpool = mongoose.model('Carpool');
 
 // the schema for the Rider
-var Rider = new Schema({
+var RiderSchema = new Schema({
   roster_spot_id: {type: ObjectId, required: true},
   carpool_id: ObjectId,
   location: String,
@@ -77,3 +78,6 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
     return callback(err, docs[0]);
   });
 }
+
+mongoose.model('Rider', RiderSchema);
+module.exports = mongoose.model('Rider', RiderSchema);
