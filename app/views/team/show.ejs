@@ -39,7 +39,8 @@
 				<% players.forEach(function(p){ %>
 						<a class="list-group-item" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
 					  	<!-- use this and ajax to say if they are going to the next game or not-->
-					    <span class="pull-right glyphicon glyphicon-ok"></span><span class="pull-right glyphicon glyphicon-minus"></span><span class="pull-right glyphicon glyphicon-remove"></span>
+					    <span id="<%=p._id%>" class="pull-right ajax-attendance glyphicon"></span>
+					    <!--span class="pull-right glyphicon glyphicon-ok"></span><span class="pull-right glyphicon glyphicon-minus"></span><span class="pull-right glyphicon glyphicon-remove"></span-->
 					    </a>
 				<% }); if(players.length == 0){ %> No players <%}%>
 				</div>

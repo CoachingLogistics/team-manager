@@ -62,9 +62,12 @@ exports.team_event = function(req, res){	//renders the team-event create page
 exports.create = function(req, res){
 
 	var hour = req.param('hour');
-	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+
+	console.log("***************************");
+	console.log(hour);
 
 	Team.findById(req.param('team_id'), function(err, team){
 		if(err){
@@ -154,16 +157,6 @@ exports.show = function(req, res){
       else {
         upcoming = false;
       }
-			var time = "AM";
-			var hour = event.date.getHours();
-			if(event.date.getHours()>=12){
-				hour = event.date.getHours()-12;
-				time="PM";
-			}
-			var minutes = event.date.getMinutes();
-			if(event.date.getMinutes() == 0){
-				minutes = "00";
-			}
 
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
@@ -195,7 +188,6 @@ exports.show = function(req, res){
 					    	  team: team,
 					    	  user:req.user,
 					    	  time: timeFormat(event.date),
-					    	  minutes: minutes,
 					    	  players: players,
 					    	  access: access,
 					    	  date: dateFormat(event.date),
@@ -279,7 +271,7 @@ exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
 	var hour = req.param('hour');
-	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
@@ -390,9 +382,15 @@ var timeFormat = function(date) {
     var time = "AM";
 	var hour = date.getHours();
 	if( date.getHours()>=12){
-		hour =  date.getHours()-12;
+		if(date.getHours()>12){
+			hour =  date.getHours()-12;
+		}else{
+			hour = 12;
+		}
+
 		time="PM";
 	}
+
 	var minutes = date.getMinutes();
 	if(date.getMinutes() == 0){
 		minutes = "00";
