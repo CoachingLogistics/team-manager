@@ -368,6 +368,17 @@ exports.attendance = function(req, res){
 
 }
 
+//takes a team_id parameter
+exports.next_event = function(req, res){
+
+	Event.getUpcomingByTeamId(req.params.team_id, function(err, events){
+		var ev = events[0];
+		res.send(ev);
+
+	})
+
+}
+
 
 
 //helpers
