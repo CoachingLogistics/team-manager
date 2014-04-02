@@ -386,18 +386,13 @@ describe('Rider', function() {
   });
 
   describe('#getByIds', function() {
-    Rider.getByIds(gameCarpool._id, mikeSpot._id, function(err, docs) {
-      should.not.exist(err);
-      docs.should.have.property('roster_spot_id', mikeSpot._id);
-      docs.should.have.property('carpool_id', gameCarpool._id);
-      done();
-    });
-
-    Rider.getByIds(practiceCarpool._id, mattSpot._id, function(err, docs) {
-      should.not.exist(err);
-      docs.should.have.property('roster_spot_id', mattSpot._id);
-      docs.should.have.property('carpool_id', practiceCarpool._id);
-      done();
+    it('should have a method to get riders by ids', function(done) {
+      Rider.getByIds(gameCarpool._id, mikeSpot._id, function(err, rider) {
+        should.not.exist(err);
+        rider.should.have.property('roster_spot_id', mikeSpot._id);
+        rider.should.have.property('carpool_id', gameCarpool._id);
+        done();
+      });
     });
   });
 });

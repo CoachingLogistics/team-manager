@@ -13,6 +13,7 @@ fs.readdirSync(models_path).forEach(function (file) {
 //required
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var async = require('async');
 var User = mongoose.model('User');
 var	ObjectId = Schema.ObjectId;
 var	Player = mongoose.model('Player');
@@ -151,10 +152,10 @@ RiderSchema.statics.getByCarpoolId = function(carpool_id, callback) {
 
 // finds the rider given a carpool id and a roster_spot id
 RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
-  this.find({'carpool_id': carpool_id, 'roster_spot_id': roster_spot_id}, function(err, docs) {
-    return callback(err, docs[0]);
+  this.findOne({ $and: [ {carpool_id: carpool_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+    callback(err, rider);
   });
-}
+};
 
 
 mongoose.model('Rider', RiderSchema);
