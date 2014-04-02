@@ -242,8 +242,12 @@ exports.edit = function(req, res) {
 								minutes = "00";
 							}
 							var hour = event.date.getHours();
-							if(event.date.getHours()>=12){
-								hour = event.date.getHours()-12;
+							if( event.date.getHours()>=12){
+								if(event.date.getHours()>12){
+									hour =  event.date.getHours()-12;
+								}else{
+									hour = 12;
+								}
 								time="PM";
 							}
 
@@ -253,6 +257,7 @@ exports.edit = function(req, res) {
 								team: team,
 								user:req.user,
 								'error': null,
+								date: dateFormat(event.date),
 								time: time,
 								hour: hour,
 								minutes: minutes
