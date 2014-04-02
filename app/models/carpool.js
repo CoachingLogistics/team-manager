@@ -13,7 +13,6 @@ fs.readdirSync(models_path).forEach(function (file) {
 //required
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var async = require('async');
 var User = mongoose.model('User');
 var	ObjectId = Schema.ObjectId;
 var	Player = mongoose.model('Player');
