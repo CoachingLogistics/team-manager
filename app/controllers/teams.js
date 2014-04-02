@@ -574,7 +574,7 @@ exports.roster = function(req, res){
 //helpers
 var dateFormat = function(date) {
     var day = date.getDate();
-    var month = date.getMonth();
+    var month = date.getMonth()+1;
     var year = date.getFullYear();
     return month+"/"+day+"/"+year;
 };
@@ -583,9 +583,15 @@ var timeFormat = function(date) {
     var time = "AM";
 	var hour = date.getHours();
 	if( date.getHours()>=12){
-		hour =  date.getHours()-12;
+		if(date.getHours()>12){
+			hour =  date.getHours()-12;
+		}else{
+			hour = 12;
+		}
+
 		time="PM";
 	}
+
 	var minutes = date.getMinutes();
 	if(date.getMinutes() == 0){
 		minutes = "00";
