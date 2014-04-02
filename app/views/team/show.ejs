@@ -11,6 +11,7 @@
     	eventTextColor: "#000000",
         contentHeight:200});});
 </script>
+<script type='text/javascript' src='/js/team_show.js'></script>
 
 </head>
 
@@ -32,6 +33,10 @@
 			<th class="text-left">Players</th>
 			<th class="text-right">Next event</th>
 		</thead>
+		<tr>
+			<td></td>
+			<td id="event-name" class="text-right"></td>
+		</tr>
 
 		<tr>
 			<td colspan="2">
@@ -39,7 +44,8 @@
 				<% players.forEach(function(p){ %>
 						<a class="list-group-item" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
 					  	<!-- use this and ajax to say if they are going to the next game or not-->
-					    <span class="pull-right glyphicon glyphicon-ok"></span><span class="pull-right glyphicon glyphicon-minus"></span><span class="pull-right glyphicon glyphicon-remove"></span>
+					    <span id="<%=p._id%>" class="pull-right ajax-attendance glyphicon"></span>
+					    <!--span class="pull-right glyphicon glyphicon-ok"></span><span class="pull-right glyphicon glyphicon-minus"></span><span class="pull-right glyphicon glyphicon-remove"></span-->
 					    </a>
 				<% }); if(players.length == 0){ %> No players <%}%>
 				</div>
