@@ -20,8 +20,8 @@ exports.create = function(req, res) {
   var carpool_id = req.params.carpool_id;
   var player_id = req.body.player;
   var location = req.body.location;
-  var hour = req.body.hour;
-  var minute = req.body.minute;
+  var hour = parseInt(req.body.hour);
+  var minute = parseInt(req.body.minute);
   var specifier = req.body.ampm;
   Carpool.findById(carpool_id, function(err, cp) {
     if(err) {
@@ -64,5 +64,4 @@ exports.create = function(req, res) {
       });
     }
   });
-  res.send('carpool id is ' + carpool_id + " and player_id is " + player_id);
 }
