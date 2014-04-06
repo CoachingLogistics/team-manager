@@ -79,6 +79,7 @@ describe('Attendance', function() {
     Attendance.remove();
     done();
   });
+
   describe('#save()', function(done) {
     // should work
     it('should allow an attendance to be saved with an event_id, roster spot id, and attendance response', function(done) {
@@ -321,5 +322,61 @@ describe('Attendance', function() {
       });
     });
   });
+
+
+
+
+  describe('#getPlayerAttendanceForEvent', function(done){
+    // these are the attendances we will be using for this
+    var mattGame;
+    var markGame;
+    var mattPrac;
+    var lukePrac;
+
+    beforeEach(function(done) {
+      mattGame = new Attendance({'event_id': game._id, 'roster_spot_id': mattSpot._id, 'attending': true});
+      mattGame.save(function(err, mattGame_saved) {
+        markGame = new Attendance({'event_id': game._id, 'roster_spot_id': markSpot._id, 'attending': null});
+        markGame.save(function(err, markGame_saved) {
+          mattPrac = new Attendance({'event_id': prac._id, 'roster_spot_id': mattSpot._id, 'attending': false});
+          mattPrac.save(function(err, mattPrac_saved) {
+            lukePrac = new Attendance({'event_id': prac._id, 'roster_spot_id': lukeSpot._id, 'attending': true});
+            lukePrac.save(function(err, lukePrac_saved) {
+              // now we can test
+              done();
+            });// lukePrac save
+          }); // mattPrac save
+        }); // markGame save
+      }); // mattGame save
+    }); // before each
+
+
+    it('should have a function to get all players for an event (game)', function(done) {
+      Attendance.getPlayerAttendanceForEvent(game._id, function(err, attending, skipping, norespond) {
+        attending.should.have.length(1);
+        attending[0].should.have.property('attending', true);
+        skipping.should.have.length(0);
+        norespond.should.have.length(1);
+        norespond[0].should.have.property('attending', null);
+        done();
+
+      });
+    });
+
+    // test for practice
+    it('should have a function to get all players for an event (practice)', function(done) {
+      Attendance.getPlayerAttendanceForEvent(prac._id, function(err, attending, skipping, norespond) {
+        attending.should.have.length(1);
+        attending[0].should.have.property('attending', true);
+        skipping.should.have.length(1);
+        skipping[0].should.have.property('attending', false);
+        norespond.should.have.length(0);
+        done();
+      });
+    });
+
+  })
+
+
 
 }); // end describe Attendance

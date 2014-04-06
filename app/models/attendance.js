@@ -64,7 +64,7 @@ AttendanceSchema.statics.getPlayersForEvent = function(event_id, callback) {
 			// gets the roster spots
 			Roster_Spot.findById(item.roster_spot_id, function(error, roster_spot) {
 				// find the player model
-				Player.findById(roster_spot._id, function(error2, player) {
+				Player.findById(roster_spot.player_id, function(error2, player) {
 					toReturn.push(player);
 					innerCallback();
 				});
@@ -74,6 +74,48 @@ AttendanceSchema.statics.getPlayersForEvent = function(event_id, callback) {
 		});
 	});
 };
+
+
+
+//tested
+AttendanceSchema.statics.getPlayerAttendanceForEvent = function(event_id, callback) {
+	var attending = new Array;
+	var skipping = new Array;
+	var norespond = new Array;
+	// get every attendance
+	this.find({'event_id': event_id}, function(err, attendances) {
+		// use async to loop through each one and add it to an array
+		async.each(attendances, function(item, innerCallback){
+			// gets the roster spots
+			Roster_Spot.findById(item.roster_spot_id, function(error, roster_spot) {
+				// find the player model
+				Player.findById(roster_spot.player_id, function(error2, player) {
+
+					var object = {};
+					object.first_name = player.first_name;
+					object.last_name = player.last_name;
+					object.attending = item.attending; 
+
+					if(object.attending == true){
+						attending.push(object);
+					}else if(object.attending == false){
+						skipping.push(object);
+					}else{
+						norespond.push(object);
+					}
+
+
+					innerCallback();
+				});
+			});
+		}, function(err) {
+
+			callback(err, attending, skipping, norespond);
+		});
+	});
+};
+
+
 
 // set the schema and export the model
 mongoose.model('Attendance', AttendanceSchema);
