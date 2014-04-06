@@ -158,4 +158,4 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
 
 
 mongoose.model('Rider', RiderSchema);
-module.exports = mongoose.model('Rider', RiderSchema);
+module.exports.Rider = mongoose.model('Rider', RiderSchema);
