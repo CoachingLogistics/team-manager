@@ -14,23 +14,27 @@ $(function(){
 			console.log(ev.date);
 			var date = new Date(ev.date);
 			console.log(date);
-			$("#event-name").html("<a href='/events/"+ev._id+"'>"+ev.type+"  "+dateFormat(date)+"</a>").trigger('create');
+			if(ev){
+				$("#event-name").html("<a href='/events/"+ev._id+"'>"+ev.type+"  "+dateFormat(date)+"</a>").trigger('create');
+				
+				$.get('/events/'+ev._id+'/players/'+player_id+'/attendance', function(doc, err){
 
+					if(doc[0].attending == true){
+						$('#'+player_id).addClass("glyphicon-ok").trigger('create');
+					}else if(doc[0].attending == false){
+						$('#'+player_id).addClass("glyphicon-remove").trigger('create');
+					}else if(doc[0].attending == null){
+						$('#'+player_id).addClass("glyphicon-minus").trigger('create');
+						$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + ev._id + "/" + player_id + "' class='btn btn-info btn-tiny glyphicon glyphicon-envelope'></a>");
+					}else{
+						console.log(player_id+ " has not been invited");
+					}
 
-			$.get('/events/'+ev._id+'/players/'+player_id+'/attendance', function(doc, err){
+				})
 
-				if(doc[0].attending == true){
-					$('#'+player_id).addClass("glyphicon-ok").trigger('create');
-				}else if(doc[0].attending == false){
-					$('#'+player_id).addClass("glyphicon-remove").trigger('create');
-				}else if(doc[0].attending == null){
-					$('#'+player_id).addClass("glyphicon-minus").trigger('create');
-					$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + ev._id + "/" + player_id + "' class='btn btn-info btn-tiny glyphicon glyphicon-envelope'></a>");
-				}else{
-					console.log(player_id+ " has not been invited");
-				}
-
-			})
+			} else {
+				$("#event-name").html("No upcoming events").trigger('create');
+			}
 
 		})
 	})
