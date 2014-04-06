@@ -11,6 +11,7 @@ module.exports = function(app){
 	var roster_spots = require('../app/controllers/roster_spots');
 	var coaches = require('../app/controllers/coaches');
 	var carpools = require('../app/controllers/carpools');
+	var riders = require('../app/controllers/riders');
 
 	var mail = require('../app/controllers/mail');
 	var attendances = require('../app/controllers/attendances');
@@ -121,8 +122,12 @@ module.exports = function(app){
 
 	app.get('/carpools/:id/edit', ensureAuthenticated, carpools.edit);
 	app.post('/carpools/:id/edit', ensureAuthenticated, carpools.update);
+	app.get('/carpools/:id/addRider', ensureAuthenticated, carpools.addRider);
 
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
+
+	app.get('/riders', riders.index);
+	app.post('/riders/createForCarpool/:carpool_id', riders.create);
 
 
 

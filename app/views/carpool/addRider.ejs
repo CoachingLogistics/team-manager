@@ -1,0 +1,35 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+<h1>Add to your Carpool</h1>
+<h2>Who will be going with you to this event?</h2>
+<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
+  <b>Player Name</b>
+  <select name="player" class="form-control" required>
+  <option></option>
+  <% players.forEach(function(player) { %>
+    <option value="<%=player._id%>"><%= player.full_name %></option>
+  <% }) %>
+  </select>
+  <b>Where will you pick them up?</b>
+  <input type="text" name="location">
+  <b>Time</b>
+  <input type="number" name="hour">:<input type="number" name="minute">
+  <select name="ampm">
+    <option></option>
+    <option value="am">AM</option>
+    <option value="pm">PM</option>
+  </select>
+  <input type="submit" value="add player">
+</form>
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>
