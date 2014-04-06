@@ -6,6 +6,11 @@ var  RosterSpot = mongoose.model('RosterSpot');
 var  Coach = mongoose.model('Coach');
 var  Carpool = mongoose.model('Carpool');
 
+//for automated emails
+var schedule = require('node-schedule');
+var mailer = require('../mailers/team_mailer.js');
+var EventReminder = require('../mailers/event_attendance');
+
 
 
 
@@ -66,9 +71,6 @@ exports.create = function(req, res){
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
-	console.log("***************************");
-	console.log(hour);
-
 	Team.findById(req.param('team_id'), function(err, team){
 		if(err){
 			//team does not exist
@@ -102,6 +104,33 @@ exports.create = function(req, res){
 					if(err){
 						console.log(err);
 					}else{//no err
+
+							//*********************************************************************************************CHANGE
+							var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//set for 2 days before event at noon
+							// var now = new Date();
+							// var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
+
+							console.log("check your email at "+remind);
+
+							var job = schedule.scheduleJob(remind, function(){	//this gets carried out whenever the job is scheduled
+
+								Event.findById(event._id, function(error, ev){
+									if(ev){
+										Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+											EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
+												console.log("email reminder sent now");
+											});
+										});
+									}else{
+										//nothing, the event got deleted so don't do anything
+										
+									}
+								});
+							});
+
+
+
+
 
 						Team.findById(event.team_id, function(err, team){
 
@@ -322,6 +351,7 @@ exports.update = function(req, res){
 
 exports.delete = function(req, res) {
 	Event.findById(req.params.id, function(error, event){
+		if(event){
 		Team.findById(event.team_id, function(err, team){
 			if(err) throw new Error(err);
 			Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -343,12 +373,16 @@ exports.delete = function(req, res) {
 							return res.redirect('/events/' + req.params.id);
 						}
 						else {
-							return res.redirect('/events');
+							return res.redirect('/teams/'+team._id);
 						}
 					});
 				}
 			});
 		});
+		}else{
+			res.redirect('/teams/'+team._id);
+		}
+
 	});
 }
 
