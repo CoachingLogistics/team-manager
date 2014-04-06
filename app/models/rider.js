@@ -1,27 +1,17 @@
-// /*
-//  * Rider model to connect a roster spot to a carpool
-//  */
-//
-//
-// // Synchronously load model dependecies, so foreign model calls can be made
 // var fs = require('fs');
 // var models_path = __dirname;
 // fs.readdirSync(models_path).forEach(function (file) {
-//   if (~file.indexOf('.js')) {
-//     console.log('requiring ' + file);
-//      require(models_path + '/' + file);
-//    }
-// });
+//   if (~file.indexOf('.js')) require(models_path + '/' + file);
+// })
 //
+// var mongoose = require('mongoose');
+// var Schema = mongoose.Schema;
+// var ObjectId = Schema.ObjectId;
 //
-//  // necessary packages, models, etc
-//  var mongoose = require('mongoose');
-//  var Schema = mongoose.Schema;
-//  var ObjectId = Schema.ObjectId;
-//  var RosterSpot = mongoose.model('RosterSpot');
-//  var Player = mongoose.model('Player');
-//  var	Team = mongoose.model('Team');
-//  var Carpool = mongoose.model('Carpool');
+// var Player = mongoose.model('Player');
+// var RosterSpot = mongoose.model('RosterSpot');
+// so this is the thing that isn't working, and I am having trouble figuring out why Player and RosterSpot work but Carpool doesn't
+// var Carpool = mongoose.model('Carpool');
 //
 // // the schema for the Rider
 // var RiderSchema = new Schema({
@@ -34,14 +24,14 @@
 //
 // // gets the carpool for a ride
 // RiderSchema.methods.getCarpool = function(callback) {
-//   Carpool.findById(this.carpool_id, function(err, the_carpool) {
+//   Carpool.findById(this.carpool_id, function(err, theCarpool) {
 //     return callback(err, theCarpool);
 //   });
 // }
 //
 // // gets the roster spot for the ride
 // RiderSchema.methods.getRosterSpot = function(callback) {
-//   RoserSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
+//   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
 //     return callback(err, theRosterSpot);
 //   });
 // }
@@ -49,7 +39,7 @@
 // // gets the player who is the rider
 // RiderSchema.methods.getRider = function(callback) {
 //   // find the roster spot
-//   RosterSpot.findById(this.roser_spot_id, function(err, theRosterSpot) {
+//   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
 //     // if there is an error return it here
 //     if(err) {
 //       return callback(err);
@@ -77,10 +67,11 @@
 //
 // // finds the rider given a carpool id and a roster_spot id
 // RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
-//   this.find({'carpool_id': carpool_id, 'roster_spot_id': roster_spot_id}, function(err, docs) {
-//     return callback(err, docs[0]);
+//   this.findOne({ $and: [ {carpool_id: carpool_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+//     callback(err, rider);
 //   });
-// }
+// };
+//
 //
 // mongoose.model('Rider', RiderSchema);
 // module.exports = mongoose.model('Rider', RiderSchema);
