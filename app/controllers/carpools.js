@@ -7,6 +7,7 @@ var	Team = mongoose.model('Team');
 var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 var	Carpool = mongoose.model('Carpool');
+var Rider = mongoose.model('Rider');
 var async = require('async');
 
 
@@ -26,17 +27,29 @@ exports.show = function(req, res){
 							access=true;
 						}
 					}
-
-					res.render('carpool/show', {
-					  carpool: carpool,
-				      event: event,
-				      date: dateFormat(carpool.time),
-				      time: timeFormat(carpool.time),
-				      team: team,
-				      driver: driver,
-				      user:req.user,
-				      access: access
-				    });
+					Rider.getByCarpoolId(carpool._id, function(err, riders) {
+						var riderArr = new Array();
+						async.each(riders, function(rider, innerCallback) {
+							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
+								Player.findById(rs.player_id, function(err, pl) {
+									riderArr.push(pl);
+									innerCallback();
+								});
+							});
+						}, function(err) {
+							res.render('carpool/show', {
+								carpool: carpool,
+									event: event,
+									date: dateFormat(carpool.time),
+									time: timeFormat(carpool.time),
+									team: team,
+									driver: driver,
+									user:req.user,
+									riders: riderArr,
+									access: access
+								});
+						});
+					});
 				});
 			})
 		})

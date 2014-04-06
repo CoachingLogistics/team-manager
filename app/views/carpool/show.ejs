@@ -45,6 +45,22 @@
 </div>
 <hr>
 Riders
+<% if(riders.length == 0 ) { %>
+	<em>There are no riders to display</em>
+<% } else { %>
+	<table>
+		<thead>
+			<th>Name</th>
+		</thead>
+		<tbody>
+			<% riders.forEach(function(rider) { %>
+			<tr>
+				<td><%= rider.full_name %></td>
+			</tr>
+		<% }) %>
+	</tbody>
+</table>
+<% } %>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>
