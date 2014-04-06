@@ -7,6 +7,7 @@ var	Team = mongoose.model('Team');
 var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 var	Carpool = mongoose.model('Carpool');
+var async = require('async');
 
 
 //get
@@ -180,6 +181,41 @@ exports.delete = function(req, res){	//post       //test
       })
 
 };
+
+/*
+ * Renders the page to add a rider to a carpool
+ */
+exports.addRider = function(req, res) {
+	Carpool.findById(req.params.id, function(err, cp) {
+		if(err) {
+			// lasy error handling for now
+			return res.redirect('/');
+		}
+		else {
+			var event_id = cp.event_id;
+			Event.findById(event_id, function(err, theEvent) {
+				var team_id = theEvent.team_id;
+				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
+					var playerArr = new Array();
+					async.each(rosterSpots, function(rosterSpot, innerCallback) {
+						var player_id = rosterSpot.player_id;
+						Player.findById(player_id, function(err, player) {
+							playerArr.push(player);
+							innerCallback();
+						});
+					}, function(err) {
+						if(err) {
+							return res.redirect('/');
+						}
+						else {
+							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr});
+						}
+					});
+				});
+			});
+		}
+	});
+}
 
 
 //helpers

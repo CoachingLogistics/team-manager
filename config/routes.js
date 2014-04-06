@@ -122,6 +122,7 @@ module.exports = function(app){
 
 	app.get('/carpools/:id/edit', ensureAuthenticated, carpools.edit);
 	app.post('/carpools/:id/edit', ensureAuthenticated, carpools.update);
+	app.get('/carpools/:id/addRider', ensureAuthenticated, carpools.addRider);
 
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
 

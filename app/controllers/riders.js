@@ -10,3 +10,7 @@ exports.index = function(req, res) {
     res.render('rider/index', {'user': req.user, 'riders': riders});
   });
 }
+
+exports.create = function(req, res) {
+
+}
