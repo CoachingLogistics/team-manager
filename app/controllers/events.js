@@ -71,9 +71,6 @@ exports.create = function(req, res){
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
-	console.log("***************************");
-	console.log(hour);
-
 	Team.findById(req.param('team_id'), function(err, team){
 		if(err){
 			//team does not exist
@@ -115,11 +112,19 @@ exports.create = function(req, res){
 
 							console.log("check your email at "+remind);
 
-							var job = schedule.scheduleJob(remind, function(){
-								Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
-									EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
-										console.log("email reminder sent now");
-									});
+							var job = schedule.scheduleJob(remind, function(){	//this gets carried out whenever the job is scheduled
+
+								Event.findById(event._id, function(error, ev){
+									if(ev){
+										Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+											EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
+												console.log("email reminder sent now");
+											});
+										});
+									}else{
+										//nothing, the event got deleted so don't do anything
+										
+									}
 								});
 							});
 
