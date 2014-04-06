@@ -208,7 +208,7 @@ exports.addRider = function(req, res) {
 							return res.redirect('/');
 						}
 						else {
-							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr});
+							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp});
 						}
 					});
 				});

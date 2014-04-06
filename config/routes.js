@@ -127,6 +127,7 @@ module.exports = function(app){
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
 
 	app.get('/riders', riders.index);
+	app.post('/riders/createForCarpool/:carpool_id', riders.create);
 
 
 
