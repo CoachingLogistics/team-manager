@@ -123,10 +123,9 @@ exports.create = function(req, res){
 										});
 									}else{
 										//nothing, the event got deleted so don't do anything
-										
 									}
 								});
-							});
+							});//job
 
 
 
