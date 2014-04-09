@@ -11,15 +11,11 @@
 <% if(warning) {%>
   <b><%= warning %></b>
 <% } %>
-<h2>Who will be going with you to this event?</h2>
-<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
-  <b>Player Name</b>
-  <select name="player" class="form-control" required>
-  <option></option>
-  <% players.forEach(function(player) { %>
-    <option value="<%=player._id%>"><%= player.full_name %></option>
-  <% }) %>
-  </select>
+<form action='/riders/createForCarpool/<%=carpool._id%>/test' method='POST'>
+  <b>Players:</b> <br />
+  <% players.forEach(function(player, index) { %>
+    <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %><br />
+  <% })%>
   <b>Where will you pick them up?</b>
   <input type="text" name="location">
   <b>Time</b>
@@ -29,13 +25,6 @@
     <option value="am">AM</option>
     <option value="pm">PM</option>
   </select>
-  <input type="submit" value="add player">
-</form>
-<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
-  <b>Players:</b> <br />
-  <% players.forEach(function(player) { %>
-    <input type="checkbox" value="<%= player._id%>"><%= player.full_name %><br />
-  <% })%>
   <input type="submit" value="Add Riders">
 </form>
 <!--***********************END OF CONTENT************************-->
