@@ -11,7 +11,7 @@
 <% if(warning) {%>
   <b><%= warning %></b>
 <% } %>
-<form action='/riders/createForCarpool/<%=carpool._id%>/test' method='POST'>
+<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
   <b>Players:</b> <br />
   <% players.forEach(function(player, index) { %>
     <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %><br />
