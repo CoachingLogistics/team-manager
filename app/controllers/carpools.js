@@ -199,6 +199,7 @@ exports.delete = function(req, res){	//post       //test
  * Renders the page to add a rider to a carpool
  */
 exports.addRider = function(req, res) {
+	var warning = undefined;
 	Carpool.findById(req.params.id, function(err, cp) {
 		if(err) {
 			// lasy error handling for now
@@ -211,19 +212,26 @@ exports.addRider = function(req, res) {
 				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
 					var playerArr = new Array();
 					async.each(rosterSpots, function(rosterSpot, innerCallback) {
-						var player_id = rosterSpot.player_id;
-						Player.findById(player_id, function(err, player) {
-							playerArr.push(player);
-							innerCallback();
+						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {
+							if(!rider) {
+								var player_id = rosterSpot.player_id;
+								Player.findById(player_id, function(err, player) {
+									playerArr.push(player);
+									innerCallback();
+								});
+							}
+							else {
+								innerCallback();
+							}
 						});
-					}, function(err) {
+						}, function(err) {
 						if(err) {
 							return res.redirect('/');
 						}
 						else {
-							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp});
+							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp, 'warning': undefined});
 						}
-					});
+					}); // here
 				});
 			});
 		}

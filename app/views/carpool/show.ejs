@@ -34,7 +34,7 @@
 		<% if(access){ %>
 		<br>
 		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
-		<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+			<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
 		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
 			<input type="Submit" value="Delete" />
 		</form>
