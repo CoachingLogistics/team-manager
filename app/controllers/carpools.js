@@ -8,6 +8,7 @@ var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 var	Carpool = mongoose.model('Carpool');
 var Rider = mongoose.model('Rider');
+var Family = mongoose.model('Family');
 var async = require('async');
 
 
@@ -91,7 +92,25 @@ exports.create = function(req, res){
 		});
 
 		newCarpool.save(function(err, cp){
-			res.redirect('/events/'+event._id)
+			Team.findById(event.team_id, function(err, team) {
+				Family.getPlayersForUser(cp.user_id, function(players) {
+					players.forEach(function(player) {
+						RosterSpot.getByIds(team._id, player._id, function(err, rs) {
+							var newRider = new Rider({
+								roster_spot_id: rs._id,
+								carpool_id: cp._id,
+								location: cp.location,
+								time: cp.time,
+								confirmed: true
+							});
+							newRider.save(function(err, saved) {
+								// hope it saved lol!
+							});
+						});
+					});
+					return res.redirect('/events/'+event._id);
+				});
+			});
 		})
 
 	})
