@@ -41,6 +41,10 @@
 
 		<% } %>
 
+		<% if(user) { %>
+			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" class="btn btn-info" >Request a ride</a>
+		<% } %>
+
 	</div>
 </div>
 <hr>

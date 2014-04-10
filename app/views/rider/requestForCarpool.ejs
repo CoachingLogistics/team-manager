@@ -10,10 +10,10 @@
 <!--************************CONTENT**************************-->
 
 <h1>Request a ride for your team's <%= event.type %></h1>
-<form action="/riders/<%=event._id%>/request" method="POST">
+<form action="/riders/<%=event._id%>/request/<%=carpool._id%>" method="POST">
   <b>Who needs a ride?</b> <br />
   <% players.forEach(function(player, index) { %>
-    <input type="checkbox" name="players[<%=index%>]"> <%= player.full_name %> <br />
+    <input type="checkbox" name="players[<%=index%>]" value="<%=player._id%>"> <%= player.full_name %> <br />
   <% })%>
   <b>Location</b> <br />
   <input type="text" name="location"> <br />

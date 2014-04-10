@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+var Team = mongoose.model('Team');
 
 /*
  * Index page used for development
@@ -91,4 +92,66 @@ exports.request = function(req, res) {
  */
 exports.createRequest = function(req, res) {
   res.redirect('/events/' + req.param('event_id'));
+}
+
+/*
+ * Renders the page to request a ride from someone specific
+ */
+exports.requestForCarpool = function(req, res) {
+  Event.findById(req.param('event_id'), function(err1, theEvent) {
+    Carpool.findById(req.param('carpool_id'), function(err2, theCarpool) {
+      Family.getPlayersForUser(req.user._id, function(players) {
+        if(err1 || err2) {
+          return res.redirect('back');
+        }
+        else {
+          return res.render('rider/requestForCarpool', {'user': req.user, 'event': theEvent, 'carpool': theCarpool, 'players': players});
+        }
+      });
+    });
+  });
+}
+
+/*
+ * Creates an unconfirmed rider for a carpool as a request
+ */
+exports.createRequestForCarpool = function(req, res) {
+  // easy access to variables
+  var carpool_id = req.param('carpool_id');
+  var event_id = req.param('event_id');
+  var players = req.body.players;
+  var location = req.body.location;
+  var hour = parseInt(req.body.hour);
+  var minute = parseInt(req.body.minute);
+  var specifier = req.body.ampm;
+  // get the event to set the date
+  Event.findById(event_id, function(err, theEvent) {
+    var date = theEvent.date;
+    if(hour == 12 && specifier == "am") {
+      hour = 0;
+    } else if(hour != 12 && specifier == "pm") {
+      hour += 12;
+    }
+    var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
+    // need the team to get the roster spots
+    Team.findById(theEvent.team_id, function(err, theTeam) {
+      // create a rider for each player
+      players.forEach(function(player) {
+        RosterSpot.getByIds(theTeam._id, player, function(err, rs) {
+          var newRider = new Rider({
+            roster_spot_id: rs._id,
+            carpool_id: carpool_id,
+            location: location,
+            time: rideDate,
+            confirmed: false
+          });
+          newRider.save(function(err, saved) {
+            // hope it saved
+          });
+        });
+      });
+      // redirect to the carpool show page
+      return res.redirect('/carpools/' + carpool_id);
+    });
+  });
 }
