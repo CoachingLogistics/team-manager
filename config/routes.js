@@ -75,7 +75,10 @@ module.exports = function(app){
 	app.get('/events/:id/edit', ensureAuthenticated, events.edit);
 	app.post('/events/:id/edit', ensureAuthenticated, events.update);
 	app.post('/events/:id/delete', ensureAuthenticated, events.delete);
+
+	//event AJAX
 	app.get('/teams/:team_id/next_event', events.next_event);
+	app.get('/events/:id/coordinates', events.coordinates);
 
 	//attendance AJAX
 	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)

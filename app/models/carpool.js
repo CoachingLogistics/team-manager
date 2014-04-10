@@ -28,7 +28,9 @@ var CarpoolSchema = new Schema({
 	location: {type: String},
 	notes: {type: String},
 	time: {type: Date},
-	size: {type: Number, required: true}
+	size: {type: Number, required: true},
+  latitude: {type:Number, default:null }, //needs testing
+  longitude: {type:Number, default:null } //needs testing
 });
 
 
@@ -90,6 +92,26 @@ CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 	});
 };
 
+
+//needs testing
+//calculates the carpool location's longitude and latitude whenever the location is modified
+CarpoolSchema.pre('save', function(next){
+  var carpool = this;
+  if(!carpool.isModified('location')) return next();
+
+  gmaps.geocode(carpool.location, function(err, carpool_geo){
+    if(carpool_geo){
+      var coords=carpool_geo.results[0].geometry.location;//is an object in format {"lat":####, "lon":####}
+      carpool.latitude = coords.lat;
+      carpool.longitude = coords.lon;
+      next();
+    
+    }else{
+      next();//lat and lon are both NULL
+    }
+  }, 'false');//this is a param that states if the request involves a geolocation device
+});
+
 //for team?
 
 mongoose.model('Carpool', CarpoolSchema);
@@ -103,7 +125,9 @@ var RiderSchema = new Schema({
   carpool_id: {type: ObjectId, ref: 'Carpool'},
   location: String,
   time: Date,
-  confirmed: {type: Boolean, default: false}
+  confirmed: {type: Boolean, default: false},
+  latitude: {type:Number, default:null }, //needs testing
+  longitude: {type:Number, default:null } //needs testing
 });
 
 // gets the carpool for a ride
@@ -155,6 +179,26 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
     callback(err, rider);
   });
 };
+
+
+//needs testing
+//calculates the rider location's longitude and latitude whenever the location is modified
+RiderSchema.pre('save', function(next){
+  var rider = this;
+  if(!rider.isModified('location')) return next();
+
+  gmaps.geocode(rider.location, function(err, rider_geo){
+    if(rider_geo){
+      var coords=rider_geo.results[0].geometry.location;//is an object in format {"lat":####, "lon":####}
+      rider.latitude = coords.lat;
+      rider.longitude = coords.lon;
+      next();
+    
+    }else{
+      next();//lat and lon are both NULL
+    }
+  }, 'false');//this is a param that states if the request involves a geolocation device
+});
 
 
 mongoose.model('Rider', RiderSchema);

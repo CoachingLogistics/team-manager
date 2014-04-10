@@ -11,6 +11,10 @@ var schedule = require('node-schedule');
 var mailer = require('../mailers/team_mailer.js');
 var EventReminder = require('../mailers/event_attendance');
 
+//for googlemaps
+var gmaps = require('googlemaps');
+//gmaps.config('key', 'AIzaSyAnhJ9slS6FaJpwogrvb5SJtEGohVY7cns');
+
 
 
 
@@ -417,6 +421,21 @@ exports.next_event = function(req, res){
 
 }
 
+//returns coordinates for an event's location, to be used in google maps
+exports.coordinates = function(req,res){
+	Event.findById(req.params.id, function(err, event){
+
+		gmaps.geocode(event.location, function(err, event_geo){
+			if(event_geo){
+			var coords=event_geo.results[0].geometry.location;//sends a 
+			res.send(coords);
+			}else{
+				res.send(null);
+			}
+		}, 'false');
+
+	});
+}
 
 
 //helpers
