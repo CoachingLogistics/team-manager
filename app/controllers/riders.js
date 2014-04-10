@@ -72,3 +72,23 @@ exports.create = function(req, res) {
     }
   });
 }
+
+exports.request = function(req, res) {
+  Event.findById(req.param('event_id'), function(err, theEvent) {
+    Family.getPlayersForUser(req.user._id, function(players) {
+      if(err) {
+        return res.redirect('back');
+      }
+      else {
+        return res.render('rider/request', {'user': req.user, 'event': theEvent, 'players': players});
+      }
+    });
+  });
+}
+
+/*
+ * we need to talk about ride requests, no way to tie them to an event if there is no carpool
+ */
+exports.createRequest = function(req, res) {
+  res.redirect('/events/' + req.param('event_id'));
+}

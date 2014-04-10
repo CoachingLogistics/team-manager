@@ -128,6 +128,8 @@ module.exports = function(app){
 
 	app.get('/riders', riders.index);
 	app.post('/riders/createForCarpool/:carpool_id', riders.create);
+	app.get('/riders/:event_id/riderequest', riders.request);
+	app.post('/riders/:event_id/request', riders.createRequest);
 
 
 
