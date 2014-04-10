@@ -235,7 +235,9 @@ exports.addRider = function(req, res) {
 							if(!rider) {
 								var player_id = rosterSpot.player_id;
 								Player.findById(player_id, function(err, player) {
-									playerArr.push(player);
+									if(!err && player) {
+										playerArr.push(player);
+									}
 									innerCallback();
 								});
 							}
