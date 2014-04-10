@@ -34,11 +34,18 @@
 		<% if(access){ %>
 		<br>
 		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
-		<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+
+
+			<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+
 		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
 			<input type="Submit" value="Delete" />
 		</form>
 
+		<% } %>
+
+		<% if(user) { %>
+			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" class="btn btn-info" >Request a ride</a>
 		<% } %>
 
 	</div>
@@ -55,7 +62,10 @@ Riders
 		<tbody>
 			<% riders.forEach(function(rider) { %>
 			<tr>
-				<td><%= rider.full_name %></td>
+
+				<td><%= rider.player.full_name %></td>
+				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
+
 			</tr>
 		<% }) %>
 	</tbody>
