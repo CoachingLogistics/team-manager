@@ -8,6 +8,7 @@ var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 var	Carpool = mongoose.model('Carpool');
 var Rider = mongoose.model('Rider');
+var Family = mongoose.model('Family');
 var async = require('async');
 
 
@@ -32,7 +33,7 @@ exports.show = function(req, res){
 						async.each(riders, function(rider, innerCallback) {
 							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
 								Player.findById(rs.player_id, function(err, pl) {
-									riderArr.push(pl);
+									riderArr.push({'player': pl, 'confirmed': rider.confirmed});
 									innerCallback();
 								});
 							});
@@ -91,7 +92,25 @@ exports.create = function(req, res){
 		});
 
 		newCarpool.save(function(err, cp){
-			res.redirect('/events/'+event._id)
+			Team.findById(event.team_id, function(err, team) {
+				Family.getPlayersForUser(cp.user_id, function(players) {
+					players.forEach(function(player) {
+						RosterSpot.getByIds(team._id, player._id, function(err, rs) {
+							var newRider = new Rider({
+								roster_spot_id: rs._id,
+								carpool_id: cp._id,
+								location: cp.location,
+								time: cp.time,
+								confirmed: true
+							});
+							newRider.save(function(err, saved) {
+								// hope it saved lol!
+							});
+						});
+					});
+					return res.redirect('/events/'+event._id);
+				});
+			});
 		})
 
 	})
@@ -199,6 +218,7 @@ exports.delete = function(req, res){	//post       //test
  * Renders the page to add a rider to a carpool
  */
 exports.addRider = function(req, res) {
+	var warning = undefined;
 	Carpool.findById(req.params.id, function(err, cp) {
 		if(err) {
 			// lasy error handling for now
@@ -211,19 +231,26 @@ exports.addRider = function(req, res) {
 				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
 					var playerArr = new Array();
 					async.each(rosterSpots, function(rosterSpot, innerCallback) {
-						var player_id = rosterSpot.player_id;
-						Player.findById(player_id, function(err, player) {
-							playerArr.push(player);
-							innerCallback();
+						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {
+							if(!rider) {
+								var player_id = rosterSpot.player_id;
+								Player.findById(player_id, function(err, player) {
+									playerArr.push(player);
+									innerCallback();
+								});
+							}
+							else {
+								innerCallback();
+							}
 						});
-					}, function(err) {
+						}, function(err) {
 						if(err) {
 							return res.redirect('/');
 						}
 						else {
-							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp});
+							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp, 'warning': undefined});
 						}
-					});
+					}); // here
 				});
 			});
 		}
