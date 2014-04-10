@@ -33,7 +33,7 @@ exports.show = function(req, res){
 						async.each(riders, function(rider, innerCallback) {
 							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
 								Player.findById(rs.player_id, function(err, pl) {
-									riderArr.push(pl);
+									riderArr.push({'player': pl, 'confirmed': rider.confirmed});
 									innerCallback();
 								});
 							});

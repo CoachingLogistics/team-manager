@@ -59,7 +59,8 @@ Riders
 		<tbody>
 			<% riders.forEach(function(rider) { %>
 			<tr>
-				<td><%= rider.full_name %></td>
+				<td><%= rider.player.full_name %></td>
+				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
 			</tr>
 		<% }) %>
 	</tbody>
