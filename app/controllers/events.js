@@ -6,6 +6,11 @@ var  RosterSpot = mongoose.model('RosterSpot');
 var  Coach = mongoose.model('Coach');
 var  Carpool = mongoose.model('Carpool');
 
+//for automated emails
+var schedule = require('node-schedule');
+var mailer = require('../mailers/team_mailer.js');
+var EventReminder = require('../mailers/event_attendance');
+
 
 
 
@@ -62,7 +67,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 exports.create = function(req, res){
 
 	var hour = req.param('hour');
-	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
@@ -99,6 +104,33 @@ exports.create = function(req, res){
 					if(err){
 						console.log(err);
 					}else{//no err
+
+							//*********************************************************************************************CHANGE
+							var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//set for 2 days before event at noon
+							// var now = new Date();
+							// var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
+
+							console.log("check your email at "+remind);
+
+							var job = schedule.scheduleJob(remind, function(){	//this gets carried out whenever the job is scheduled
+
+								Event.findById(event._id, function(error, ev){
+									if(ev){
+										Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+											EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
+												console.log("email reminder sent now");
+											});
+										});
+									}else{
+										//nothing, the event got deleted so don't do anything
+										
+									}
+								});
+							});
+
+
+
+
 
 						Team.findById(event.team_id, function(err, team){
 
@@ -154,16 +186,6 @@ exports.show = function(req, res){
       else {
         upcoming = false;
       }
-			var time = "AM";
-			var hour = event.date.getHours();
-			if(event.date.getHours()>=12){
-				hour = event.date.getHours()-12;
-				time="PM";
-			}
-			var minutes = event.date.getMinutes();
-			if(event.date.getMinutes() == 0){
-				minutes = "00";
-			}
 
 			Team.findById(event.team_id, function(err, team){
     			if(err) throw new Error(err);
@@ -195,7 +217,6 @@ exports.show = function(req, res){
 					    	  team: team,
 					    	  user:req.user,
 					    	  time: timeFormat(event.date),
-					    	  minutes: minutes,
 					    	  players: players,
 					    	  access: access,
 					    	  date: dateFormat(event.date),
@@ -250,8 +271,12 @@ exports.edit = function(req, res) {
 								minutes = "00";
 							}
 							var hour = event.date.getHours();
-							if(event.date.getHours()>=12){
-								hour = event.date.getHours()-12;
+							if( event.date.getHours()>=12){
+								if(event.date.getHours()>12){
+									hour =  event.date.getHours()-12;
+								}else{
+									hour = 12;
+								}
 								time="PM";
 							}
 
@@ -261,6 +286,7 @@ exports.edit = function(req, res) {
 								team: team,
 								user:req.user,
 								'error': null,
+								date: dateFormat(event.date),
 								time: time,
 								hour: hour,
 								minutes: minutes
@@ -279,7 +305,7 @@ exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
 	var hour = req.param('hour');
-	if(req.param('time')=="pm"){ hour= +hour + 12; }
+	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
 	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
@@ -325,6 +351,7 @@ exports.update = function(req, res){
 
 exports.delete = function(req, res) {
 	Event.findById(req.params.id, function(error, event){
+		if(event){
 		Team.findById(event.team_id, function(err, team){
 			if(err) throw new Error(err);
 			Coach.getUsersForTeam(team._id, function(err, coaches){
@@ -346,12 +373,16 @@ exports.delete = function(req, res) {
 							return res.redirect('/events/' + req.params.id);
 						}
 						else {
-							return res.redirect('/events');
+							return res.redirect('/teams/'+team._id);
 						}
 					});
 				}
 			});
 		});
+		}else{
+			res.redirect('/teams/'+team._id);
+		}
+
 	});
 }
 
@@ -376,6 +407,17 @@ exports.attendance = function(req, res){
 
 }
 
+//takes a team_id parameter
+exports.next_event = function(req, res){
+
+	Event.getUpcomingByTeamId(req.params.team_id, function(err, events){
+		var ev = events[0];
+		res.send(ev);
+
+	})
+
+}
+
 
 
 //helpers
@@ -390,9 +432,15 @@ var timeFormat = function(date) {
     var time = "AM";
 	var hour = date.getHours();
 	if( date.getHours()>=12){
-		hour =  date.getHours()-12;
+		if(date.getHours()>12){
+			hour =  date.getHours()-12;
+		}else{
+			hour = 12;
+		}
+
 		time="PM";
 	}
+
 	var minutes = date.getMinutes();
 	if(date.getMinutes() == 0){
 		minutes = "00";

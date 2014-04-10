@@ -7,6 +7,9 @@ var	Team = mongoose.model('Team');
 var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 var	Carpool = mongoose.model('Carpool');
+var Rider = mongoose.model('Rider');
+var Family = mongoose.model('Family');
+var async = require('async');
 
 
 //get
@@ -25,17 +28,29 @@ exports.show = function(req, res){
 							access=true;
 						}
 					}
-
-					res.render('carpool/show', {
-					  carpool: carpool,
-				      event: event,
-				      date: dateFormat(carpool.time),
-				      time: timeFormat(carpool.time),
-				      team: team,
-				      driver: driver,
-				      user:req.user,
-				      access: access
-				    });
+					Rider.getByCarpoolId(carpool._id, function(err, riders) {
+						var riderArr = new Array();
+						async.each(riders, function(rider, innerCallback) {
+							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
+								Player.findById(rs.player_id, function(err, pl) {
+									riderArr.push({'player': pl, 'confirmed': rider.confirmed});
+									innerCallback();
+								});
+							});
+						}, function(err) {
+							res.render('carpool/show', {
+								carpool: carpool,
+									event: event,
+									date: dateFormat(carpool.time),
+									time: timeFormat(carpool.time),
+									team: team,
+									driver: driver,
+									user:req.user,
+									riders: riderArr,
+									access: access
+								});
+						});
+					});
 				});
 			})
 		})
@@ -77,7 +92,25 @@ exports.create = function(req, res){
 		});
 
 		newCarpool.save(function(err, cp){
-			res.redirect('/events/'+event._id)
+			Team.findById(event.team_id, function(err, team) {
+				Family.getPlayersForUser(cp.user_id, function(players) {
+					players.forEach(function(player) {
+						RosterSpot.getByIds(team._id, player._id, function(err, rs) {
+							var newRider = new Rider({
+								roster_spot_id: rs._id,
+								carpool_id: cp._id,
+								location: cp.location,
+								time: cp.time,
+								confirmed: true
+							});
+							newRider.save(function(err, saved) {
+								// hope it saved lol!
+							});
+						});
+					});
+					return res.redirect('/events/'+event._id);
+				});
+			});
 		})
 
 	})
@@ -181,6 +214,51 @@ exports.delete = function(req, res){	//post       //test
 
 };
 
+/*
+ * Renders the page to add a rider to a carpool
+ */
+exports.addRider = function(req, res) {
+	var warning = undefined;
+	Carpool.findById(req.params.id, function(err, cp) {
+		if(err) {
+			// lasy error handling for now
+			return res.redirect('/');
+		}
+		else {
+			var event_id = cp.event_id;
+			Event.findById(event_id, function(err, theEvent) {
+				var team_id = theEvent.team_id;
+				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
+					var playerArr = new Array();
+					async.each(rosterSpots, function(rosterSpot, innerCallback) {
+						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {
+							if(!rider) {
+								var player_id = rosterSpot.player_id;
+								Player.findById(player_id, function(err, player) {
+									if(!err && player) {
+										playerArr.push(player);
+									}
+									innerCallback();
+								});
+							}
+							else {
+								innerCallback();
+							}
+						});
+						}, function(err) {
+						if(err) {
+							return res.redirect('/');
+						}
+						else {
+							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp, 'warning': undefined});
+						}
+					}); // here
+				});
+			});
+		}
+	});
+}
+
 
 //helpers
 var dateFormat = function(date) {
@@ -194,9 +272,15 @@ var timeFormat = function(date) {
     var time = "AM";
 	var hour = date.getHours();
 	if( date.getHours()>=12){
-		hour =  date.getHours()-12;
+		if(date.getHours()>12){
+			hour =  date.getHours()-12;
+		}else{
+			hour = 12;
+		}
+
 		time="PM";
 	}
+
 	var minutes = date.getMinutes();
 	if(date.getMinutes() == 0){
 		minutes = "00";

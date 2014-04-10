@@ -1,0 +1,32 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+<h1>Here are riders</h1>
+<% if(riders.length == 0) { %>
+  <em>There are no riders to display</em>
+<% } else { %>
+  <table>
+    <thead>
+      <th>Rider</th>
+    </thead>
+    <tbody>
+      <% riders.forEach(function(rider) { %>
+        <tr>
+          <td><%= rider %></td>
+        </tr>
+      <% })%>
+    </tbody>
+  </table>
+<% } %>
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>
