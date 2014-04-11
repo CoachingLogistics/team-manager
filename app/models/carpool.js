@@ -20,6 +20,9 @@ var	Team = mongoose.model('Team');
 var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 
+var gmaps = require('googlemaps');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
+
 
 
 var CarpoolSchema = new Schema({
@@ -101,9 +104,9 @@ CarpoolSchema.pre('save', function(next){
 
   gmaps.geocode(carpool.location, function(err, carpool_geo){
     if(carpool_geo){
-      var coords=carpool_geo.results[0].geometry.location;//is an object in format {"lat":####, "lon":####}
+      var coords=carpool_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
       carpool.latitude = coords.lat;
-      carpool.longitude = coords.lon;
+      carpool.longitude = coords.lng;
       next();
     
     }else{
@@ -191,9 +194,9 @@ RiderSchema.pre('save', function(next){
 
   gmaps.geocode(rider.location, function(err, rider_geo){
     if(rider_geo){
-      var coords=rider_geo.results[0].geometry.location;//is an object in format {"lat":####, "lon":####}
+      var coords=rider_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
       rider.latitude = coords.lat;
-      rider.longitude = coords.lon;
+      rider.longitude = coords.lng;
       next();
     
     }else{

@@ -13,7 +13,7 @@ var EventReminder = require('../mailers/event_attendance');
 
 //for googlemaps
 var gmaps = require('googlemaps');
-//gmaps.config('key', 'AIzaSyAnhJ9slS6FaJpwogrvb5SJtEGohVY7cns');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 
 

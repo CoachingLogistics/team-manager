@@ -104,13 +104,13 @@ describe('Rider', function() {
   });
 
   var mattPrac = new Rider({
-    location: "matts House",
+    location: "Manoa Valley District Park",
     time: new Date(2014, 6, 24, 8),
     confirmed: true
   });
 
   var markPrac = new Rider({
-    location: "marks House",
+    location: "Invalid House",
     time: new Date(2014, 6, 24, 8, 15),
     confirmed: true
   });
@@ -237,9 +237,15 @@ describe('Rider', function() {
     it('should have required properties', function(done) {
       mattGame.should.have.property('carpool_id', gameCarpool._id);
       mattGame.should.have.property('roster_spot_id', mattSpot._id);
-      mattGame.should.have.property('location', "matts House");
+      mattGame.should.have.property('location', "Invalid House");
+      mattPrac.should.have.property('location', "Manoa Valley District Park");
       mattGame.should.have.property('time', new Date(2014, 6, 25, 18));
       mattGame.should.have.property('confirmed', true);
+      mattPrac.should.have.property('latitude', 21.3127006);
+      mattPrac.should.have.property('longitude', -157.8081318);
+      mattGame.should.have.property('latitude', null);
+      mattGame.should.have.property('longitude', null);
+
       done();
     });
 

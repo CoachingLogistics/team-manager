@@ -28,7 +28,7 @@ var EventSchema = new Schema({
 
 //for googlemaps
 var gmaps = require('googlemaps');
-//gmaps.config('key', 'AIzaSyAnhJ9slS6FaJpwogrvb5SJtEGohVY7cns');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 //returns the "HH:MM AM/PM" format for an event's Date object
 EventSchema.virtual('time').get(function() {
@@ -82,9 +82,10 @@ EventSchema.pre('save', function(next){
 
 	gmaps.geocode(event.location, function(err, event_geo){
 		if(event_geo){
-			var coords=event_geo.results[0].geometry.location;//is an object in format {"lat":####, "lon":####}
+			var coords=event_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
 			event.latitude = coords.lat;
-			event.longitude = coords.lon;
+			event.longitude = coords.lng;
 			next();
 		
 		}else{
