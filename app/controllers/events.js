@@ -425,15 +425,11 @@ exports.next_event = function(req, res){
 exports.coordinates = function(req,res){
 	Event.findById(req.params.id, function(err, event){
 
-		gmaps.geocode(event.location, function(err, event_geo){
-			if(event_geo){
-			var coords=event_geo.results[0].geometry.location;//sends a 
-			res.send(coords);
-			}else{
-				res.send(null);
-			}
-		}, 'false');
-
+		var object = {
+			latitude : event.latitude,
+			longitude : event.longitude
+		}
+		res.send(object);
 	});
 }
 
