@@ -110,7 +110,7 @@ describe('Rider', function() {
   });
 
   var markPrac = new Rider({
-    location: "Invalid House",
+    location: "marks House",
     time: new Date(2014, 6, 24, 8, 15),
     confirmed: true
   });
@@ -122,7 +122,7 @@ describe('Rider', function() {
   });
 
   var mattGame = new Rider({
-    location: "matts House",
+    location: "Invalid House",
     time: new Date(2014, 6, 25, 18),
     confirmed: true
   });

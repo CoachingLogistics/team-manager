@@ -80,15 +80,22 @@ EventSchema.pre('save', function(next){
 	var event = this;
 	if(!event.isModified('location')) return next();
 
-	gmaps.geocode(event.location, function(err, event_geo){
-		if(event_geo){
-			var coords=event_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+	gmaps.geocode(event.location, function(err, returned){
+		console.log(returned.status);
+		if(returned){
+			if(returned.status == 'OK'){
 
-			event.latitude = coords.lat;
-			event.longitude = coords.lng;
-			next();
+				var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+				event.latitude = coords.lat;
+				event.longitude = coords.lng;
+				next();
+			}else{
+				next();
+			}
 		
 		}else{
+			alert("Geocode was not successful, try again later");
 			next();//lat and lon are both NULL
 		}
 	}, 'false');//this is a param that states if the request involves a geolocation device

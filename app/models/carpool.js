@@ -97,19 +97,28 @@ CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 
 
 //needs testing
+
 //calculates the carpool location's longitude and latitude whenever the location is modified
 CarpoolSchema.pre('save', function(next){
   var carpool = this;
   if(!carpool.isModified('location')) return next();
 
-  gmaps.geocode(carpool.location, function(err, carpool_geo){
-    if(carpool_geo){
-      var coords=carpool_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
-      carpool.latitude = coords.lat;
-      carpool.longitude = coords.lng;
-      next();
+  gmaps.geocode(carpool.location, function(err, returned){
+    console.log(returned.status);
+    if(returned){
+      if(returned.status == 'OK'){
+
+        var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+        carpool.latitude = coords.lat;
+        carpool.longitude = coords.lng;
+        next();
+      }else{
+        next();
+      }
     
     }else{
+      alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
     }
   }, 'false');//this is a param that states if the request involves a geolocation device
@@ -192,14 +201,22 @@ RiderSchema.pre('save', function(next){
   var rider = this;
   if(!rider.isModified('location')) return next();
 
-  gmaps.geocode(rider.location, function(err, rider_geo){
-    if(rider_geo){
-      var coords=rider_geo.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
-      rider.latitude = coords.lat;
-      rider.longitude = coords.lng;
-      next();
+  gmaps.geocode(rider.location, function(err, returned){
+    console.log(returned.status);
+    if(returned){
+      if(returned.status == 'OK'){
+
+        var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+        rider.latitude = coords.lat;
+        rider.longitude = coords.lng;
+        next();
+      }else{
+        next();
+      }
     
     }else{
+      alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
     }
   }, 'false');//this is a param that states if the request involves a geolocation device
