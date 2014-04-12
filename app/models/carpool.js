@@ -101,6 +101,7 @@ var Carpool = mongoose.model('Carpool');
 var RiderSchema = new Schema({
   roster_spot_id: {type: ObjectId, ref: 'RosterSpot', required: true},
   carpool_id: {type: ObjectId, ref: 'Carpool'},
+  event_id: {type: ObjectId, ref: 'Event', required: true},
   location: String,
   time: Date,
   confirmed: {type: Boolean, default: false}
@@ -117,6 +118,13 @@ RiderSchema.methods.getCarpool = function(callback) {
 RiderSchema.methods.getRosterSpot = function(callback) {
   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
     return callback(err, theRosterSpot);
+  });
+}
+
+// gets the event of the rider
+RiderSchema.methods.getEvent = function(callback) {
+  Event.findById(this.event_id, function(err, theEvent) {
+    callback(err, theEvent);
   });
 }
 
@@ -146,6 +154,13 @@ RiderSchema.statics.getByRosterSpotId = function(roster_spot_id, callback) {
 RiderSchema.statics.getByCarpoolId = function(carpool_id, callback) {
   this.find({'carpool_id': carpool_id}, function(err, docs) {
     return callback(err, docs);
+  });
+}
+
+// finds riders by an event id, to get riders for an event
+RiderSchema.statics.getByEventId = function(event_id, callback) {
+  this.find({event_id: event_id}, function(err, docs) {
+    callback(err, docs);
   });
 }
 
