@@ -172,8 +172,11 @@ describe('Rider', function() {
                           markSpot.save(function(err, markSpotSaved) {
                             // create game riders
                             mattGame.roster_spot_id = mattSpotSaved._id;
+                            mattGame.event_id = gameSaved._id;
                             mikeGame.roster_spot_id = mikeSpotSaved._id;
+                            mikeGame.event_id = gameSaved._id;
                             markGame.roster_spot_id = markSpotSaved._id;
+                            markGame.event_id = gameSaved._id;
                             mattGame.carpool_id = gameCarpoolSaved._id;
                             mikeGame.carpool_id = gameCarpoolSaved._id;
                             markGame.carpool_id = gameCarpoolSaved._id;
@@ -184,6 +187,9 @@ describe('Rider', function() {
                             mattPrac.carpool_id = practiceCarpoolSaved._id;
                             mikePrac.carpool_id = practiceCarpoolSaved._id;
                             markPrac.carpool_id = practiceCarpoolSaved._id;
+                            markPrac.event_id = practiceSaved._id;
+                            mattPrac.event_id = practiceSaved._id;
+                            mikePrac.event_id = practiceSaved._id;
                             // save them
                             mattGame.save(function(err, mattGameSaved) {
                               mikeGame.save(function(err, mikeGameSaved) {
@@ -237,6 +243,7 @@ describe('Rider', function() {
     it('should have required properties', function(done) {
       mattGame.should.have.property('carpool_id', gameCarpool._id);
       mattGame.should.have.property('roster_spot_id', mattSpot._id);
+      mattGame.should.have.property('event_id', game._id)
       mattGame.should.have.property('location', "matts House");
       mattGame.should.have.property('time', new Date(2014, 6, 25, 18));
       mattGame.should.have.property('confirmed', true);
@@ -247,15 +254,17 @@ describe('Rider', function() {
       var noCarpool = new Rider({
         location: "my house",
         roster_spot_id: mattSpot._id,
+        event_id: practice._id,
         time: new Date(2014, 6, 25, 12),
-        confirmed: true
+        confirmed: false
       });
       noCarpool.save(function(err, noCarpoolSaved) {
         should.not.exist(err);
         noCarpoolSaved.should.have.property('location', 'my house');
         noCarpoolSaved.should.have.property('roster_spot_id', mattSpot._id);
         noCarpoolSaved.should.have.property('time', new Date(2014, 6, 25, 12));
-        noCarpoolSaved.should.have.property('confirmed', true);
+        noCarpoolSaved.should.have.property('confirmed', false);
+        noCarpoolSaved.should.have.property('event_id', practice._id);
         Rider.remove({_id: noCarpoolSaved._id}, function(err, docs) {
           done();
         });
@@ -266,6 +275,7 @@ describe('Rider', function() {
       var noRosterSpot = new Rider({
         location: "my house",
         carpool_id: gameCarpool._id,
+        event_id: game._id,
         date: new Date(2014, 6, 25, 12),
         confirmed: true
       });
@@ -279,6 +289,7 @@ describe('Rider', function() {
       var basic = new Rider({
         location: "my house",
         carpool_id: gameCarpool._id,
+        event_id: game._id,
         date: new Date(2014, 6, 25, 12),
         roster_spot_id: mikeSpot._id
       });
@@ -391,6 +402,56 @@ describe('Rider', function() {
         should.not.exist(err);
         rider.should.have.property('roster_spot_id', mikeSpot._id);
         rider.should.have.property('carpool_id', gameCarpool._id);
+        done();
+      });
+    });
+  });
+
+  describe('#getEvent', function() {
+    it('should have a method to get the event associated with a rider (test for practice)', function(done) {
+      mattPrac.getEvent(function(err, theEvent) {
+        should.not.exist(err);
+        theEvent.should.have.property('_id', mattPrac.event_id);
+        done();
+      });
+    });
+    it('should have a method to get the event associated with a rider (test for game)', function(done) {
+      mattGame.getEvent(function(err, theEvent) {
+        should.not.exist(err);
+        theEvent.should.have.property('_id', mattGame.event_id);
+        done();
+      });
+    });
+  });
+
+  describe('#getByEventId', function() {
+    it('should have a method to get all of the riders associated with an event', function(done) {
+      var gameNoCarpool = new Rider({
+        event_id: game._id,
+        roster_spot_id: mikeSpot._id,
+        confirmed: false,
+        date: new Date(2014, 6, 25, 12),
+        location: 'Mikes House'
+      });
+      gameNoCarpool.save(function(err, gncSaved) {
+        Rider.getByEventId(game._id, function(err, riders) {
+          should.not.exist(err);
+          riders.should.have.length(4);
+          riders[0].should.have.property('event_id', game._id);
+          riders[1].should.have.property('event_id', game._id);
+          riders[2].should.have.property('event_id', game._id);
+          riders[3].should.have.property('event_id', game._id);
+          done();
+        });
+      });
+    });
+    it('should have a method to get all of the riders associated with an event (for practice)', function(done) {
+      Rider.getByEventId(practice._id, function(err, riders) {
+        should.not.exist(err);
+        riders.should.have.length(3);
+        riders[0].should.have.property('event_id', practice._id);
+        riders[1].should.have.property('event_id', practice._id);
+        riders[2].should.have.property('event_id', practice._id);
         done();
       });
     });
