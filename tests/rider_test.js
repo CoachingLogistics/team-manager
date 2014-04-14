@@ -290,6 +290,20 @@ describe('Rider', function() {
       });
     });
 
+    it('should require an event id to be created', function(done) {
+      var noEvent = new Rider({
+        location: "my house",
+        carpool_id: gameCarpool._id,
+        roster_spot_id: mattSpot._id,
+        date: new Date(2014, 6, 25, 12),
+        confirmed: true
+      });
+      noEvent.save(function(err, savedNoRosterSpot) {
+        err.should.be.ok;
+        done();
+      });
+    });
+
     it('confirmed should default to false when created', function(done) {
       var basic = new Rider({
         location: "my house",
