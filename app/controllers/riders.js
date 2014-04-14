@@ -3,7 +3,9 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+
 var Team = mongoose.model('Team');
+
 
 /*
  * Index page used for development
@@ -15,6 +17,7 @@ exports.index = function(req, res) {
 }
 
 
+
 /*
  * Creates a carpool
  */
@@ -22,11 +25,14 @@ exports.create = function(req, res) {
   // easy access to necessary params
   var riders = req.body.riders;
   var carpool_id = req.params.carpool_id;
+
   var location = req.body.location;
   var hour = parseInt(req.body.hour);
   var minute = parseInt(req.body.minute);
   var specifier = req.body.ampm;
+
   // need the carpool
+
   Carpool.findById(carpool_id, function(err, cp) {
     if(err) {
       return res.redirect('/');
@@ -38,7 +44,9 @@ exports.create = function(req, res) {
           return res.redirect('/');
         }
         else {
+
           // change the time from human readable to proper date format
+
           var date = theEvent.date;
           if(hour == 12 && specifier == "am") {
             hour = 0;
@@ -47,6 +55,7 @@ exports.create = function(req, res) {
           }
           var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
           var team_id = theEvent.team_id;
+
           // riders is an array of player_ids, so loop through and add them
           riders.forEach(function(rider) {
             // get the roster spot
@@ -68,11 +77,13 @@ exports.create = function(req, res) {
             });
           });
           return res.redirect('carpools/' + carpool_id);
+
         }
       });
     }
   });
 }
+
 
 exports.request = function(req, res) {
   Event.findById(req.param('event_id'), function(err, theEvent) {
@@ -155,3 +166,4 @@ exports.createRequestForCarpool = function(req, res) {
     });
   });
 }
+

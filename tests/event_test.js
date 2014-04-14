@@ -86,7 +86,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                 ev1 = new Event({
                     team_id: avg._id,
                     date : new Date(year, month, day+7, 16, 20),
-                    location : 'Average Joes Gymnasium',
+                    location : 'Manoa Valley District Park',
                     type : 'Practice'
                 });
 
@@ -95,7 +95,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                     ev2 = Event({
                         team_id: avg._id,
                         date : new Date(year, month, day-3, 4, 20),
-                        location : 'Wiegand gym',
+                        location : '500 Forbes Avenue',
                         type : 'Practice'
                     });
 
@@ -104,7 +104,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                             ev3 = new Event({
                                 team_id: purps._id,
                                 date : new Date(year, month-2, day-7, 12, 00),
-                                location : 'Globo Gym',
+                                location : 'Carnegie Mellon University',
                                 type : 'Game'
                             });
 
@@ -127,8 +127,10 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                 should.not.exist(err);
                 returned.should.have.property('team_id', joes._id);
                 returned.should.have.property('date', new Date(year, month, day+7, 16, 20));
-                returned.should.have.property('location', 'Average Joes Gymnasium');
+                returned.should.have.property('location', 'Manoa Valley District Park');
                 returned.should.have.property('type', 'Practice');
+                returned.should.have.property('latitude', 21.3127006);
+                returned.should.have.property('longitude', -157.8081318);
                 done();
             });
         });
@@ -147,7 +149,7 @@ describe('Event', function(){    //context, so we can see where tests happen in 
                 events.should.have.length(1);
                 events[0].should.have.property('team_id', cobras._id);
                 events[0].should.have.property('date', new Date(year, month-2, day-7, 12, 00));
-                events[0].should.have.property('location', 'Globo Gym');
+                events[0].should.have.property('location', 'Carnegie Mellon University');
                 events[0].should.have.property('type', 'Game');
 
                 Event.getByTeamId(joes._id, function(err, events){

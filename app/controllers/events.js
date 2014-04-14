@@ -11,6 +11,10 @@ var schedule = require('node-schedule');
 var mailer = require('../mailers/team_mailer.js');
 var EventReminder = require('../mailers/event_attendance');
 
+//for googlemaps
+var gmaps = require('googlemaps');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
+
 
 
 
@@ -123,10 +127,9 @@ exports.create = function(req, res){
 										});
 									}else{
 										//nothing, the event got deleted so don't do anything
-										
 									}
 								});
-							});
+							});//job
 
 
 
@@ -418,6 +421,17 @@ exports.next_event = function(req, res){
 
 }
 
+//returns coordinates for an event's location, to be used in google maps
+exports.coordinates = function(req,res){
+	Event.findById(req.params.id, function(err, event){
+
+		var object = {
+			latitude : event.latitude,
+			longitude : event.longitude
+		}
+		res.send(object);
+	});
+}
 
 
 //helpers

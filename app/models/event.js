@@ -21,9 +21,14 @@ var EventSchema = new Schema({
     date: {type: Date, required: true},
     location: {type: String, required: false},
     type: {type: String, required: false},
-    description: {type: String, default: "no description"}
+    description: {type: String, default: "no description"},
+    latitude: {type:Number, default:null },	//needs testing
+    longitude: {type:Number, default:null } //needs testing
 });
 
+//for googlemaps
+var gmaps = require('googlemaps');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 //returns the "HH:MM AM/PM" format for an event's Date object
 EventSchema.virtual('time').get(function() {
@@ -70,7 +75,31 @@ EventSchema.methods.getTeam = function (callback) {
 };
 
 
+//calculates the event location's longitude and latitude whenever the location is modified
+EventSchema.pre('save', function(next){
+	var event = this;
+	if(!event.isModified('location')) return next();
 
+	gmaps.geocode(event.location, function(err, returned){
+		console.log(returned.status);
+		if(returned){
+			if(returned.status == 'OK'){
+
+				var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+				event.latitude = coords.lat;
+				event.longitude = coords.lng;
+				next();
+			}else{
+				next();
+			}
+		
+		}else{
+			alert("Geocode was not successful, try again later");
+			next();//lat and lon are both NULL
+		}
+	}, 'false');//this is a param that states if the request involves a geolocation device
+});
 
 
 
