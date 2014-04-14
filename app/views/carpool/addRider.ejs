@@ -8,6 +8,7 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
 <h1>Add to your Carpool</h1>
+
 <% if(warning) {%>
   <b><%= warning %></b>
 <% } %>
@@ -16,6 +17,7 @@
   <% players.forEach(function(player, index) { %>
     <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %><br />
   <% })%>
+
   <b>Where will you pick them up?</b>
   <input type="text" name="location">
   <b>Time</b>
@@ -25,7 +27,9 @@
     <option value="am">AM</option>
     <option value="pm">PM</option>
   </select>
+
   <input type="submit" value="Add Riders">
+
 </form>
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

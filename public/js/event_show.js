@@ -1,3 +1,6 @@
+//must include the below on the page to make a google map?
+//<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI&sensor=true"></script>
+
 $(function(){
 
 	var event_id = $(location).attr('pathname').replace('/events/', '');
@@ -46,6 +49,47 @@ $(".playah").each(function(index) {
 });
 
 
+		$.get('/events/'+event_id+'/coordinates', function(coords, err){
+			var lat=coords.latitude;
+			var lon=coords.longitude;
+
+			console.log(lat);
+			console.log(lon);
+
+			var mapProp = {
+			  center:new google.maps.LatLng(lat,lon),
+			  zoom:13,
+			  mapTypeId:google.maps.MapTypeId.ROADMAP
+			  };
+
+			 //initializing the map object
+			var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+
+			var directionsDisplay = new google.maps.DirectionsRenderer();
+
+
+			var event_marker=new google.maps.Marker({
+			  position: new google.maps.LatLng(lat,lon),
+			  map: map,
+			  title: "EVENT"
+			  //icon:'/images/someting.png'
+			  });
+
+			var stepDisplay = new google.maps.InfoWindow();
+			function attachInstructionText(marker, text) {
+			  google.maps.event.addListener(marker, 'click', function() {
+			    // Open an info window when the marker is clicked on,
+			    // containing the text of the step.
+			    stepDisplay.setContent(text);
+			    stepDisplay.open(map, marker);
+			  });
+			}
+
+			//attachInstructionText(event_marker, "Hi");//event_obj.name + "<br>" + event_obj.location);
+
+
+		})
 
 	//do AJAX call to get loaction, or get location from page
 	//then need to get the coordinates

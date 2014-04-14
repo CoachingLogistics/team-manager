@@ -20,6 +20,9 @@ var	Team = mongoose.model('Team');
 var	Event = mongoose.model('Event');
 var	RosterSpot = mongoose.model('RosterSpot');
 
+var gmaps = require('googlemaps');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
+
 
 
 var CarpoolSchema = new Schema({
@@ -28,7 +31,9 @@ var CarpoolSchema = new Schema({
 	location: {type: String},
 	notes: {type: String},
 	time: {type: Date},
-	size: {type: Number, required: true}
+	size: {type: Number, required: true},
+  latitude: {type:Number, default:null }, //needs testing
+  longitude: {type:Number, default:null } //needs testing
 });
 
 
@@ -90,6 +95,35 @@ CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 	});
 };
 
+
+//needs testing
+
+//calculates the carpool location's longitude and latitude whenever the location is modified
+CarpoolSchema.pre('save', function(next){
+  var carpool = this;
+  if(!carpool.isModified('location')) return next();
+
+  gmaps.geocode(carpool.location, function(err, returned){
+    console.log(returned.status);
+    if(returned){
+      if(returned.status == 'OK'){
+
+        var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+        carpool.latitude = coords.lat;
+        carpool.longitude = coords.lng;
+        next();
+      }else{
+        next();
+      }
+    
+    }else{
+      alert("Geocode was not successful, try again later");
+      next();//lat and lon are both NULL
+    }
+  }, 'false');//this is a param that states if the request involves a geolocation device
+});
+
 //for team?
 
 mongoose.model('Carpool', CarpoolSchema);
@@ -103,7 +137,89 @@ var RiderSchema = new Schema({
   carpool_id: {type: ObjectId, ref: 'Carpool'},
   location: String,
   time: Date,
-  confirmed: {type: Boolean, default: false}
+  confirmed: {type: Boolean, default: false},
+  latitude: {type:Number, default:null }, //needs testing
+  longitude: {type:Number, default:null } //needs testing
+});
+
+// gets the carpool for a ride
+RiderSchema.methods.getCarpool = function(callback) {
+  Carpool.findById(this.carpool_id, function(err, theCarpool) {
+    return callback(err, theCarpool);
+  });
+}
+
+// gets the roster spot for the ride
+RiderSchema.methods.getRosterSpot = function(callback) {
+  RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
+    return callback(err, theRosterSpot);
+  });
+}
+
+// gets the player who is the rider
+RiderSchema.methods.getRider = function(callback) {
+  // find the roster spot
+  RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
+    // if there is an error return it here
+    if(err) {
+      return callback(err);
+    }
+    // if there is a roster spot, find the player and return it
+    Player.findById(theRosterSpot.player_id, function(err2, thePlayer) {
+      return callback(err2, thePlayer);
+    });
+  });
+}
+
+// finds all of the riders based on a roster spot id
+RiderSchema.statics.getByRosterSpotId = function(roster_spot_id, callback) {
+  this.find({'roster_spot_id': roster_spot_id}, function(err, docs) {
+    return callback(err, docs);
+  });
+}
+
+// finds all of the riders for a carpool
+RiderSchema.statics.getByCarpoolId = function(carpool_id, callback) {
+  this.find({'carpool_id': carpool_id}, function(err, docs) {
+    return callback(err, docs);
+  });
+}
+
+// finds the rider given a carpool id and a roster_spot id
+RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
+  this.findOne({ $and: [ {carpool_id: carpool_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+    callback(err, rider);
+  });
+};
+
+
+var Carpool = mongoose.model('Carpool');
+
+//needs testing
+//calculates the rider location's longitude and latitude whenever the location is modified
+RiderSchema.pre('save', function(next){
+  var rider = this;
+  if(!rider.isModified('location')) return next();
+
+  gmaps.geocode(rider.location, function(err, returned){
+    console.log(returned.status);
+    if(returned){
+      if(returned.status == 'OK'){
+
+        var coords=returned.results[0].geometry.location;//is an object in format {"lat":####, "lng":####}
+
+        rider.latitude = coords.lat;
+        rider.longitude = coords.lng;
+        next();
+      }else{
+        next();
+      }
+    
+    }else{
+      alert("Geocode was not successful, try again later");
+      next();//lat and lon are both NULL
+    }
+  }, 'false');//this is a param that states if the request involves a geolocation device
 });
 
 // gets the carpool for a ride

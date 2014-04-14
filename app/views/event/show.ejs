@@ -1,6 +1,7 @@
 <html>
 
 <head>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI&sensor=true"></script>
 <% include ../head_scripts %>
 <script type='text/javascript' src='/js/event_show.js'></script>
 </head>
@@ -15,7 +16,7 @@
 
 		<h1> <%= event.type %> for team <%= team.name %>  <small><%= date %></small></h1>
 
-		<div id="googleMap"></div>
+		<div id="googleMap" style="width:100%; height:50%"></div>
 	</div>
 	<div class="col-md-4">
 		<table class="table">
