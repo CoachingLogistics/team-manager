@@ -167,14 +167,70 @@ exports.createRequestForCarpool = function(req, res) {
   });
 }
 
+/*
+ * renders the page to submit a ride request
+ */
 exports.rideRequestForEvent = function(req, res) {
   var event_id = req.param('event_id');
   Event.findById(event_id, function(err, theEvent) {
-    if(err) {
-      return res.redirect('back');
+    Family.getPlayersForUser(req.user._id, function(players) {
+      if(err) {
+        return res.redirect('back');
+      }
+      else {
+        return res.render('rider/requestForEvent', { 'user':req.user, 'event':theEvent, 'players':players });
+      }
+    });
+  });
+}
+
+/*
+ * submits a ride request for an event
+ */
+exports.submitRideRequestForEvent = function(req, res) {
+  console.log('here lol');
+  var event_id = req.param('event_id');
+  var players = req.body.players;
+  var location = req.body.location;
+  var hour = parseInt(req.body.hour);
+  var minute = parseInt(req.body.minute);
+  var specifier = req.body.ampm;
+
+  Event.findById(event_id, function(err, theEvent) {
+    console.log('the event is ' + theEvent);
+    console.log('team id is ' + theEvent.team_id);
+    var date = theEvent.date;
+    if(hour == 12 && specifier == "am") {
+      hour = 0;
+    } else if(hour != 12 && specifier == "pm") {
+      hour += 12;
     }
-    else {
-      return res.render('rider/requestForEvent', { 'user':req.user, 'event':theEvent });
-    }
+    var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
+    players.forEach(function(player) {
+      RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
+        console.log('in roster spot');
+        console.log('the roster spot is ' + theRosterSpot);
+        if(!err && theRosterSpot) {
+          console.log('creating new rider');
+          var newRider = new Rider({
+            roster_spot_id: theRosterSpot._id,
+            event_id: theEvent._id,
+            location: location,
+            time: rideDate,
+            confirmed: false
+          });
+          newRider.save(function(error, saved) {
+            // rider is saved
+            if(error) {
+              console.log('rider not saved');
+            } else {
+              console.log('rider saved');
+            }
+          });
+        }
+      });
+    });
+    //redirect to show page
+    return res.redirect('/events/' + event_id);
   });
 }

@@ -82,7 +82,7 @@
 <hr>
 <div class="row">
 	<div class="col-md-8">
-		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/riders/<%=event._id%>/riderequest">Request Ride</a> <%}%></h3>
+		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/events/<%=event._id%>/rideRequest">Request Ride</a> <%}%></h3>
 
 		<% if(carpools.length>0){ %>
 
@@ -95,8 +95,6 @@
 			No drivers
 
 		<% } %>
-
-		<a href="/events/<%=event._id%>/rideRequest">Request a ride to this event</a>
 
 
 
