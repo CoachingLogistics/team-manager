@@ -58,6 +58,10 @@ Riders
 	<table>
 		<thead>
 			<th>Name</th>
+			<th></th>
+			<% if(access) { %>
+				<th></th>
+			<% } %>
 		</thead>
 		<tbody>
 			<% riders.forEach(function(rider) { %>
@@ -65,6 +69,13 @@ Riders
 
 				<td><%= rider.player.full_name %></td>
 				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
+				<% if(access) { %>
+					<%if(!rider.confirmed) {%>
+						<td><a href="/riders/confirm/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-success">Confirm</a></td>
+					<%} else {%>
+						<td></td>
+					<% } %>
+				<% } %>
 
 			</tr>
 		<% }) %>

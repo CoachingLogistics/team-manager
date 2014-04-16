@@ -238,3 +238,34 @@ exports.submitRideRequestForEvent = function(req, res) {
     return res.redirect('/events/' + event_id);
   });
 }
+
+/*
+ * confirms a rider for a carpool
+ */
+exports.confirmForCarpool = function(req, res) {
+  var carpool_id = req.param('carpool_id');
+  var player_id = req.param('player_id');
+  Carpool.findById(carpool_id, function(err, theCarpool) {
+    if(err) {
+      return res.redirect('back');
+    }
+    Event.findById(theCarpool.event_id, function(err, theEvent) {
+      if(err) {
+        return res.redirect(back);
+      }
+      else {
+        RosterSpot.getByIds(theEvent.team_id, player_id, function(err, theRosterSpot) {
+          if(err) {
+            return res.redirect('back');
+          }
+          Rider.getByIds(theCarpool._id, theRosterSpot._id, function(err, theRider) {
+            theRider.confirmed = true;
+            theRider.save(function(err, theRiderSaved) {
+              return res.redirect('/carpools/' + carpool_id);
+            });
+          });
+        });
+      }
+    });
+  });
+}
