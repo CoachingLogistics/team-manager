@@ -96,6 +96,17 @@
 
 		<% } %>
 
+		<h3>Players needing rides</h3>
+		<% if(playersNeedingRides.length > 0) {%>
+			<ul>
+			<% playersNeedingRides.forEach(function(player) { %>
+					<li><%= player.full_name %></li>
+			<% }) %>
+			</ul>
+		<% } else { %>
+			<b>No players need a ride</b>
+		<% } %>
+
 	</div>
 </div>
 

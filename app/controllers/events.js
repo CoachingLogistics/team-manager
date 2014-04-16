@@ -5,7 +5,7 @@ var  Attendance = mongoose.model('Attendance');
 var  RosterSpot = mongoose.model('RosterSpot');
 var  Coach = mongoose.model('Coach');
 var  Carpool = mongoose.model('Carpool');
-
+var Rider = mongoose.model('Rider');
 //for automated emails
 var schedule = require('node-schedule');
 var mailer = require('../mailers/team_mailer.js');
@@ -13,6 +13,7 @@ var EventReminder = require('../mailers/event_attendance');
 
 //for googlemaps
 var gmaps = require('googlemaps');
+var async = require('async');
 gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 
@@ -215,23 +216,36 @@ exports.show = function(req, res){
 
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
 	    				Carpool.getByEventId(event._id, function(err, carpools){
-					    	res.render('event/show', {
-					    	  event: event,
-					    	  team: team,
-					    	  user:req.user,
-					    	  time: timeFormat(event.date),
-					    	  players: players,
-					    	  access: access,
-					    	  date: dateFormat(event.date),
-	                		  loggedIn: loggedIn,
-	                		  upcoming: upcoming,
-	                		  carpools: carpools
+                Rider.needRideForEvent(event._id, function(err, riders) {
+                  var needingRides = [];
+                  async.each(riders, function(rider, innerCallback) {
+                    RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
+                      Player.findById(rs.player_id, function(err, player) {
+                        needingRides.push(player);
+                        innerCallback();
+                      });
+                    });
+                  }, function(error){
+                      res.render('event/show', {
+                        event: event,
+                        team: team,
+                        user:req.user,
+                        time: timeFormat(event.date),
+                        players: players,
+                        access: access,
+                        date: dateFormat(event.date),
+                              loggedIn: loggedIn,
+                              upcoming: upcoming,
+                              carpools: carpools,
+                              playersNeedingRides: needingRides
 
-					    	});
-					    })
-	    			})
-		    	})
-		    })
+                      });
+                  });
+                });
+					    });
+	    			});
+		    	});
+		    });
 		}
   	});
 }
@@ -395,7 +409,7 @@ exports.delete = function(req, res) {
 
 //event_id and player_id is passed in, returns the attendance for that player & event
 exports.attendance = function(req, res){
-	
+
 	Event.findById(req.params.event_id, function(err, event){
 		Team.findById(event.team_id, function(err, team){
 			RosterSpot.getByIds(team._id, req.params.player_id, function(err, spot){
