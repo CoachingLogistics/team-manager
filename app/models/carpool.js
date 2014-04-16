@@ -116,7 +116,7 @@ CarpoolSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
@@ -215,7 +215,7 @@ RiderSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
@@ -276,6 +276,14 @@ RiderSchema.statics.getByCarpoolId = function(carpool_id, callback) {
 // finds riders by an event id, to get riders for an event
 RiderSchema.statics.getByEventId = function(event_id, callback) {
   this.find({event_id: event_id}, function(err, docs) {
+    callback(err, docs);
+  });
+}
+
+
+// gets a list of riders who still need a ride to an event
+RiderSchema.statics.needRideForEvent = function(event_id, callback) {
+  this.find({event_id: event_id, carpool_id: null}, function(err, docs) {
     callback(err, docs);
   });
 }

@@ -16,8 +16,6 @@ exports.index = function(req, res) {
   });
 }
 
-
-
 /*
  * Creates a carpool
  */
