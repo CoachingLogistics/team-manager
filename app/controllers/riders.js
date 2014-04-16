@@ -167,3 +167,14 @@ exports.createRequestForCarpool = function(req, res) {
   });
 }
 
+exports.rideRequestForEvent = function(req, res) {
+  var event_id = req.param('event_id');
+  Event.findById(event_id, function(err, theEvent) {
+    if(err) {
+      return res.redirect('back');
+    }
+    else {
+      return res.render('rider/requestForEvent', { 'user':req.user, 'event':theEvent });
+    }
+  });
+}
