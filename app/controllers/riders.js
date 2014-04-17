@@ -201,8 +201,6 @@ exports.submitRideRequestForEvent = function(req, res) {
   var specifier = req.body.ampm;
 
   Event.findById(event_id, function(err, theEvent) {
-    console.log('the event is ' + theEvent);
-    console.log('team id is ' + theEvent.team_id);
     var date = theEvent.date;
     if(hour == 12 && specifier == "am") {
       hour = 0;
@@ -212,10 +210,7 @@ exports.submitRideRequestForEvent = function(req, res) {
     var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
     players.forEach(function(player) {
       RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
-        console.log('in roster spot');
-        console.log('the roster spot is ' + theRosterSpot);
         if(!err && theRosterSpot) {
-          console.log('creating new rider');
           var newRider = new Rider({
             roster_spot_id: theRosterSpot._id,
             event_id: theEvent._id,

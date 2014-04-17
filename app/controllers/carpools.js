@@ -30,6 +30,7 @@ exports.show = function(req, res){
 					}
 					Rider.getByCarpoolId(carpool._id, function(err, riders) {
 						var riderArr = new Array();
+						var spotsLeft = carpool.size - riders.length;
 						async.each(riders, function(rider, innerCallback) {
 							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
 								Player.findById(rs.player_id, function(err, pl) {
@@ -47,6 +48,7 @@ exports.show = function(req, res){
 									driver: driver,
 									user:req.user,
 									riders: riderArr,
+									spotsLeft: spotsLeft,
 									access: access
 								});
 						});
@@ -99,6 +101,7 @@ exports.create = function(req, res){
 							var newRider = new Rider({
 								roster_spot_id: rs._id,
 								carpool_id: cp._id,
+								event_id: cp.event_id,
 								location: cp.location,
 								time: cp.time,
 								confirmed: true
