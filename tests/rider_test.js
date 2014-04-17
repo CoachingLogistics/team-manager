@@ -505,4 +505,15 @@ describe('Rider', function() {
       });
     });
   });
+
+  describe('#getByEventAndRosterSpotId', function() {
+    it('should have a method to get a rider from an event id and a roster spot id', function(done) {
+      Rider.getByEventAndRosterSpotId(game._id, mikeSpot._id, function(err, returned) {
+        should.not.exist(err);
+        returned.should.have.property('event_id', game._id);
+        returned.should.have.property('roster_spot_id', mikeSpot._id);
+        done();
+      });
+    });
+  });
 });

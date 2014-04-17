@@ -278,6 +278,7 @@ exports.pickupPlayer = function(req, res) {
   var event_id = req.param('event_id');
   var player_id = req.param('player_id');
   var user_id = req.user._id;
+  // find the event and roster spot to get the carpool and rider
   Event.findById(event_id, function(err, theEvent) {
     if(err) { return res.redirect('back'); }
     var team_id = theEvent.team_id;
@@ -287,6 +288,7 @@ exports.pickupPlayer = function(req, res) {
         if(err) { return res.redirect('back'); }
         Rider.getByEventAndRosterSpotId(event_id, theRosterSpot._id, function(err, theRider) {
           if(err) { return res.redirect('back'); }
+          // now that we have the rider, set the carpool_id and save it
           theRider.carpool_id = theCarpool._id;
           theRider.confirmed = true;
           console.log(theRider);
