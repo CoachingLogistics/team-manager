@@ -95,17 +95,20 @@ exports.create = function(req, res){
 			Team.findById(event.team_id, function(err, team) {
 				Family.getPlayersForUser(cp.user_id, function(players) {
 					players.forEach(function(player) {
-						RosterSpot.getByIds(team._id, player._id, function(err, rs) {
-							var newRider = new Rider({
-								roster_spot_id: rs._id,
-								carpool_id: cp._id,
-								location: cp.location,
-								time: cp.time,
-								confirmed: true
-							});
-							newRider.save(function(err, saved) {
-								// hope it saved lol!
-							});
+						RosterSpot.getByIds(team._id, player._id, function(err, rs){
+
+							if(rs){
+								var newRider = new Rider({
+									roster_spot_id: rs._id,
+									carpool_id: cp._id,
+									location: cp.location,
+									time: cp.time,
+									confirmed: true
+								});
+								newRider.save(function(err, saved) {
+									// hope it saved lol!
+								});
+							}
 						});
 					});
 					return res.redirect('/events/'+event._id);
@@ -259,6 +262,29 @@ exports.addRider = function(req, res) {
 				});
 			});
 		}
+	});
+}
+
+
+
+
+//AJAX only
+
+//returns coordinates for an event's location, to be used in google maps
+exports.routing = function(req,res){
+	Carpool.findById(req.params.id, function(err, carpool){
+		carpool.getEvent(function(error, event){
+			Rider.getByCarpoolId(req.params.id, function(er, riders){
+
+				var doc={
+					event: event,
+					carpool: carpool,
+					riders: riders
+				}
+
+				res.send(doc);
+			})
+		})
 	});
 }
 
