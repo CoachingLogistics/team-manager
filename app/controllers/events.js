@@ -226,20 +226,44 @@ exports.show = function(req, res){
                       });
                     });
                   }, function(error){
-                      res.render('event/show', {
-                        event: event,
-                        team: team,
-                        user:req.user,
-                        time: timeFormat(event.date),
-                        players: players,
-                        access: access,
-                        date: dateFormat(event.date),
-                              loggedIn: loggedIn,
-                              upcoming: upcoming,
-                              carpools: carpools,
-                              playersNeedingRides: needingRides
+                    // see if logged in user is driving to display the 'offer ride' button
+                    if(loggedIn) {
+                      Carpool.getByIds(req.user._id, event._id, function(err, aCarpool) {
+                        var driving = !err && aCarpool;
 
-                      });
+                        res.render('event/show', {
+                          event: event,
+                          team: team,
+                          user:req.user,
+                          time: timeFormat(event.date),
+                          players: players,
+                          access: access,
+                          date: dateFormat(event.date),
+                                loggedIn: loggedIn,
+                                upcoming: upcoming,
+                                carpools: carpools,
+                                playersNeedingRides: needingRides,
+                                driving: driving
+                          });
+
+                        });
+                      }
+                      else {
+                        res.render('event/show', {
+                          event: event,
+                          team: team,
+                          user:req.user,
+                          time: timeFormat(event.date),
+                          players: players,
+                          access: access,
+                          date: dateFormat(event.date),
+                                loggedIn: loggedIn,
+                                upcoming: upcoming,
+                                carpools: carpools,
+                                playersNeedingRides: needingRides,
+                                driving: false
+                          });
+                      }
                   });
                 });
 					    });

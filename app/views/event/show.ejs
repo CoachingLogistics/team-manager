@@ -15,6 +15,9 @@
 	<div class="col-md-8">
 
 		<h1> <%= event.type %> for team <%= team.name %>  <small><%= date %></small></h1>
+		<% if(driving) { %>
+		<h1>driving</h1>
+		<% } %>
 
 		<div id="googleMap" style="width:100%; height:50%"></div>
 	</div>
@@ -98,11 +101,24 @@
 
 		<h3>Players needing rides</h3>
 		<% if(playersNeedingRides.length > 0) {%>
-			<ul>
+			<table>
+				<thead>
+					<th>Name</th>
+					<% if(driving) {%>
+						<th>Offer Ride</th>
+					<%}%>
+				</thead>
+				<tbody>
 			<% playersNeedingRides.forEach(function(player) { %>
-					<li><%= player.full_name %></li>
+				<tr>
+					<td><%= player.full_name %></td>
+					<%if(driving) {%>
+						<td><a href="/events/<%=event._id%>/pickupPlayer/<%=player._id%>">Offer ride</a></td>
+					<%}%>
+				</tr>
 			<% }) %>
-			</ul>
+				</tbody>
+			</table>
 		<% } else { %>
 			<b>No players need a ride</b>
 		<% } %>

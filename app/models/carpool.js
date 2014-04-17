@@ -295,6 +295,13 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
   });
 };
 
+// gets by event and roster spot id
+RiderSchema.statics.getByEventAndRosterSpotId = function(event_id, roster_spot_id, callback) {
+  this.findOne({ $and: [ {event_id: event_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+    callback(err, rider);
+  });
+}
+
 
 mongoose.model('Rider', RiderSchema);
 module.exports.Rider = mongoose.model('Rider', RiderSchema);

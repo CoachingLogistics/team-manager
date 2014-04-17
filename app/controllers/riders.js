@@ -269,3 +269,37 @@ exports.confirmForCarpool = function(req, res) {
     });
   });
 }
+
+/*
+ * Adds a player to a carpool from the 'players needing rides' section of event show
+ */
+exports.pickupPlayer = function(req, res) {
+  // easy access to variables
+  var event_id = req.param('event_id');
+  var player_id = req.param('player_id');
+  var user_id = req.user._id;
+  Event.findById(event_id, function(err, theEvent) {
+    if(err) { return res.redirect('back'); }
+    var team_id = theEvent.team_id;
+    RosterSpot.getByIds(team_id, player_id, function(err, theRosterSpot) {
+      if(err) { return res.redirect('back'); }
+      Carpool.getByIds(user_id, event_id, function(err, theCarpool) {
+        if(err) { return res.redirect('back'); }
+        Rider.getByEventAndRosterSpotId(event_id, theRosterSpot._id, function(err, theRider) {
+          if(err) { return res.redirect('back'); }
+          theRider.carpool_id = theCarpool._id;
+          theRider.confirmed = true;
+          console.log(theRider);
+          theRider.save(function(err, savedRider) {
+            if(!err && savedRider) {
+              console.log('rider saved');
+            } else{
+              console.log(err);
+            }
+            return res.redirect('/events/' + event_id);
+          })
+        });
+      });
+    });
+  });
+}
