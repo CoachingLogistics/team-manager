@@ -78,7 +78,7 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
   var carp_e_1= new Carpool({
     //user: eric
     //event: event1
-    location: "500 Forbes Avenue",
+    location: "Cathedral of Learning",
     time: new Date(2014, 2, 24, 16, 20),
     size: 4
   });
@@ -86,7 +86,7 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
   var carp_s_1= new Carpool({
     //user: stan
     //event: event1
-    location: "500 Forbes Avenue",
+    location: "Manoa Valley District Park",
     time: new Date(2014, 2, 24, 12, 20),
     size: 3,
     notes: 'Hello'
@@ -95,7 +95,7 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
   var carp_s_2= new Carpool({
     //user: stan
     //event: event2
-    location: "500 Forbes Avenue",
+    location: "Invalid Address",
     time: new Date(2014, 2, 24, 14, 0),
     size: 3
   });
@@ -192,11 +192,14 @@ describe('Carpool', function(){	//context, so we can see where tests happen in c
 
             carp_e_1.should.have.property('user_id', eric._id);
             carp_e_1.should.have.property('event_id', event1._id);
-            carp_e_1.should.have.property('location', "500 Forbes Avenue");
+            carp_e_1.should.have.property('location', "Cathedral of Learning");
             carp_e_1.should.have.property('time', new Date(2014, 2, 24, 16, 20));
             carp_e_1.should.have.property('size', 4);
             carp_s_1.should.have.property('notes', 'Hello');
-
+            carp_s_1.should.have.property('latitude', 21.3127006);
+            carp_s_1.should.have.property('longitude', -157.8081318);
+            carp_s_2.should.have.property('latitude', null);
+            carp_s_2.should.have.property('longitude', null);            
 
             done();
         });
