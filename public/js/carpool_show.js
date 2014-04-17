@@ -70,6 +70,21 @@ $(function(){
 			directionsService.route(google_request, function(response, status) {
 			    if (status == google.maps.DirectionsStatus.OK) {
 			      directionsDisplay.setDirections(response);
+			      var legs = response.routes[0].legs;
+
+			      console.log(legs)
+
+			      legs.forEach(function(leg){
+			      	var steps = leg.steps;
+
+			      	steps.forEach(function(step){
+
+			      		var html = "<tr><td>"+step.instructions+"</td></tr>";
+			      		$("#directions").append(html).trigger("create");
+			      		console.log(step.instructions)
+			      	})
+
+			      })
 			    }
 			});
 
