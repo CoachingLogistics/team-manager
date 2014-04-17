@@ -1,3 +1,9 @@
+/*
+ * This is the coach model, which connects a user to a team, and gives them access rights to that team.
+ *
+ */
+
+
 // Synchronously load model dependecies, so foreign model calls can be made
 var fs = require('fs');
 var models_path = __dirname;
@@ -34,11 +40,24 @@ CoachSchema.statics.getByUserId = function(user_id, callback) {
 	});
 };
 
-// returns the users for a team
+//returns coach objects given a team_id and user_id (should be 1 or none)
+CoachSchema.statics.getByIds = function(team_id, user_id, callback) {
+	this.findOne({ $and: [ {team_id: team_id}, {user_id: user_id}]}, function(err, coach){
+		callback(err, coach);
+
+	});
+};
+
+// returns the users that are coaches for a team
 CoachSchema.statics.getUsersForTeam = function(team_id, callback) {
 	var toReturn = new Array;
+
+	//get coaches for a team
 	this.find({'team_id': team_id}, function(err, coaches) {
+
+		//for each coach, find the user from user_id
 		async.each(coaches, function(item, innerCallback){
+
 			User.findById(item.user_id, function(error, returned) {
 				toReturn.push(returned);
 				innerCallback();
@@ -46,13 +65,16 @@ CoachSchema.statics.getUsersForTeam = function(team_id, callback) {
 		}, function(err) {
 			callback(err, toReturn);
 		});
+
 	});
 };
 
-// returns the teams for a user
+// returns the teams for a user, so the teams that that user coaches
 CoachSchema.statics.getTeamsForUser = function(user_id, callback) {
 	var toReturn = new Array;
+
 	this.find({'user_id': user_id}, function(err, coaches) {
+
 		async.each(coaches, function(item, innerCallback) {
 			Team.findById(item.team_id, function(error, returned) {
 				toReturn.push(returned);
@@ -61,9 +83,11 @@ CoachSchema.statics.getTeamsForUser = function(user_id, callback) {
 		}, function(err) {
 			callback(err, toReturn);
 		});
+
 	});
+	
 };
 
 // set the schema and export the model
 mongoose.model('Coach', CoachSchema);
-module.exports = mongoose.model('Coach');
+module.exports = mongoose.model('Coach', CoachSchema);

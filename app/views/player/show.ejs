@@ -15,10 +15,13 @@
 <%= player.first_name %><br />
 <b>Last Name</b> <br />
 <%= player.last_name %><br />
+<% if (dob){ %>
 <b>Date of Birth</b> <br />
-<%= player.date_of_birth %><br />
+<%= dob %>
+<% } %><br />
 
-<a href=<%= '/players/' + player._id + "/edit" %> >Edit</a> <br />
+<a href=<%= '/players/' + player._id + "/edit" %> >Edit</a>
+<a href=<%= '/players/' + player._id + '/addUser'%> > Add Another User</a>
 <!-- Will add 'are you sure?' alert when we add the authorization check -->
 <form method='POST' action=<%= '/players/' + player._id + '/delete'%> >
 	<input type="Submit" value="Delete" />

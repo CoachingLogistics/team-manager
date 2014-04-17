@@ -11,15 +11,11 @@
 
 <h1>Compose a message</h1>
 
-<form method="POST" action="/mail/send">
-	<p>Defaults to account specified in team_mailer</p>
-	From: <input type="email" name="sender" /> <br />
-	To: <input type="email" name="reciever" /> <br />
-	Subject: <input type="text" name="subject" /> <br />
-	<p>This gets ignored in the email if you have HTML</p>
-	Text: <textarea name="text"></textarea> <br />
-	<p>This overrides the text part of the email</p>
-	HTML: <textarea name="html"></textarea> <br />
+<form method="POST" action="/mail/test">
+	<b>Team ID</b>
+	<input type="text" name="team_id" />
+	<b>Player ID</b>
+	<input type="text" name="player_id" />
 	<input type="submit" value="Send Message" />
 </form>
 

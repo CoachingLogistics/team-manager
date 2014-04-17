@@ -2,24 +2,90 @@
 
 <head>
 <% include ../head_scripts %>
+<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
+<script>$(document).ready(function() {$('#calendar').fullCalendar({
+    	header:{left:   'title', center: 'month basicWeek', right:  'today prev,next'},
+    	weekMode: 'liquid',
+    	events: <%-JSON.stringify(events)%>,
+    	eventTextColor: "#000000",
+        contentHeight:200});});
+</script>
+<script type='text/javascript' src='/js/team_show.js'></script>
+
 </head>
 
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
+<div class="row">
+	<div class="col-md-8">
+		<div id="calendar"></div>
+		<% if(access){ %>
+		<br>
+		<a type="button" class="pull-right btn btn-primary" href="/teams/<%=team._id%>/event">Create Event</a>
+		<% } %>
+	</div>
+	<div class="col-md-4">
+		<table class="table">
+		<thead>
+			<th class="text-left">Players</th>
+			<th class="text-right">Next event</th>
+		</thead>
+		<tr>
+			<td></td>
+			<td id="event-name" class="text-right"></td>
+		</tr>
 
-<h1>Team <%= team.name %></h1>
-		<b>Name: </b><%= team.name %><br />
-		<b>Sport: </b><%= team.sport %><br />
-		<b>Players: </b>
+		<tr>
+			<td colspan="2">
+				<div class="list-group">
+				<% players.forEach(function(p){ %>
+						<a class="list-group-item" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
+					  	<!-- use this and ajax to say if they are going to the next game or not-->
+					    <span id="<%=p._id%>" class="pull-right ajax-attendance glyphicon"></span>
+					    <!--span class="pull-right glyphicon glyphicon-ok"></span><span class="pull-right glyphicon glyphicon-minus"></span><span class="pull-right glyphicon glyphicon-remove"></span-->
+					    </a>
+				<% }); if(players.length == 0){ %> No players <%}%>
+				</div>
+			</td>
+		</tr>
+		<%if(access){%>
+		<tr>
+			<th colspan="2">
+				<a type="button" class="btn btn-default" href="/teams/<%=team._id%>/roster">Edit Roster</a>
+			</th>
+		</tr>
+		<%}%>
 
-<form method='GET' action="<%= '/teams/' + team._id + '/edit'%>" >
-	<input type="Submit" value="Edit Team"/>
-</form>
+		</table>
+	</div>
+</div>
 
-<a href="/teams/<%= team._id %>/templates">Email Templates</a>
+<div class="row">
+	<div class="col-md-8">
+		<h1>Team <%= team.name %></h1>
+				<b>Name: </b><%= team.name %><br />
+				<b>Sport: </b><%= team.sport %><br />
+				<b>Managed by: </b><% coaches.forEach(function(c, index, arr){ %>
 
+					<% if(index == arr.length-1){ %>
+						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %></a>
+					<% }else{ %>
+						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %>, </a>
+					<% } %>
+				<% }); %>
+
+		<% if(access){ %>
+		<br>
+		<a type="button" class="btn btn-default" href="/teams/<%=team._id%>/edit">Edit Team Info</a>
+
+		<a type="button" class="btn btn-default" href="/teams/<%= team._id %>/templates">Email Templates</a>
+		<% } %>
+
+	</div>
+</div>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

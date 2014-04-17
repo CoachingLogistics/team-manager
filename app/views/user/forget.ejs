@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+<% if (message) { %>
+<p><%= message %></p>
+<% } %>
+
+<div class="well">
+<form class="form-signin" role="form" action="/forget" method="post">
+	<h2 class="form-signin-heading text-center">Provide your email to recieve a new password</h2>
+        <input type="email" class="form-control" placeholder="Email address" required autofocus name="email">
+        <br><br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Send A New Password</button>
+</form>
+</div>
+
+<h3 class="text-center"><a href="/register">Not registered? Get an account now!</a></h3>
+
+
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

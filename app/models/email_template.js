@@ -1,3 +1,10 @@
+/*
+ * This is the email_template model, used for team email templates
+ *
+ */
+
+
+
 // Synchronously load model dependecies, so foreign model calls can be made
 var fs = require('fs');
 var models_path = __dirname;
@@ -28,3 +35,4 @@ Email_Template_Schema.statics.getByTeamId = function(team_id, callback) {
 
 // and here is the model
 mongoose.model('Email_Template', Email_Template_Schema);
+module.exports = mongoose.model('Email_Template');

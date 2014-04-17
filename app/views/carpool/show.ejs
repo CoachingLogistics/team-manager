@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA1Vn-NXh1hZ3SVBpn1djoR41qKTSr5aqU&sensor=true"></script>
+<% include ../head_scripts %>
+<script type='text/javascript' src='/js/carpool_show.js'></script>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+
+
+<div class="row">
+	<div class="col-md-8">
+		<h1> Team: <%= team.name %></h1>
+		<h1> Carpool for <%= event.type %> on <%= date %></h1>
+
+		<div id="googleMap" style="width:100%; height:50%"></div>
+	</div>
+	<div class="col-md-4">
+		<table class="table" id="directions">
+			<thead>
+				<th class="text-left">Directions</th>
+			</thead>
+			<!--directions loaded here-->
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-8">
+		<h1> Carpool Information</h1>
+
+				<b>Team: </b><a href='/teams/<%= team._id %>'><%= team.name %></a><br>
+				<b>Event: </b><a href='/events/<%= event._id %>'><%= event.type+' on '+ date%></a><br>
+				<b>Driver: </b><a href='/users/<%= driver._id %>'><%= driver.first_name+' '+driver.last_name %></a><br>
+				<div id="location"><b>Location: </b><%= carpool.location %><br /></div>
+				<b>Time: </b> <%= time %><br />
+				<b>Capacity: </b> <%= carpool.size %><br />
+				<b>Notes: </b><%= carpool.notes%>
+
+		<% if(access){ %>
+		<br>
+		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
+
+
+			<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+
+		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
+			<input type="Submit" value="Delete" />
+		</form>
+
+		<% } %>
+
+		<% if(user) { %>
+			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" class="btn btn-info" >Request a ride</a>
+		<% } %>
+
+	</div>
+</div>
+<hr>
+Riders
+<% if(riders.length == 0 ) { %>
+	<em>There are no riders to display</em>
+<% } else { %>
+	<table>
+		<thead>
+			<th>Name</th>
+		</thead>
+		<tbody>
+			<% riders.forEach(function(rider) { %>
+			<tr>
+
+				<td><%= rider.player.full_name %></td>
+				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
+
+			</tr>
+		<% }) %>
+	</tbody>
+</table>
+<% } %>
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>

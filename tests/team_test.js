@@ -20,6 +20,7 @@
 after(function(done){
     //test_db.connection.db.dropDatabase(function(){
     //    test_db.connection.close(function(){
+        console.log("team tests done")
             done();
     //    });
     //});
@@ -98,28 +99,7 @@ describe('Team', function(){	//context, so we can see where tests happen in cons
     });//validators
 
     describe('#routes', function(){
-        var bad;
-        // you can use beforeEach in each nested describe
-        beforeEach(function(done){
-            bad = new Team(testTeam);
-            bad.save(done);
-        });
 
-        it('team name must not be empty', function(done){
-            bad.name = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;//as in, there is an error
-            }).should.throw();
-            done();
-        });
-
-        it('sport cannot be empty', function(done){
-            bad.sport = "";
-            bad.validate(function(err, returned){
-                err.should.be.ok;
-            });
-            done();
-        });
     });//validators
 
 });

@@ -1,7 +1,9 @@
 $(function(){
 
 	var post_url = $(location).attr('pathname').replace('/roster-fill', '/roster-create');
+	//should get "/teams/:id/roster-create"
 	var red_url = $(location).attr('pathname').replace('/roster-fill', '');
+	//should get "/teams/:id"
 	var rows = 1;
 
 	//this creates more rows of players
@@ -27,28 +29,29 @@ $(function(){
 					input+= " </form> ";
 
 		$("#roster-list").append(input).trigger("create");
+		$("#submit").removeAttr("disabled");
 
 	});
 
-
-
+	
+	//submits the individual forms, which are rows
 	$("#submit").click(function(){
-		alert("here it goes");
 
 		for(var ii = 1; ii <=rows; ii++){
-			console.log("hi");
 			var dom_id = "#roster_form"+ii;
 
-			$.post($(dom_id).attr("action"), $(dom_id).serialize(), function () {
-            	console.log('Form '+ ii +' submitted');
-        	});
+			console.log($(dom_id).find("input").last().val())
 
-			// $(dom_id).submit(function(){
-			// 	//event.preventDefault();
-			// });
+			if($(dom_id).find("input").last().val()){
+				$.post($(dom_id).attr("action"), $(dom_id).serialize(), function () {
+	            	console.log('Form '+ ii +' submitted');
+	        	});
+			}else{
+				console.log("its empty");
+			}
 		}
+		alert("Roster Submitted");
 		$(location).attr('href',red_url).trigger("create");
-
 
 	});
 

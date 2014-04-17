@@ -3,8 +3,10 @@
 
 var mailer_options = {
 	service: "Gmail",
-	user: "email here",
-	pass: "password here"
+
+	user: "team.manager.notification@gmail.com",
+	pass: "$uper$ecret"
+
 };
 
 module.exports = mailer_options;

@@ -15,7 +15,9 @@
     "passport-local": "0.1.6",
     "bcrypt-nodejs" : "0.0.3",
     "nodemailer": "0.6.0",
-    "async": "*"
+    "async": "*",
+    "node-schedule":"0.1.13",
+    "googlemaps":"0.1.9"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

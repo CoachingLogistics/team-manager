@@ -1,21 +1,29 @@
-// Example model
+/*
+ * This is the player model, which represents a player that belongs to a team (a kid)
+ *
+ */
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+//required
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
+
+//model
 var PlayerSchema = new Schema({
   first_name: {type: String, required: true},
   last_name: {type: String, required: true},
-  date_of_birth: Date
+  date_of_birth: Date,
+  active: {type: Boolean, default: true}
 });
 
 
-// gets the name in last, first format
+
+// gets the name in "last, first" format
 PlayerSchema.virtual('official_name').get(function() {
 	return this.last_name + ', ' + this.first_name;
 });
 
-// gets the name in first last format
+// gets the name in "first last" format
 PlayerSchema.virtual('full_name').get(function() {
 	return this.first_name + ' ' + this.last_name;
 });
@@ -33,4 +41,18 @@ PlayerSchema.virtual('age').get(function() {
 	return age;
 });
 
+
+
+//returns a player's user accounts (parents)
+//tested in family_test
+PlayerSchema.methods.getUsers = function (callback) {
+	Family.getUsersForPlayer(this._id, function(users){
+		callback(users);//yo
+	})
+};
+
+
+
 mongoose.model('Player', PlayerSchema);
+module.exports.Player = mongoose.model('Player', PlayerSchema);
+module.exports.Schema = PlayerSchema;
