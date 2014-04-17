@@ -109,27 +109,34 @@ exports.create = function(req, res){
 						console.log(err);
 					}else{//no err
 
-							//*********************************************************************************************CHANGE
-							var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//set for 2 days before event at noon
-							// var now = new Date();
-							// var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
 
-							console.log("check your email at "+remind);
+							// //there is a huge issue here, if the event is changed/deleted we'll need to change/delete the job, but I dont know how to do that
 
-							var job = schedule.scheduleJob(remind, function(){	//this gets carried out whenever the job is scheduled
 
-								Event.findById(event._id, function(error, ev){
-									if(ev){
-										Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
-											EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
-												console.log("email reminder sent now");
-											});
-										});
-									}else{
-										//nothing, the event got deleted so don't do anything
-									}
-								});
-							});//job
+							// var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//sends out RSVP reminder 2 days in advance
+							// var results = new Date(req.param('year'), req.param('month'), req.param('day')-1, 12, 0, 0);	//set for 1 day before event at noon
+							// // var now = new Date();
+							// // var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
+
+							// var job_remind = schedule.scheduleJob(remind, function(){	//need to send reminders to parents about RSVPing
+
+								
+							// });//job
+
+							// var job_results = schedule.scheduleJob(results, function(){	//this gets carried out whenever the job is scheduled
+
+							// 	Event.findById(event._id, function(error, ev){
+							// 		if(ev){
+							// 			Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+							// 				EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
+							// 					console.log("email reminder sent now");
+							// 				});
+							// 			});
+							// 		}else{
+							// 			//nothing, the event got deleted so don't do anything
+							// 		}
+							// 	});
+							// });//job
 
 
 
@@ -353,7 +360,7 @@ exports.update = function(req, res){
 
 
 exports.delete = function(req, res) {
-	Event.findById(req.params.id, function(error, event){
+	Event.findOne({_id : req.params.id}, function(error, event){
 		if(event){
 		Team.findById(event.team_id, function(err, team){
 			if(err) throw new Error(err);
@@ -371,7 +378,8 @@ exports.delete = function(req, res) {
 	  				res.redirect('/');
 			  	}else{
 
-					Event.remove({_id: req.params.id}, function(err, docs) {
+					event.remove(function(err, docs) {
+						//console.log(docs);
 						if(err) {
 							return res.redirect('/events/' + req.params.id);
 						}
