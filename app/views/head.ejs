@@ -1,58 +1,88 @@
-    <div class="container">
 
-      <div class="masthead">
 
-        <div class="row" id="top-content">
-        <h3>Team Manager
-
-          <div class="pull-right">
-          <% if(user){%>
-            <h5>
-            <div class="btn-group">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.name %><b class="caret"></b></a>
-              <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                <li><a href="/account">My Account</a></li>
-                <li><a href="#">Teams</a></li>
-                <li><a href="#">Players</a></li>
-                <li class="divider"></li>
-                <li><a href="/logout">Logout</a></li>
+    <div data-role="page">
+      <div data-role="panel" data-position="left" data-display="reveal" id="navpanel">
+        <div class="ui-panel-inner">
+          <ul class="jqm-list ui-alt-icon ui-nodisc-icon ui-listview">
+            <li data-icon="home" class="ui-first-child"><a href=".././" class="ui-btn ui-btn-icon-right ui-icon-home">Home</a></li>
+            <li><a href="../intro/" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Introduction</a></li>
+            <li><a href="../button-markup/" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Buttons</a></li>
+            <li><a href="../button/" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Button widget</a></li>
+            <li data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-iconpos="right" data-inset="false" class="ui-collapsible ui-collapsible-themed-content ui-collapsible-collapsed ui-li-static ui-body-inherit"><h3 class="ui-collapsible-heading ui-collapsible-heading-collapsed"><a href="#" class="ui-collapsible-heading-toggle ui-btn ui-icon-carat-d ui-btn-icon-right ui-btn-inherit">Checkboxradio widget<span class="ui-collapsible-heading-status"> click to expand contents</span></a></h3>
+            <div class="ui-collapsible-content ui-body-inherit ui-collapsible-content-collapsed" aria-hidden="true">
+              
+              <ul class="ui-listview">
+                <li data-filtertext="form checkboxradio widget checkbox input checkboxes controlgroups" class="ui-first-child"><a href="../checkboxradio-checkbox/" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Checkboxes</a></li>
+                <li data-filtertext="form checkboxradio widget radio input radio buttons controlgroups" class="ui-last-child"><a href="../checkboxradio-radio/" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Radio buttons</a></li>
               </ul>
-            </div>
-            </h5>
-
-
-
-
-          <% }else{ %>
-              <form class="navbar-form navbar-right" role="form" action="/login" method="post">
-                <div class="form-group">
-                  <input type="text" placeholder="Email" name="username" class="form-control">
-                </div>
-                <div class="form-group">
-                  <input type="password" placeholder="Password" name="password" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">Log in</button>
-                <div id="rememberme" class="text-center"><small>
-                <input type="checkbox" name="rememberme"/> Remember Me
-                </small></div>
-              </form>
-              <div id="register" class="text-right">
-                <small>
-                <a href="/register"> register for an account</a>
-                </small>
-              </div>
-
-          <% } %>
-          </div>
-
-        </h3>
+            </div></li>
+          </ul>
         </div>
-
-
-        <ul class="nav nav-justified">
-          <li><a href="/">Home</a></li>
-          <li><a href="/teams">Teams</a></li>
-          <li><a href="/players">Players</a></li>
-        </ul>
       </div>
-      <div id="body_content">
+
+      <div data-role="header">
+        <a href="#navpanel" data-icon="grid">nav</a>
+        <h1>title</h1>
+      </div>
+
+      <div data-role="content">
+
+        <div class="container">
+
+
+          <div class="masthead">
+
+            <div class="row" id="top-content">
+            <h3>Team Manager
+
+              <div class="pull-right">
+              <% if(user){%>
+                <h5>
+                <div class="btn-group">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.name %><b class="caret"></b></a>
+                  <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li><a href="/account">My Account</a></li>
+                    <li><a href="#">Teams</a></li>
+                    <li><a href="#">Players</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/logout">Logout</a></li>
+                  </ul>
+                </div>
+                </h5>
+
+
+
+
+              <% }else{ %>
+                  <form class="navbar-form navbar-right" role="form" action="/login" method="post">
+                    <div class="form-group">
+                      <input type="text" placeholder="Email" name="username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <input type="password" placeholder="Password" name="password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Log in</button>
+                    <div id="rememberme" class="text-center"><small>
+                    <input type="checkbox" name="rememberme"/> Remember Me
+                    </small></div>
+                  </form>
+                  <div id="register" class="text-right">
+                    <small>
+                    <a href="/register"> register for an account</a>
+                    </small>
+                  </div>
+
+              <% } %>
+              </div>
+            </h3>
+            </div>
+
+
+
+            <ul class="nav nav-justified">
+              <li><a href="/">Home</a></li>
+              <li><a href="/teams">Teams</a></li>
+              <li><a href="/players">Players</a></li>
+            </ul>
+          </div>
+          <div id="body_content">
