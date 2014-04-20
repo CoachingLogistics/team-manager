@@ -218,58 +218,9 @@ exports.delete = function(req, res){	//post       //test
 };
 
 /*
- * Renders the page to add a rider to a carpool
- */
-exports.addRider = function(req, res) {
-
-	var warning = undefined;
-	Carpool.findById(req.params.id, function(err, cp) {
-		if(err) {
-			// lasy error handling for now
-			return res.redirect('/');
-		}
-		else {
-			var event_id = cp.event_id;
-			Event.findById(event_id, function(err, theEvent) {
-				var team_id = theEvent.team_id;
-				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
-					var playerArr = new Array();
-					async.each(rosterSpots, function(rosterSpot, innerCallback) {
-						// Attempt to get a rider for the player it is iterating over
-						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {
-							// if there is no rider, add the rider to the array
-							if(!rider) {
-								var player_id = rosterSpot.player_id;
-								Player.findById(player_id, function(err, player) {
-									if(!err && player) {
-										playerArr.push(player);
-									}
-									innerCallback();
-								});
-							}
-							else {
-								innerCallback();
-							}
-						});
-						}, function(err) {
-
-						if(err) {
-							return res.redirect('/');
-						}
-						else {
-							return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp, 'warning': undefined});
-						}
-					}); // here
-				});
-			});
-		}
-	});
-}
-
-/*
  * fixed add rider still testing this out
  */
-exports.addRiderTest = function(req, res) {
+exports.addRider = function(req, res) {
 	var carpool_id = req.param('id');
 	Carpool.findById(carpool_id, function(err, theCarpool) {
 		if(err) { return res.redirect('/'); }
@@ -282,7 +233,7 @@ exports.addRiderTest = function(req, res) {
 				var playerArr = [];
 				async.each(rosterSpots, function(rosterSpot, innerCallback) {
 					Rider.getByEventAndRosterSpotId(event_id, rosterSpot._id, function(err, theRider) {
-						if(!err && theRider) {
+						if(!err && !theRider) {
 							Player.findById(rosterSpot.player_id, function(err, thePlayer) {
 								playerArr.push(thePlayer);
 								innerCallback();
@@ -299,7 +250,7 @@ exports.addRiderTest = function(req, res) {
 						'event': theEvent,
 						'rosterSpots': rosterSpots,
 						'players': playerArr,
-						'carpool': cp,
+						'carpool': theCarpool,
 						'warning': undefined});
 				});
 			});
