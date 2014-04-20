@@ -235,8 +235,9 @@ exports.addRider = function(req, res) {
 				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
 					var playerArr = new Array();
 					async.each(rosterSpots, function(rosterSpot, innerCallback) {
-
-						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {	//what does this do?
+						// Attempt to get a rider for the player it is iterating over
+						Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {
+							// if there is no rider, add the rider to the array
 							if(!rider) {
 								var player_id = rosterSpot.player_id;
 								Player.findById(player_id, function(err, player) {
@@ -262,6 +263,47 @@ exports.addRider = function(req, res) {
 				});
 			});
 		}
+	});
+}
+
+/*
+ * fixed add rider still testing this out
+ */
+exports.addRiderTest = function(req, res) {
+	var carpool_id = req.param('id');
+	Carpool.findById(carpool_id, function(err, theCarpool) {
+		if(err) { return res.redirect('/'); }
+		var event_id = theCarpool.event_id;
+		Event.findById(event_id, function(err, theEvent) {
+			if(err) { return res.redirect('/'); }
+			var team_id = theEvent.team_id;
+			RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
+				if(err) { return res.redirect('/'); }
+				var playerArr = [];
+				async.each(rosterSpots, function(rosterSpot, innerCallback) {
+					Rider.getByEventAndRosterSpotId(event_id, rosterSpot._id, function(err, theRider) {
+						if(!err && theRider) {
+							Player.findById(rosterSpot.player_id, function(err, thePlayer) {
+								playerArr.push(thePlayer);
+								innerCallback();
+							});
+						}
+						else {
+							innerCallback();
+						}
+					});
+				}, function(error) {
+					if(error) { return res.redirect('/'); }
+					return res.render('carpool/addRider', {
+						'user': req.user,
+						'event': theEvent,
+						'rosterSpots': rosterSpots,
+						'players': playerArr,
+						'carpool': cp,
+						'warning': undefined});
+				});
+			});
+		});
 	});
 }
 
