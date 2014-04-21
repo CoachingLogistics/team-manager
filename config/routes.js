@@ -140,6 +140,7 @@ module.exports = function(app){
 	app.post('/events/:event_id/rideRequest', ensureAuthenticated, riders.submitRideRequestForEvent);
 	app.get('/riders/confirm/:carpool_id/:player_id', ensureAuthenticated, riders.confirmForCarpool);
 	app.get('/events/:event_id/pickupPlayer/:player_id', ensureAuthenticated, riders.pickupPlayer);
+	app.get("/riders/remove/:carpool_id/:player_id", ensureAuthenticated, riders.removeRider);
 
 
 

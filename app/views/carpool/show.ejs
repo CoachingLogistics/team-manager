@@ -63,6 +63,7 @@ Riders
 			<th></th>
 			<% if(access) { %>
 				<th></th>
+				<th></th>
 			<% } %>
 		</thead>
 		<tbody>
@@ -77,6 +78,7 @@ Riders
 					<%} else {%>
 						<td></td>
 					<% } %>
+					<td><a href="/riders/remove/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-danger">Remove</a></td>
 				<% } %>
 
 			</tr>

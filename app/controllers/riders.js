@@ -300,3 +300,26 @@ exports.pickupPlayer = function(req, res) {
     });
   });
 }
+
+exports.removeRider = function(req, res) {
+  // easy access to variables
+  var carpool_id = req.param('carpool_id');
+  var player_id = req.param('player_id');
+  Carpool.findById(carpool_id, function(err, theCarpool) {
+    if(err) { return res.redirect('back'); }
+    Event.findById(theCarpool.event_id, function(err, theEvent) {
+      if(err) { return res.redirect('back'); }
+      var team_id = theEvent.team_id;
+      RosterSpot.getByIds(team_id, player_id, function(err, theRosterSpot) {
+        if(err) { return res.redirect('back'); }
+        Rider.getByEventAndRosterSpotId(theEvent._id, theRosterSpot._id, function(err, theRider) {
+          if(err) { return res.redirect('back'); }
+          Rider.remove({_id: theRider._id}, function(err, removedRider) {
+            if(err) { return res.redirect('back'); }
+            return res.redirect('/carpools/' + carpool_id);
+          });
+        });
+      });
+    });
+  });
+}
