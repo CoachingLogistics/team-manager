@@ -13,8 +13,12 @@ fs.readdirSync(models_path).forEach(function (file) {
 
 var mongoose = require('mongoose'),
    Schema = mongoose.Schema,
-   ObjectId = Schema.ObjectId;
+   ObjectId = Schema.ObjectId,
+   Mixed = Schema.Types.Mixed;
 var Team = mongoose.model('Team');
+var rsvp_mailer = require('../mailers/rsvp_mailer.js');
+//var Attendance = mongoose.model('Attendance');
+//var Coach = mongoose.model('Coach');
 
 var EventSchema = new Schema({
     team_id: {type: ObjectId, required: true},
@@ -22,9 +26,16 @@ var EventSchema = new Schema({
     location: {type: String, required: false},
     type: {type: String, required: false},
     description: {type: String, default: "no description"},
-    latitude: {type:Number, default:null },	//needs testing
-    longitude: {type:Number, default:null } //needs testing
+    latitude: {type:Number, default:null },
+    longitude: {type:Number, default:null },
+    reminder: {type:Mixed, default:null},
+    results: {type:Mixed, default:null}
 });
+
+//for scheduled emails
+var schedule = require('node-schedule');
+var mailer = require('../mailers/team_mailer.js');
+var EventReminder = require('../mailers/event_attendance');
 
 //for googlemaps
 var gmaps = require('googlemaps');
@@ -102,6 +113,123 @@ EventSchema.pre('save', function(next){
 });
 
 
+//updates the automated emails if the event date changes
+EventSchema.pre('save', function(next){
+	var event = this;
+	if(!event.isModified('date')) return next();
+
+	//delete any previous emails
+	if(event.reminder) schedule.cancelJob(event.reminder.name);
+	if(event.results) schedule.cancelJob(event.results.name);
+
+	var two_days_before = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate()-2, 12, 0, 0);	//sends out RSVP reminder 2 days in advance
+	var one_day_before = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate()-1, 12, 0, 0);	//set for 1 day before event at noon
+
+	// for manual testing purposes
+	// var now = new Date();
+	// var two_days_before = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);
+	// var one_day_before = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+2, 0);
+
+	event.remind = schedule.scheduleJob(two_days_before, function(){	//need to send reminders to parents about RSVPing
+		//must get all attendances for this event
+		Attendance.getByEventId(event._id, function(err, attendances) {
+		    attendances.forEach(function(att) {
+		      // remind those who have not responded
+		      if(att.attending == null){
+		        RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
+		          rs.getPlayer(function(err3, player) {
+
+		            Family.getUsersForPlayer(player._id, function(users){//get parents for a player
+
+		              users.forEach(function(user) {
+
+		                  event.getTeam(function(err, team){
+		                  	Coach.getUsersForTeam(team._id, function(err, coaches){
+		                  		var coach = coaches[0];
+
+			                    rsvp_mailer.ask_attendance(coach, user, att._id, team, event, function(emailErr, message) {
+			                      //sending emails
+			                      console.log('sending RSVP emails');
+			                    });
+		                  	});
+		                  });
+		              });
+		            });
+		          });
+		        });
+		      }
+
+		    }); // end attendances for each
+
+		  });
+		
+	});//job
+
+	event.results = schedule.scheduleJob(one_day_before, function(){	//this gets carried out whenever the job is scheduled
+
+		//need coaches, team
+		event.getTeam(function(err, team){
+			Coach.getUsersForTeam(team._id, function(err, coaches){
+				Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+
+					EventReminder.sendMail(coaches, team, event, dateFormat(event.date), attending, skipping, none, function(){
+						console.log("email reminder sent now");
+					});
+				});
+			});
+		});
+	});
+
+	event.markModified('remind');
+	event.markModified('results');
+	next();
+
+});
+
+
+
+//deletes the scheduled jobs if an event is deleted
+EventSchema.pre('remove', function(next){
+	var event = this;
+
+	if(event.reminder) schedule.cancelJob(event.reminder.name);
+	if(event.results) schedule.cancelJob(event.results.name);
+
+	next();
+});
+
+
 
 mongoose.model('Event', EventSchema);
 module.exports = mongoose.model('Event', EventSchema);
+
+
+
+//helpers
+var dateFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    return month+"/"+day+"/"+year;
+};
+
+var timeFormat = function(date) {
+    var time = "AM";
+	var hour = date.getHours();
+	if( date.getHours()>=12){
+		if(date.getHours()>12){
+			hour =  date.getHours()-12;
+		}else{
+			hour = 12;
+		}
+
+		time="PM";
+	}
+
+	var minutes = date.getMinutes();
+	if(date.getMinutes() == 0){
+		minutes = "00";
+	}
+
+	return hour+":"+minutes+" "+time;
+};

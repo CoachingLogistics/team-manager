@@ -23,7 +23,7 @@ module.exports = function(app){
 
 	//users
 	app.get('/account', ensureAuthenticated, users.account);
-	app.get('/users/:id', users.show)
+	app.get('/users/:id', users.show);
 	app.get('/register', users.registration);
 	app.post('/register', users.register);
 	app.get('/login', users.signin);
@@ -43,7 +43,7 @@ module.exports = function(app){
 	app.get('/players', players.index);
 	app.get('/players/new', ensureAuthenticated, players.new_player);
 	app.post('/players/new', ensureAuthenticated, players.create_player);
-	app.get('/players/:id', players.show);
+	app.get('/players/:id', players.show);//to be removed
 	app.get('/players/:id/edit', ensureAuthenticated, players.edit);
 	app.post('/players/:id/update', ensureAuthenticated, players.update);
 	app.post('/players/:id/delete', ensureAuthenticated, players.delete);
@@ -51,7 +51,7 @@ module.exports = function(app){
 	app.post('/players/:id/addUser', ensureAuthenticated, players.createNewFamily);
 
 	//AJAX
-	app.get('/players/:id/teams', players.teams);
+	app.get('/players/:id/teams', players.teams);//auth?
 
 	// teams
 	app.get('/teams', teams.index);
@@ -77,14 +77,14 @@ module.exports = function(app){
 	app.post('/events/:id/delete', ensureAuthenticated, events.delete);
 
 	//event AJAX
-	app.get('/teams/:team_id/next_event', events.next_event);
+	app.get('/teams/:team_id/next_event', events.next_event);	//auth????
 	app.get('/events/:id/coordinates', events.coordinates);
 
 	//attendance AJAX
-	app.get('/events/:event_id/players/:player_id/attendance', events.attendance)
+	app.get('/events/:event_id/players/:player_id/attendance', events.attendance);	//auth??
 
 	// email AJAX
-	app.get('/players/:player_id/:event_id/guardians', attendances.guardianResponse);
+	app.get('/players/:player_id/:event_id/guardians', attendances.guardianResponse);	//auth??
 
 	// mailer
 	app.get('/mail/compose', mail.compose_mail);	//authentication?
@@ -105,7 +105,7 @@ module.exports = function(app){
 	app.post('/teams/:team_id/players/:player_id/remove', ensureAuthenticated, roster_spots.deleteByIds);
 
 	//coach
-	app.post('/teams/:team_id/user/:user_id/remove', ensureAuthenticated, coaches.deleteByIds)
+	app.post('/teams/:team_id/user/:user_id/remove', ensureAuthenticated, coaches.deleteByIds);
 
 	//family
 	app.post('/family/new',  ensureAuthenticated, families.new);	//tbd?
@@ -113,10 +113,10 @@ module.exports = function(app){
 	app.get('/families', families.index);		//to be removed in production
 
 	// attendance
-	app.get('/attendance/:attendanceid/:response', attendances.record_response);
+	app.get('/attendance/:attendanceid/:response', attendances.record_response);			//do we want auth for any of these??
 	app.get('/attendanceRemind/:event_id/:player_id', attendances.send_email);
-	app.get('/attendanceUpdate/:event_id/:player_id/:response', attendances.web_update);
-	app.post('/emailAll/:event_id', attendances.email_all);
+	app.get('/attendanceUpdate/:event_id/:player_id/:response', attendances.web_update);	//
+	app.post('/emailAll/:event_id', ensureAuthenticated, attendances.email_all);
 
 	//carpools
 	app.get('/events/:event_id/carpools/new', ensureAuthenticated, carpools.new);
@@ -129,10 +129,12 @@ module.exports = function(app){
 
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
 
-	app.get('/riders', riders.index);
-	app.post('/riders/createForCarpool/:carpool_id', riders.create);
+	app.get('/carpools/:id/routing', carpools.routing);
 
-	app.get('/riders/:event_id/riderequest', riders.request);
+	app.get('/riders', riders.index);
+	app.post('/riders/createForCarpool/:carpool_id', riders.create);	//what is auth logic here?, coach and parents?  if so check out carpools.create
+
+	app.get('/riders/:event_id/riderequest', riders.request);			//auth logic here?
 	app.post('/riders/:event_id/request', riders.createRequest);
 	app.get('/riders/:event_id/request/:carpool_id', riders.requestForCarpool);
 	app.post("/riders/:event_id/request/:carpool_id", riders.createRequestForCarpool);

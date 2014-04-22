@@ -91,19 +91,20 @@ AttendanceSchema.statics.getPlayerAttendanceForEvent = function(event_id, callba
 				// find the player model
 				Player.findById(roster_spot.player_id, function(error2, player) {
 
-					var object = {};
-					object.first_name = player.first_name;
-					object.last_name = player.last_name;
-					object.attending = item.attending; 
+					if(player){
+						var object = {};
+						object.first_name = player.first_name;
+						object.last_name = player.last_name;
+						object.attending = item.attending; 
 
-					if(object.attending == true){
-						attending.push(object);
-					}else if(object.attending == false){
-						skipping.push(object);
-					}else{
-						norespond.push(object);
+						if(object.attending == true){
+							attending.push(object);
+						}else if(object.attending == false){
+							skipping.push(object);
+						}else{
+							norespond.push(object);
+						}
 					}
-
 
 					innerCallback();
 				});
