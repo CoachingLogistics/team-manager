@@ -19,7 +19,7 @@ exports.index = function(req, res) {
 
 
 /*
- * Creates a carpool
+ * Creates a rider
  */
 exports.create = function(req, res) {
   // easy access to necessary params
