@@ -95,7 +95,6 @@ exports.show = function(req, res){
 							var rider_num = 0;
 
 							Carpool.getByTeamAndUserId(team._id, driver._id, function(err, carpools){
-								console.log(carpools);
 								carpool_num = carpools.length;
 
 								async.each(carpools, function(carpool, innerCallback2) {
@@ -123,7 +122,21 @@ exports.show = function(req, res){
 							});//carpool
 
 						}, function(err){
-							console.log(members);
+							
+							members.sort(function (a, b){
+							    if (a.carpools < b.carpools){
+							      return 1;
+							  	}
+							    else if (a.carpools > b.carpools){
+							      return -1;
+							  	} else {
+							    	if(a.riders>b.riders) return 1;
+							    	if(a.riders<b.riders) return -1;
+							    	return 0;
+							    }
+							});
+
+
 							if(err) {
 								throw new Error(err);
 								//res.status(404).render('404');

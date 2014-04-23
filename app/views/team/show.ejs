@@ -90,8 +90,21 @@
 <div class="row">
 	<div class="col-md-8">
 		<h3> Driver Leaderboard</h3>
-		<%= drivers%>
 
+		<table class="table">
+			<thead>
+				<th>Name</th> <th>Email</th> <th>Phone</th> <th>Carpools</th> <th>Rides Given</th>
+			</thead>
+			<% drivers.forEach(function(driver){ %>
+				<tr>
+					<td><%= driver.first_name + " " + driver.last_name%></td>
+					<td><%= driver.email%></td>
+					<td><%= driver.phone%></td>
+					<td><%= driver.carpools%></td>
+					<td><%= driver.riders%></td>
+				</tr>
+			<% }); %>
+		</table>
 
 
 	</div>
