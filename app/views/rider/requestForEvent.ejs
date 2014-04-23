@@ -1,0 +1,32 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+<script type='text/javascript' src='/js/event_show.js'></script>
+</head>
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+  <h1>Request a Ride</h1>
+  <form action='/events/<%=event._id%>/rideRequest' method='POST'>
+    <b>Who needs a ride?</b><br />
+    <% players.forEach(function(player, index) { %>
+      <input type='checkbox' value="<%=player._id%>" name="players[<%=index%>]"><%=player.full_name%> <br />
+    <% }) %>
+    <b>Location</b> <br />
+    <input type="text" name="location"> <br />
+    <b>Time</b> <br />
+    <input type="number" name="hour">:<input type="number" name="minute">
+    <select name="ampm">
+      <option></option>
+      <option value="am">AM</option>
+      <option value="pm">PM</option>
+    </select> <br />
+    <input type="submit" value="Request Ride">
+  </form>
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+
+</html>
