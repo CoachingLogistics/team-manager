@@ -1,12 +1,14 @@
 var mongoose = require('mongoose'),
   Team = mongoose.model('Team');
-  Player = mongoose.model('Player');
-  User = mongoose.model('User');
-  Family = mongoose.model('Family');
-  RosterSpot = mongoose.model('RosterSpot');
-  Event = mongoose.model('Event');
-  Coach = mongoose.model('Coach');
-  Attendance = mongoose.model('Attendance');
+Player = mongoose.model('Player');
+User = mongoose.model('User');
+Family = mongoose.model('Family');
+RosterSpot = mongoose.model('RosterSpot');
+Event = mongoose.model('Event');
+Coach = mongoose.model('Coach');
+Attendance = mongoose.model('Attendance');
+Carpool = mongoose.model('Carpool');
+Rider = mongoose.model('Rider');
 
 var mailer = require('../mailers/team_mailer.js');
 var NewUserAdded = require('../mailers/new_added_user');
@@ -14,6 +16,7 @@ var ExistingPlayer = require('../mailers/existing_player');
 var NewPlayer = require('../mailers/new_player');
 var NewCoach = require('../mailers/new_coach');
 var ExistingCoach = require('../mailers/existing_coach');
+var async = require('async');
 
 
 //in production, but should it be?
@@ -33,8 +36,13 @@ exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){	//get team
   		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
+  			var members = [];
+  			var drivers = [];
   			var access = false;
+  			var coach_emails = [];
   			coaches.forEach(function(c){	//check to see if the user is a coach
+  				coach_emails.push(c.email);
+  				drivers.push(c);
   				if(req.user){
 	  				if(req.user._id.equals(c._id)){
 	  					access = true;
@@ -64,24 +72,81 @@ exports.show = function(req, res){
 				    events.push(noob);
 				});
 
-
-
   				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players to show roster
 
-					if(err) {
-						throw new Error(err);
-						//res.status(404).render('404');
-					}else{
+  					async.each(players, function(player, innerCallback) {
+						player.getUsers(function(users){
+							users.forEach(function(user){
 
-				    	res.render('team/show', {
-				    	  team: team,
-				    	  user:req.user,
-				    	  events: events,
-				    	  players: players,
-				    	  coaches: coaches,
-				    	  access: access
-				    	});		
-					}
+								var listed = false;
+								coach_emails.forEach(function(c){
+									if(user.email==c){
+										listed = true;
+									}
+								})
+								if(listed==false){ drivers.push(user)};
+								innerCallback();
+							})
+						})
+					}, function(err){
+
+						async.each(drivers, function(driver, innerCallback1) {
+							var carpool_num = 0;
+							var rider_num = 0;
+
+							Carpool.getByTeamAndUserId(team._id, driver._id, function(err, carpools){
+								console.log(carpools);
+								carpool_num = carpools.length;
+
+								async.each(carpools, function(carpool, innerCallback2) {
+									Rider.getByCarpoolId(carpool._id, function(err, riders){
+										rider_num += riders.length;
+										innerCallback2();
+									})
+
+								}, function(err){
+
+									var dr = {
+										_id: driver._id,
+										carpools: carpool_num,
+										riders: rider_num,
+										first_name: driver.first_name,
+										last_name: driver.last_name,
+										email: driver.email,
+										phone: driver.phone
+									}
+
+									members.push(dr);
+
+									innerCallback1();
+								});
+							});//carpool
+
+						}, function(err){
+							console.log(members);
+							if(err) {
+								throw new Error(err);
+								//res.status(404).render('404');
+							}else{
+
+						    	res.render('team/show', {
+						    	  team: team,
+						    	  user:req.user,
+						    	  events: events,
+						    	  players: players,
+						    	  coaches: coaches,
+						    	  access: access,
+						    	  drivers: members
+						    	});		
+							}
+						});
+					});//async
+
+
+
+
+
+
 
 				});
 			});
