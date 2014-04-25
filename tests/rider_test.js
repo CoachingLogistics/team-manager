@@ -475,4 +475,45 @@ describe('Rider', function() {
       });
     });
   });
+
+  describe('#needRideForEvent', function() {
+    it('should have a method to get riders who need a ride for an event', function(done) {
+      var meeting = new Event({
+        date: new Date(2014, 7, 25, 19, 30),
+        location: "WFC",
+        type: "meeting",
+        team_id: flyers._id
+      });
+      meeting.save(function(err, meeting_saved) {
+        var mikeMeeting = new Rider({
+          location: "Manoa Valley District Park",
+          time: new Date(2014, 6, 24, 8),
+          confirmed: false,
+          event_id: meeting_saved._id,
+          roster_spot_id: mikeSpot._id
+        });
+        mikeMeeting.save(function(err, mikeMeetingSaved) {
+          Rider.needRideForEvent(meeting_saved._id, function(err, docs) {
+            should.not.exist(err);
+            docs.should.have.length(1);
+            docs[0].should.have.property('event_id', meeting_saved._id);
+            docs[0].should.have.property('roster_spot_id', mikeSpot._id);
+            docs[0].should.have.property('confirmed', false);
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('#getByEventAndRosterSpotId', function() {
+    it('should have a method to get a rider from an event id and a roster spot id', function(done) {
+      Rider.getByEventAndRosterSpotId(game._id, mikeSpot._id, function(err, returned) {
+        should.not.exist(err);
+        returned.should.have.property('event_id', game._id);
+        returned.should.have.property('roster_spot_id', mikeSpot._id);
+        done();
+      });
+    });
+  });
 });

@@ -30,6 +30,7 @@ exports.show = function(req, res){
 					}
 					Rider.getByCarpoolId(carpool._id, function(err, riders) {
 						var riderArr = new Array();
+						var spotsLeft = carpool.size - riders.length;
 						async.each(riders, function(rider, innerCallback) {
 							RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
 								Player.findById(rs.player_id, function(err, pl) {
@@ -47,6 +48,7 @@ exports.show = function(req, res){
 									driver: driver,
 									user:req.user,
 									riders: riderArr,
+									spotsLeft: spotsLeft,
 									access: access
 								});
 						});
@@ -78,8 +80,8 @@ exports.new = function(req, res){
 						player.getUsers(function(users){
 							users.forEach(function(user){
 								authorized_users.push(user);
-								innerCallback();
-							})
+							});
+							innerCallback();
 						})
 					}, function(err) {
 
@@ -114,13 +116,11 @@ exports.new = function(req, res){
 exports.create = function(req, res){
 
 	Event.findById(req.param('event_id'), function(err, event){
-		
+
 		var hour = req.param('hour');
 		if(req.param('time')=="pm"){ hour= +hour + 12; }
 		if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 		var date = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate(), hour, req.param('minute'));
-
-
 		Team.findById(event.team_id, function(err, team){
 
 			var authorized_users = [];
@@ -137,8 +137,8 @@ exports.create = function(req, res){
 						player.getUsers(function(users){
 							users.forEach(function(user){
 								authorized_users.push(user);
-								innerCallback();
 							})
+							innerCallback();
 						})
 					}, function(err) {
 
@@ -175,12 +175,13 @@ exports.create = function(req, res){
 													var newRider = new Rider({
 														roster_spot_id: rs._id,
 														carpool_id: cp._id,
+														event_id: cp.event_id,
 														location: cp.location,
 														time: cp.time,
 														confirmed: true
 													});
 													newRider.save(function(err, saved) {
-														// hope it saved lol!
+														console.log('saved');
 													});
 												}
 											});
@@ -316,60 +317,50 @@ exports.delete = function(req, res){	//post       //test
 };
 
 /*
- * Renders the page to add a rider to a carpool
+ * fixed add rider still testing this out
  */
 exports.addRider = function(req, res) {
-
-	var warning = undefined;
-	Carpool.findById(req.params.id, function(err, cp) {
-		if(!req.user._id.equals(cp.user_id)){
-			//not authorized
-			res.redirect('/404');
-		}else{
-
-			if(err) {
-				// lasy error handling for now
-				return res.redirect('/');
-			}
-			else {
-				var event_id = cp.event_id;
-				Event.findById(event_id, function(err, theEvent) {
-					var team_id = theEvent.team_id;
-					RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
-						var playerArr = new Array();
-						async.each(rosterSpots, function(rosterSpot, innerCallback) {
-
-							Rider.getByIds(cp._id, rosterSpot._id, function(err, rider) {	//what does this do?
-								if(!rider) {
-									var player_id = rosterSpot.player_id;
-									Player.findById(player_id, function(err, player) {
-										if(!err && player) {
-											playerArr.push(player);
-										}
-										innerCallback();
-									});
-								}
-								else {
+	var carpool_id = req.param('id');
+	Carpool.findById(carpool_id, function(err, theCarpool) {
+		if(err) { return res.redirect('/'); }
+		if(!req.user._id.equals(theCarpool.user_id)) {
+			// not authorized
+			return res.redirect('/404');
+		} else {
+			var event_id = theCarpool.event_id;
+			Event.findById(event_id, function(err, theEvent) {
+				if(err) { return res.redirect('/'); }
+				var team_id = theEvent.team_id;
+				RosterSpot.getByTeamId(team_id, function(err, rosterSpots) {
+					if(err) { return res.redirect('/'); }
+					var playerArr = [];
+					async.each(rosterSpots, function(rosterSpot, innerCallback) {
+						Rider.getByEventAndRosterSpotId(event_id, rosterSpot._id, function(err, theRider) {
+							if(!err && !theRider) {
+								Player.findById(rosterSpot.player_id, function(err, thePlayer) {
+									playerArr.push(thePlayer);
 									innerCallback();
-								}
-							});
-							}, function(err) {
-
-							if(err) {
-								return res.redirect('/');
+								});
 							}
 							else {
-								return res.render('carpool/addRider', {'user': req.user, 'event': theEvent, 'rosterSpots': rosterSpots, 'players': playerArr, 'carpool': cp, 'warning': undefined});
+								innerCallback();
 							}
-						}); // here
+						});
+					}, function(error) {
+						if(error) { return res.redirect('/'); }
+						return res.render('carpool/addRider', {
+							'user': req.user,
+							'event': theEvent,
+							'rosterSpots': rosterSpots,
+							'players': playerArr,
+							'carpool': theCarpool,
+							'warning': undefined});
 					});
 				});
-			}
-		}//user auth
+			});
+		}
 	});
 }
-
-
 
 
 //AJAX only

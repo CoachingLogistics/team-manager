@@ -116,7 +116,7 @@ CarpoolSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
@@ -215,7 +215,7 @@ RiderSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
@@ -280,12 +280,27 @@ RiderSchema.statics.getByEventId = function(event_id, callback) {
   });
 }
 
+
+// gets a list of riders who still need a ride to an event
+RiderSchema.statics.needRideForEvent = function(event_id, callback) {
+  this.find({event_id: event_id, carpool_id: null}, function(err, docs) {
+    callback(err, docs);
+  });
+}
+
 // finds the rider given a carpool id and a roster_spot id
 RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
   this.findOne({ $and: [ {carpool_id: carpool_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
     callback(err, rider);
   });
 };
+
+// gets by event and roster spot id
+RiderSchema.statics.getByEventAndRosterSpotId = function(event_id, roster_spot_id, callback) {
+  this.findOne({ $and: [ {event_id: event_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+    callback(err, rider);
+  });
+}
 
 
 mongoose.model('Rider', RiderSchema);

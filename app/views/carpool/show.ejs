@@ -38,14 +38,16 @@
 				<div id="location"><b>Location: </b><%= carpool.location %><br /></div>
 				<b>Time: </b> <%= time %><br />
 				<b>Capacity: </b> <%= carpool.size %><br />
+				<b>Spaces left:</b> <%= spotsLeft %> <br />
 				<b>Notes: </b><%= carpool.notes%>
 
 		<% if(access){ %>
 		<br>
 		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
 
-
-			<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+			<% if(spotsLeft > 0) {%>
+				<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+			<% } %>
 
 		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
 			<input type="Submit" value="Delete" />
@@ -53,7 +55,7 @@
 
 		<% } %>
 
-		<% if(user) { %>
+		<% if(user && !access && spotsLeft > 0) { %>
 			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" class="btn btn-info" >Request a ride</a>
 		<% } %>
 
@@ -67,6 +69,11 @@ Riders
 	<table>
 		<thead>
 			<th>Name</th>
+			<th></th>
+			<% if(access) { %>
+				<th></th>
+				<th></th>
+			<% } %>
 		</thead>
 		<tbody>
 			<% riders.forEach(function(rider) { %>
@@ -74,6 +81,14 @@ Riders
 
 				<td><%= rider.player.full_name %></td>
 				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
+				<% if(access) { %>
+					<%if(!rider.confirmed) {%>
+						<td><a href="/riders/confirm/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-success">Confirm</a></td>
+					<%} else {%>
+						<td></td>
+					<% } %>
+					<td><a href="/riders/remove/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-danger">Remove</a></td>
+				<% } %>
 
 			</tr>
 		<% }) %>
