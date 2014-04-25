@@ -28,12 +28,14 @@
 			<th class="text-right">RSVP</th>
 		</thead>
 
-		<tr>
-			<td colspan="2">
+		
+			
 				<div class="list-group">
 				<% players.forEach(function(p){ %>
 					<tr>
-						<td><a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
+						<% if(access && upcoming) {%><td><% } else {%><td colspan="2"><%}%>
+
+							<a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
 
 						</a></td>
 						<% if(access && upcoming) {%>
@@ -44,8 +46,8 @@
 					</tr>
 				<% }); if(players.length == 0){ %> No players <%}%>
 				</div>
-			</td>
-		</tr>
+			
+		
 		<%if(access && upcoming){%>
 		<tr>
 			<th colspan="2">
@@ -88,10 +90,32 @@
 		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/events/<%=event._id%>/rideRequest">Request Ride</a> <%}%></h3>
 
 		<% if(carpools.length>0){ %>
+			<table class="table">
+			<thead>
+				<th>Driver</th>
+				<th>Spots</th>
+				<th >Riders</th>
+				<th></th>
+			</thead>
 
 			<% carpools.forEach(function(c){ %>
-						<br><a href='/carpools/<%=c._id%>'><%= c %></a>
+				<tr>
+					<td id="<%=c.user_id%>">
+						Driver name
+					</td>
+					<td>
+						<%= c.size %>
+					</td>
+					<td id="<%=c._id%>">
+						Players
+					</td>
+					<td>
+						<a href="/carpools/<%=c._id%>">View</a>
+					</td>
+				</tr>
 			<% }) %>
+
+			</table>
 
 		<% }else{ %>
 
@@ -124,6 +148,25 @@
 		<% } %>
 
 	</div>
+	<div class="col-md-4">
+		<table class="table">
+		<thead>
+			<th>Players That Need a Ride</th>
+		</thead>
+
+		<tr>
+			<td>
+				Name
+			</td>
+			<td>
+				Offer Ride button
+			</td>
+		</tr>
+
+
+		</table>
+	</div>
+
 </div>
 
 <!--***********************END OF CONTENT************************-->

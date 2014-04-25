@@ -68,6 +68,7 @@ node app
 
 
 DEPLOYMENT
+
 The server is currenty deployed to OpenShift, at the address [production-teammanager.rhcloud.com](production-teammanager.rhcloud.com).
 
 Access to OpenShift:
@@ -95,6 +96,9 @@ To see the hosted app's console log, do:
 1. In the production's local repository run "rhc tail production".
 
 
+Also, the emailing, geocoordinates, and google maps generated in this app have keys that are registered to the team.manager.notification google account.
+You may run into problems with the key access (we have both server and browser API keys), so you may need to add either new domains (for browser) or IP addresses (for OpenShift  or local server) via the google API. 
+There may also be problems with email throttling (which is fixed by signing into gmail every so often, I think).
 
 
 
