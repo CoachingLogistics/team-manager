@@ -22,12 +22,11 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
   // easy access to necessary params
   var riders = req.body.riders;
+  var locations = req.body.locations;
+  var hours = req.body.hours;
+  var minutes = req.body.minutes;
+  var ampms = req.body.ampms;
   var carpool_id = req.params.carpool_id;
-
-  var location = req.body.location;
-  var hour = parseInt(req.body.hour);
-  var minute = parseInt(req.body.minute);
-  var specifier = req.body.ampm;
 
   // need the carpool
 
@@ -42,29 +41,31 @@ exports.create = function(req, res) {
           return res.redirect('/');
         }
         else {
-
-          // change the time from human readable to proper date format
-
-          var date = theEvent.date;
-          if(hour == 12 && specifier == "am") {
-            hour = 0;
-          } else if(hour != 12 && specifier == "pm") {
-            hour += 12;
-          }
-          var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
           var team_id = theEvent.team_id;
 
           // riders is an array of player_ids, so loop through and add them
-          riders.forEach(function(rider) {
+          riders.forEach(function(rider, index) {
             // get the roster spot
             RosterSpot.getByIds(team_id, rider, function(err, rosterSpot) {
               Carpool.findById(carpool_id, function(err, theCarpool) {
+                // make the date more readable
                 var rosterSpotId = rosterSpot._id;
+                var date = theEvent.date;
+                var curHour = parseInt(hours[index]);
+                var curMinute = parseInt(minutes[index]);
+                var curSpecifier = ampms[index];
+                if(curHour == 12 && curSpecifier == "am") {
+                  curHour = 0;
+                }
+                else if(curHour != 12 && curSpecifier == "pm") {
+                  curHour += 12;
+                }
+                var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), curHour, curMinute);
                 var newRider = new Rider({
                   roster_spot_id: rosterSpotId,
                   carpool_id: carpool_id,
                   event_id: theCarpool.event_id,
-                  location: location,
+                  location: locations[index],
                   time: rideDate,
                   confirmed: true
                 });
