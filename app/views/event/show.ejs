@@ -100,17 +100,15 @@
 
 			<% carpools.forEach(function(c){ %>
 				<tr>
-					<td id="<%=c.user_id%>">
-						Driver name
+					<td class="driver" id="<%=c.user_id%>">
 					</td>
 					<td>
 						<%= c.size %>
 					</td>
-					<td id="<%=c._id%>">
-						Players
+					<td class="driver-riders" id="<%=c._id%>">
 					</td>
 					<td>
-						<a href="/carpools/<%=c._id%>">View</a>
+						<a href="/carpools/<%=c._id%>">View Carpool</a>
 					</td>
 				</tr>
 			<% }) %>

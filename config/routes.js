@@ -37,6 +37,9 @@ module.exports = function(app){
 	app.get('/users/:id/password-change', ensureAuthenticated, users.password_form);
 	app.post('/users/:id/password-change', ensureAuthenticated, users.password_change);
 
+	//AJAX
+	app.get('/users/:id/info', users.user_info);
+
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
@@ -129,7 +132,10 @@ module.exports = function(app){
 
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
 
+
+	//AJAX
 	app.get('/carpools/:id/routing', carpools.routing);
+	app.get('/carpools/:id/riders', carpools.riders);
 
 	app.get('/riders', riders.index);
 	app.post('/riders/createForCarpool/:carpool_id', riders.create);	//what is auth logic here?, coach and parents?  if so check out carpools.create

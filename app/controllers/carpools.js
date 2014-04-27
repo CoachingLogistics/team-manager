@@ -383,6 +383,26 @@ exports.routing = function(req,res){
 	});
 }
 
+//returns the rider objects for a carpool
+exports.riders = function(req,res){
+	Carpool.findById(req.params.id, function(err, carpool){
+			Rider.getByCarpoolId(req.params.id, function(er, riders){
+
+				var players = []
+
+				async.each(riders, function(rider, innerCallback) {
+							rider.getRider(function(err, player){
+								players.push(player);
+								innerCallback();
+							});
+						}, function(err) {
+							res.send(players);
+						})
+			})
+	});
+}
+
+
 
 //helpers
 var dateFormat = function(date) {

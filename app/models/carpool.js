@@ -292,7 +292,7 @@ RiderSchema.methods.getRider = function(callback) {
   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
     // if there is an error return it here
     if(err) {
-      return callback(err);
+      return callback(err, null);
     }
     // if there is a roster spot, find the player and return it
     Player.findById(theRosterSpot.player_id, function(err2, thePlayer) {

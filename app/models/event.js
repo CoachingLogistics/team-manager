@@ -169,7 +169,9 @@ EventSchema.pre('save', function(next){
 
 		//need coaches, team
 		event.getTeam(function(err, team){
+
 			Coach.getUsersForTeam(team._id, function(err, coaches){
+
 				Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
 
 					EventReminder.sendMail(coaches, team, event, dateFormat(event.date), attending, skipping, none, function(){
@@ -177,7 +179,16 @@ EventSchema.pre('save', function(next){
 					});
 				});
 			});
+
+			//put email reminder for stranded riders here vvvvvv
+
+
+
+
+
 		});
+
+
 	});
 
 	event.markModified('remind');
