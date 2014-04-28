@@ -28,7 +28,7 @@ MY ACCOUNT
 
 <a type="button" class="btn btn-default"href="/users/<%=user._id%>/edit">Edit</a>
 <a type="button" class="btn btn-default" href="/users/<%=user._id%>/password-change">Change Password</a>
-<form action="/users/<%=user._id%>/delete" method="post">
+<form action="/users/<%=user._id%>/delete" data-ajax="false" method="post">
 	<input type="submit" value="Delete"/>
 </form>
 
@@ -54,7 +54,7 @@ MY ACCOUNT
 		<a href="/players/<%=p._id%>/edit">edit</a>
 	</td>
 	<td>
-		<form method='POST' action='/players/<%= p._id%>/delete'%><input type="Submit" value="Delete" /></form>
+		<form method='POST' action='/players/<%= p._id%>/delete' data-ajax="false"><input type="Submit" value="Delete" /></form>
 	</td>	
 
 <% }); %>

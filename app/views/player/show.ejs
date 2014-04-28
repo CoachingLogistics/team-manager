@@ -23,7 +23,7 @@
 <a href=<%= '/players/' + player._id + "/edit" %> >Edit</a>
 <a href=<%= '/players/' + player._id + '/addUser'%> > Add Another User</a>
 <!-- Will add 'are you sure?' alert when we add the authorization check -->
-<form method='POST' action=<%= '/players/' + player._id + '/delete'%> >
+<form method='POST' action=<%= '/players/' + player._id + '/delete'%> data-ajax="false">
 	<input type="Submit" value="Delete" />
 </form>
 
