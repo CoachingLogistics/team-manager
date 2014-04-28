@@ -132,7 +132,7 @@ exports.login = function(req, res, next){
 //passport logout function
 exports.logout = function(req, res){
   req.logout();
-  res.redirect('back');
+  res.redirect('/');
 };
 
 

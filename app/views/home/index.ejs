@@ -2,7 +2,15 @@
 
 <head>
 <% include ../head_scripts %>
+<script>
+$(function(){
+	$("#panelbutton").on('click', function(){
+		$("#mypanel").panel('open');
+	});
+});
+</script>
 </head>
+		
 
 <body>
 <% include ../head %>
@@ -12,15 +20,7 @@ This is the homepage
 
 
 
-
-
-
-
-
-
-
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>
 </body>
-
 </html>
