@@ -113,39 +113,6 @@ exports.create = function(req, res){
 						console.log(err);
 					}else{//no err
 
-
-							// //there is a huge issue here, if the event is changed/deleted we'll need to change/delete the job, but I dont know how to do that
-
-
-							// var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//sends out RSVP reminder 2 days in advance
-							// var results = new Date(req.param('year'), req.param('month'), req.param('day')-1, 12, 0, 0);	//set for 1 day before event at noon
-							// // var now = new Date();
-							// // var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
-
-							// var job_remind = schedule.scheduleJob(remind, function(){	//need to send reminders to parents about RSVPing
-
-								
-							// });//job
-
-							// var job_results = schedule.scheduleJob(results, function(){	//this gets carried out whenever the job is scheduled
-
-							// 	Event.findById(event._id, function(error, ev){
-							// 		if(ev){
-							// 			Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
-							// 				EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
-							// 					console.log("email reminder sent now");
-							// 				});
-							// 			});
-							// 		}else{
-							// 			//nothing, the event got deleted so don't do anything
-							// 		}
-							// 	});
-							// });//job
-
-
-
-
-
 						Team.findById(event.team_id, function(err, team){
 
 							RosterSpot.getByTeamId(team._id, function(err, spots){

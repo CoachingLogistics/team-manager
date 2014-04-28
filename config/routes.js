@@ -37,6 +37,9 @@ module.exports = function(app){
 	app.get('/users/:id/password-change', ensureAuthenticated, users.password_form);
 	app.post('/users/:id/password-change', ensureAuthenticated, users.password_change);
 
+	//AJAX
+	app.get('/users/:id/info', users.user_info);
+
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
@@ -129,13 +132,15 @@ module.exports = function(app){
 
 	app.post('/carpools/:id/delete', ensureAuthenticated, carpools.delete);
 
+
+	//AJAX
 	app.get('/carpools/:id/routing', carpools.routing);
+	app.get('/carpools/:id/riders', carpools.riders);
 
 	app.get('/riders', riders.index);
 	app.post('/riders/createForCarpool/:carpool_id', riders.create);	//what is auth logic here?, coach and parents?  if so check out carpools.create
 
 	app.get('/riders/:event_id/riderequest', riders.request);			//auth logic here?
-	app.post('/riders/:event_id/request', riders.createRequest);
 	app.get('/riders/:event_id/request/:carpool_id', riders.requestForCarpool);
 	app.post("/riders/:event_id/request/:carpool_id", riders.createRequestForCarpool);
 	app.get('/events/:event_id/rideRequest', ensureAuthenticated, riders.rideRequestForEvent);
@@ -143,6 +148,9 @@ module.exports = function(app){
 	app.get('/riders/confirm/:carpool_id/:player_id', ensureAuthenticated, riders.confirmForCarpool);
 	app.get('/events/:event_id/pickupPlayer/:player_id', ensureAuthenticated, riders.pickupPlayer);
 	app.get("/riders/remove/:carpool_id/:player_id", ensureAuthenticated, riders.removeRider);
+
+	// from the email so they won't be logged in.. king of hacky for now but it is what it is
+	app.get('/riders/confirm/:carpool_id/:player_id/email', riders.confirmForCarpool);
 
 
 

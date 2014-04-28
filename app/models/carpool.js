@@ -96,6 +96,48 @@ CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 };
 
 
+//  needs testing
+//  
+CarpoolSchema.statics.getByTeamId = function(team_id, callback) {
+  var Carpool = this;
+
+  Event.getByTeamId(team_id, function(err, events){
+    var event_ids = [];
+
+    events.forEach(function(event){
+      event_ids.push(event._id);
+    });
+
+    Carpool.find({ event_id: { $in: event_ids } }, function(err, carpools){
+      callback(err, carpools);
+    });
+  });
+};
+
+
+
+
+CarpoolSchema.statics.getByTeamAndUserId = function(team_id, user_id, callback) {
+  var Carpool = this;
+  Event.getByTeamId(team_id, function(err, events){
+    var event_ids = [];
+
+    events.forEach(function(event){
+      event_ids.push(event._id);
+    });
+
+    Carpool.find({ event_id: { $in: event_ids }, user_id: user_id }, function(err, carpools){
+      callback(err, carpools);
+    });
+
+  });
+};
+
+
+
+
+
+
 //needs testing
 
 //calculates the carpool location's longitude and latitude whenever the location is modified
@@ -196,7 +238,6 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
 
 var Carpool = mongoose.model('Carpool');
 
-//needs testing
 //calculates the rider location's longitude and latitude whenever the location is modified
 RiderSchema.pre('save', function(next){
   var rider = this;
@@ -222,6 +263,7 @@ RiderSchema.pre('save', function(next){
     }
   }, 'false');//this is a param that states if the request involves a geolocation device
 });
+
 
 // gets the carpool for a ride
 RiderSchema.methods.getCarpool = function(callback) {
@@ -250,7 +292,7 @@ RiderSchema.methods.getRider = function(callback) {
   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
     // if there is an error return it here
     if(err) {
-      return callback(err);
+      return callback(err, null);
     }
     // if there is a roster spot, find the player and return it
     Player.findById(theRosterSpot.player_id, function(err2, thePlayer) {

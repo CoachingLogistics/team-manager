@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+var RosterSpot = mongoose.model('RosterSpot');
+var requestMailer = require('../mailers/ride_request.js');
 
 var Team = mongoose.model('Team');
 
@@ -22,12 +24,11 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
   // easy access to necessary params
   var riders = req.body.riders;
+  var locations = req.body.locations;
+  var hours = req.body.hours;
+  var minutes = req.body.minutes;
+  var ampms = req.body.ampms;
   var carpool_id = req.params.carpool_id;
-
-  var location = req.body.location;
-  var hour = parseInt(req.body.hour);
-  var minute = parseInt(req.body.minute);
-  var specifier = req.body.ampm;
 
   // need the carpool
 
@@ -42,34 +43,37 @@ exports.create = function(req, res) {
           return res.redirect('/');
         }
         else {
-
-          // change the time from human readable to proper date format
-
-          var date = theEvent.date;
-          if(hour == 12 && specifier == "am") {
-            hour = 0;
-          } else if(hour != 12 && specifier == "pm") {
-            hour += 12;
-          }
-          var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
           var team_id = theEvent.team_id;
 
           // riders is an array of player_ids, so loop through and add them
-          riders.forEach(function(rider) {
+          riders.forEach(function(rider, index) {
             // get the roster spot
             RosterSpot.getByIds(team_id, rider, function(err, rosterSpot) {
               Carpool.findById(carpool_id, function(err, theCarpool) {
+                // make the date more readable
                 var rosterSpotId = rosterSpot._id;
+                var date = theEvent.date;
+                var curHour = parseInt(hours[index]);
+                var curMinute = parseInt(minutes[index]);
+                var curSpecifier = ampms[index];
+                if(curHour == 12 && curSpecifier == "am") {
+                  curHour = 0;
+                }
+                else if(curHour != 12 && curSpecifier == "pm") {
+                  curHour += 12;
+                }
+                var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), curHour, curMinute);
                 var newRider = new Rider({
                   roster_spot_id: rosterSpotId,
                   carpool_id: carpool_id,
                   event_id: theCarpool.event_id,
-                  location: location,
+                  location: locations[index],
                   time: rideDate,
                   confirmed: true
                 });
                 // save them
                 newRider.save(function(err, saved) {
+                  console.log(err);
                   if(err) {
                     return res.redirect('back');
                   }
@@ -97,13 +101,6 @@ exports.request = function(req, res) {
       }
     });
   });
-}
-
-/*
- * we need to talk about ride requests, no way to tie them to an event if there is no carpool
- */
-exports.createRequest = function(req, res) {
-  res.redirect('/events/' + req.param('event_id'));
 }
 
 /*
@@ -161,9 +158,16 @@ exports.createRequestForCarpool = function(req, res) {
             });
             newRider.save(function(err, saved) {
               // hope it saved
+              Player.findById(player, function(err, thePlayer) {
+                User.findById(theCarpool.user_id, function(err, theUser) {
+                  requestMailer.send_for_carpool(req.user, theUser, thePlayer, theTeam, theEvent, saved, function(error, response) {
+                    console.log('email sent to the driver');
+                  });
+                });
+              });
             });
           });
-        }); // here
+        });
       });
       // redirect to the carpool show page
       return res.redirect('/carpools/' + carpool_id);
@@ -210,23 +214,38 @@ exports.submitRideRequestForEvent = function(req, res) {
     var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
     players.forEach(function(player) {
       RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
-        if(!err && theRosterSpot) {
-          var newRider = new Rider({
-            roster_spot_id: theRosterSpot._id,
-            event_id: theEvent._id,
-            location: location,
-            time: rideDate,
-            confirmed: false
-          });
-          newRider.save(function(error, saved) {
-            // rider is saved
-            if(error) {
-              console.log('rider not saved');
-            } else {
-              console.log('rider saved');
-            }
-          });
-        }
+        Player.findById(player, function(err, thePlayer) {
+          if(!err && theRosterSpot) {
+            var newRider = new Rider({
+              roster_spot_id: theRosterSpot._id,
+              event_id: theEvent._id,
+              location: location,
+              time: rideDate,
+              confirmed: false
+            });
+            newRider.save(function(error, saved) {
+              // rider is saved
+              if(error) {
+                console.log('rider not saved');
+              } else {
+                console.log('rider saved');
+                Team.findById(theEvent.team_id, function(err, theTeam) {
+                  RosterSpot.getByTeamId(theTeam._id, function(err, rosters) {
+                    rosters.forEach(function(rosterSpot) {
+                      Family.getUsersForPlayer(rosterSpot.player_id, function(users) {
+                        users.forEach(function(user) {
+                          requestMailer.send_mail(user, theTeam, thePlayer, theEvent, saved, function(err, response) {
+                            console.log('mail attempting to send...');
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              }
+            });
+          }
+        });
       });
     });
     //redirect to show page
