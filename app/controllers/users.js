@@ -280,11 +280,12 @@ exports.password_change = function(req, res){
 				user.password = password;	//update password
 				user.save(function(err, usr){
 					Family.getPlayersForUser(usr._id, function(players){
-						res.render('user/account', {
-							user: req.user,
-							message: "New password set",
-							players: players
-						});
+						res.redirect('/account');
+						// res.render('user/account', {
+						// 	user: req.user,
+						// 	message: "New password set",
+						// 	players: players
+						// });
 					});
 				})
 			}
@@ -292,3 +293,23 @@ exports.password_change = function(req, res){
 
 	});
 };
+
+
+//AJAX
+
+exports.user_info = function(req, res){
+	User.findById(req.params.id, function(error, user){
+		var user_object = {
+			first_name : user.first_name,
+			last_name : user.last_name,
+			_id : user._id,
+			phone : user.phone,
+			email : user.email
+		};
+
+		res.send(user_object);
+	});
+}
+
+
+

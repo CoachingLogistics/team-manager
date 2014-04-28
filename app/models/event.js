@@ -16,6 +16,7 @@ var mongoose = require('mongoose'),
    ObjectId = Schema.ObjectId,
    Mixed = Schema.Types.Mixed;
 var Team = mongoose.model('Team');
+var rsvp_mailer = require('../mailers/rsvp_mailer.js');
 //var Attendance = mongoose.model('Attendance');
 //var Coach = mongoose.model('Coach');
 
@@ -127,10 +128,40 @@ EventSchema.pre('save', function(next){
 	// for manual testing purposes
 	// var now = new Date();
 	// var two_days_before = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);
-	// var one_day_before = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);
+	// var one_day_before = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+2, 0);
 
 	event.remind = schedule.scheduleJob(two_days_before, function(){	//need to send reminders to parents about RSVPing
+		//must get all attendances for this event
+		Attendance.getByEventId(event._id, function(err, attendances) {
+		    attendances.forEach(function(att) {
+		      // remind those who have not responded
+		      if(att.attending == null){
+		        RosterSpot.findById(att.roster_spot_id, function(err2, rs) {
+		          rs.getPlayer(function(err3, player) {
 
+		            Family.getUsersForPlayer(player._id, function(users){//get parents for a player
+
+		              users.forEach(function(user) {
+
+		                  event.getTeam(function(err, team){
+		                  	Coach.getUsersForTeam(team._id, function(err, coaches){
+		                  		var coach = coaches[0];
+
+			                    rsvp_mailer.ask_attendance(coach, user, att._id, team, event, function(emailErr, message) {
+			                      //sending emails
+			                      console.log('sending RSVP emails');
+			                    });
+		                  	});
+		                  });
+		              });
+		            });
+		          });
+		        });
+		      }
+
+		    }); // end attendances for each
+
+		  });
 		
 	});//job
 
@@ -138,7 +169,9 @@ EventSchema.pre('save', function(next){
 
 		//need coaches, team
 		event.getTeam(function(err, team){
+
 			Coach.getUsersForTeam(team._id, function(err, coaches){
+
 				Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
 
 					EventReminder.sendMail(coaches, team, event, dateFormat(event.date), attending, skipping, none, function(){
@@ -146,7 +179,16 @@ EventSchema.pre('save', function(next){
 					});
 				});
 			});
+
+			//put email reminder for stranded riders here vvvvvv
+
+
+
+
+
 		});
+
+
 	});
 
 	event.markModified('remind');

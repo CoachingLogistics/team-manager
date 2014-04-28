@@ -96,6 +96,48 @@ CarpoolSchema.statics.getByEventId = function(event_id, callback) {
 };
 
 
+//  needs testing
+//  
+CarpoolSchema.statics.getByTeamId = function(team_id, callback) {
+  var Carpool = this;
+
+  Event.getByTeamId(team_id, function(err, events){
+    var event_ids = [];
+
+    events.forEach(function(event){
+      event_ids.push(event._id);
+    });
+
+    Carpool.find({ event_id: { $in: event_ids } }, function(err, carpools){
+      callback(err, carpools);
+    });
+  });
+};
+
+
+
+
+CarpoolSchema.statics.getByTeamAndUserId = function(team_id, user_id, callback) {
+  var Carpool = this;
+  Event.getByTeamId(team_id, function(err, events){
+    var event_ids = [];
+
+    events.forEach(function(event){
+      event_ids.push(event._id);
+    });
+
+    Carpool.find({ event_id: { $in: event_ids }, user_id: user_id }, function(err, carpools){
+      callback(err, carpools);
+    });
+
+  });
+};
+
+
+
+
+
+
 //needs testing
 
 //calculates the carpool location's longitude and latitude whenever the location is modified
@@ -116,7 +158,7 @@ CarpoolSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
@@ -196,7 +238,6 @@ RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
 
 var Carpool = mongoose.model('Carpool');
 
-//needs testing
 //calculates the rider location's longitude and latitude whenever the location is modified
 RiderSchema.pre('save', function(next){
   var rider = this;
@@ -215,13 +256,14 @@ RiderSchema.pre('save', function(next){
       }else{
         next();
       }
-    
+
     }else{
       alert("Geocode was not successful, try again later");
       next();//lat and lon are both NULL
     }
   }, 'false');//this is a param that states if the request involves a geolocation device
 });
+
 
 // gets the carpool for a ride
 RiderSchema.methods.getCarpool = function(callback) {
@@ -250,7 +292,7 @@ RiderSchema.methods.getRider = function(callback) {
   RosterSpot.findById(this.roster_spot_id, function(err, theRosterSpot) {
     // if there is an error return it here
     if(err) {
-      return callback(err);
+      return callback(err, null);
     }
     // if there is a roster spot, find the player and return it
     Player.findById(theRosterSpot.player_id, function(err2, thePlayer) {
@@ -280,12 +322,27 @@ RiderSchema.statics.getByEventId = function(event_id, callback) {
   });
 }
 
+
+// gets a list of riders who still need a ride to an event
+RiderSchema.statics.needRideForEvent = function(event_id, callback) {
+  this.find({event_id: event_id, carpool_id: null}, function(err, docs) {
+    callback(err, docs);
+  });
+}
+
 // finds the rider given a carpool id and a roster_spot id
 RiderSchema.statics.getByIds = function(carpool_id, roster_spot_id, callback) {
   this.findOne({ $and: [ {carpool_id: carpool_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
     callback(err, rider);
   });
 };
+
+// gets by event and roster spot id
+RiderSchema.statics.getByEventAndRosterSpotId = function(event_id, roster_spot_id, callback) {
+  this.findOne({ $and: [ {event_id: event_id}, {roster_spot_id: roster_spot_id}]}, function(err, rider){
+    callback(err, rider);
+  });
+}
 
 
 mongoose.model('Rider', RiderSchema);

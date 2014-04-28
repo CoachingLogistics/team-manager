@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+var RosterSpot = mongoose.model('RosterSpot');
+var requestMailer = require('../mailers/ride_request.js');
 
 var Team = mongoose.model('Team');
 
@@ -16,20 +18,17 @@ exports.index = function(req, res) {
   });
 }
 
-
-
 /*
- * Creates a carpool
+ * Creates a rider
  */
 exports.create = function(req, res) {
   // easy access to necessary params
   var riders = req.body.riders;
+  var locations = req.body.locations;
+  var hours = req.body.hours;
+  var minutes = req.body.minutes;
+  var ampms = req.body.ampms;
   var carpool_id = req.params.carpool_id;
-
-  var location = req.body.location;
-  var hour = parseInt(req.body.hour);
-  var minute = parseInt(req.body.minute);
-  var specifier = req.body.ampm;
 
   // need the carpool
 
@@ -44,37 +43,43 @@ exports.create = function(req, res) {
           return res.redirect('/');
         }
         else {
-
-          // change the time from human readable to proper date format
-
-          var date = theEvent.date;
-          if(hour == 12 && specifier == "am") {
-            hour = 0;
-          } else if(hour != 12 && specifier == "pm") {
-            hour += 12;
-          }
-          var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
           var team_id = theEvent.team_id;
 
           // riders is an array of player_ids, so loop through and add them
-          riders.forEach(function(rider) {
+          riders.forEach(function(rider, index) {
             // get the roster spot
             RosterSpot.getByIds(team_id, rider, function(err, rosterSpot) {
-              var rosterSpotId = rosterSpot._id;
-              var newRider = new Rider({
-                roster_spot_id: rosterSpotId,
-                carpool_id: carpool_id,
-                location: location,
-                time: rideDate,
-                confirmed: true
-              });
-              // save them
-              newRider.save(function(err, saved) {
-                if(err) {
-                  return res.redirect('back');
+              Carpool.findById(carpool_id, function(err, theCarpool) {
+                // make the date more readable
+                var rosterSpotId = rosterSpot._id;
+                var date = theEvent.date;
+                var curHour = parseInt(hours[index]);
+                var curMinute = parseInt(minutes[index]);
+                var curSpecifier = ampms[index];
+                if(curHour == 12 && curSpecifier == "am") {
+                  curHour = 0;
                 }
+                else if(curHour != 12 && curSpecifier == "pm") {
+                  curHour += 12;
+                }
+                var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), curHour, curMinute);
+                var newRider = new Rider({
+                  roster_spot_id: rosterSpotId,
+                  carpool_id: carpool_id,
+                  event_id: theCarpool.event_id,
+                  location: locations[index],
+                  time: rideDate,
+                  confirmed: true
+                });
+                // save them
+                newRider.save(function(err, saved) {
+                  console.log(err);
+                  if(err) {
+                    return res.redirect('back');
+                  }
+                });
               });
-            });
+            }); // here
           });
           return res.redirect('carpools/' + carpool_id);
 
@@ -96,13 +101,6 @@ exports.request = function(req, res) {
       }
     });
   });
-}
-
-/*
- * we need to talk about ride requests, no way to tie them to an event if there is no carpool
- */
-exports.createRequest = function(req, res) {
-  res.redirect('/events/' + req.param('event_id'));
 }
 
 /*
@@ -149,15 +147,25 @@ exports.createRequestForCarpool = function(req, res) {
       // create a rider for each player
       players.forEach(function(player) {
         RosterSpot.getByIds(theTeam._id, player, function(err, rs) {
-          var newRider = new Rider({
-            roster_spot_id: rs._id,
-            carpool_id: carpool_id,
-            location: location,
-            time: rideDate,
-            confirmed: false
-          });
-          newRider.save(function(err, saved) {
-            // hope it saved
+          Carpool.findById(carpool_id, function(err, theCarpool) {
+            var newRider = new Rider({
+              roster_spot_id: rs._id,
+              carpool_id: carpool_id,
+              event_id: theCarpool.event_id,
+              location: location,
+              time: rideDate,
+              confirmed: false
+            });
+            newRider.save(function(err, saved) {
+              // hope it saved
+              Player.findById(player, function(err, thePlayer) {
+                User.findById(theCarpool.user_id, function(err, theUser) {
+                  requestMailer.send_for_carpool(req.user, theUser, thePlayer, theTeam, theEvent, saved, function(error, response) {
+                    console.log('email sent to the driver');
+                  });
+                });
+              });
+            });
           });
         });
       });
@@ -167,3 +175,170 @@ exports.createRequestForCarpool = function(req, res) {
   });
 }
 
+/*
+ * renders the page to submit a ride request
+ */
+exports.rideRequestForEvent = function(req, res) {
+  var event_id = req.param('event_id');
+  Event.findById(event_id, function(err, theEvent) {
+    Family.getPlayersForUser(req.user._id, function(players) {
+      if(err) {
+        return res.redirect('back');
+      }
+      else {
+        return res.render('rider/requestForEvent', { 'user':req.user, 'event':theEvent, 'players':players });
+      }
+    });
+  });
+}
+
+/*
+ * submits a ride request for an event
+ */
+exports.submitRideRequestForEvent = function(req, res) {
+  console.log('here lol');
+  var event_id = req.param('event_id');
+  var players = req.body.players;
+  var location = req.body.location;
+  var hour = parseInt(req.body.hour);
+  var minute = parseInt(req.body.minute);
+  var specifier = req.body.ampm;
+
+  Event.findById(event_id, function(err, theEvent) {
+    var date = theEvent.date;
+    if(hour == 12 && specifier == "am") {
+      hour = 0;
+    } else if(hour != 12 && specifier == "pm") {
+      hour += 12;
+    }
+    var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
+    players.forEach(function(player) {
+      RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
+        Player.findById(player, function(err, thePlayer) {
+          if(!err && theRosterSpot) {
+            var newRider = new Rider({
+              roster_spot_id: theRosterSpot._id,
+              event_id: theEvent._id,
+              location: location,
+              time: rideDate,
+              confirmed: false
+            });
+            newRider.save(function(error, saved) {
+              // rider is saved
+              if(error) {
+                console.log('rider not saved');
+              } else {
+                console.log('rider saved');
+                Team.findById(theEvent.team_id, function(err, theTeam) {
+                  RosterSpot.getByTeamId(theTeam._id, function(err, rosters) {
+                    rosters.forEach(function(rosterSpot) {
+                      Family.getUsersForPlayer(rosterSpot.player_id, function(users) {
+                        users.forEach(function(user) {
+                          requestMailer.send_mail(user, theTeam, thePlayer, theEvent, saved, function(err, response) {
+                            console.log('mail attempting to send...');
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              }
+            });
+          }
+        });
+      });
+    });
+    //redirect to show page
+    return res.redirect('/events/' + event_id);
+  });
+}
+
+/*
+ * confirms a rider for a carpool
+ */
+exports.confirmForCarpool = function(req, res) {
+  var carpool_id = req.param('carpool_id');
+  var player_id = req.param('player_id');
+  Carpool.findById(carpool_id, function(err, theCarpool) {
+    if(err) {
+      return res.redirect('back');
+    }
+    Event.findById(theCarpool.event_id, function(err, theEvent) {
+      if(err) {
+        return res.redirect(back);
+      }
+      else {
+        RosterSpot.getByIds(theEvent.team_id, player_id, function(err, theRosterSpot) {
+          if(err) {
+            return res.redirect('back');
+          }
+          Rider.getByIds(theCarpool._id, theRosterSpot._id, function(err, theRider) {
+            theRider.confirmed = true;
+            theRider.save(function(err, theRiderSaved) {
+              return res.redirect('/carpools/' + carpool_id);
+            });
+          });
+        });
+      }
+    });
+  });
+}
+
+/*
+ * Adds a player to a carpool from the 'players needing rides' section of event show
+ */
+exports.pickupPlayer = function(req, res) {
+  // easy access to variables
+  var event_id = req.param('event_id');
+  var player_id = req.param('player_id');
+  var user_id = req.user._id;
+  // find the event and roster spot to get the carpool and rider
+  Event.findById(event_id, function(err, theEvent) {
+    if(err) { return res.redirect('back'); }
+    var team_id = theEvent.team_id;
+    RosterSpot.getByIds(team_id, player_id, function(err, theRosterSpot) {
+      if(err) { return res.redirect('back'); }
+      Carpool.getByIds(user_id, event_id, function(err, theCarpool) {
+        if(err) { return res.redirect('back'); }
+        Rider.getByEventAndRosterSpotId(event_id, theRosterSpot._id, function(err, theRider) {
+          if(err) { return res.redirect('back'); }
+          // now that we have the rider, set the carpool_id and save it
+          theRider.carpool_id = theCarpool._id;
+          theRider.confirmed = true;
+          console.log(theRider);
+          theRider.save(function(err, savedRider) {
+            if(!err && savedRider) {
+              console.log('rider saved');
+            } else{
+              console.log(err);
+            }
+            return res.redirect('/events/' + event_id);
+          })
+        });
+      });
+    });
+  });
+}
+
+exports.removeRider = function(req, res) {
+  // easy access to variables
+  var carpool_id = req.param('carpool_id');
+  var player_id = req.param('player_id');
+  Carpool.findById(carpool_id, function(err, theCarpool) {
+    if(err) { return res.redirect('back'); }
+    Event.findById(theCarpool.event_id, function(err, theEvent) {
+      if(err) { return res.redirect('back'); }
+      var team_id = theEvent.team_id;
+      RosterSpot.getByIds(team_id, player_id, function(err, theRosterSpot) {
+        if(err) { return res.redirect('back'); }
+        Rider.getByEventAndRosterSpotId(theEvent._id, theRosterSpot._id, function(err, theRider) {
+          if(err) { return res.redirect('back'); }
+          Rider.remove({_id: theRider._id}, function(err, removedRider) {
+            if(err) { return res.redirect('back'); }
+            return res.redirect('/carpools/' + carpool_id);
+          });
+        });
+      });
+    });
+  });
+}
