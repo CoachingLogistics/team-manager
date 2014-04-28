@@ -48,7 +48,7 @@ $(".playah").each(function(index) {
 	});
 });
 
-
+		//loading the google map
 		$.get('/events/'+event_id+'/coordinates', function(coords, err){
 			var lat=coords.latitude;
 			var lon=coords.longitude;
@@ -89,57 +89,45 @@ $(".playah").each(function(index) {
 			//attachInstructionText(event_marker, "Hi");//event_obj.name + "<br>" + event_obj.location);
 
 
-		})
-
-	//do AJAX call to get loaction, or get location from page
-	//then need to get the coordinates
-
-	//need to get coordinates of location
-	// var address = $("#location").html().replace("<b>Location: </b>", "").replace("<br>", "");
-	// console.log(address);
-	// var gmapAPI = "http://maps.googleapis.com/maps/api/geocode/json?";
-	// var jsonReq = {
-	// 	address: address,
-	// 	sensor: false,
-	// 	key: ,
-	// }
-	// $.get(gmapAPI+jsonReq)
+		});
 
 
-			// var lat=coords.lat;
-			// var lon=coords.lng;
-
-			// var mapProp = {
-			//   center:new google.maps.LatLng(lat,lon),
-			//   zoom:10,
-			//   mapTypeId:google.maps.MapTypeId.ROADMAP
-			//   };
-
-			//  //initializing the map object
-			// var map = new google.maps.Map(document.getElementById("googleMap")//jquery here?
-			//   ,mapProp);
 
 
-			// var directionsDisplay = new google.maps.DirectionsRenderer();
+	//loading the carpool driver information
+	$(".driver").each(function(index) {
+		var user_id = $(this).attr("id");
+		$.get("/users/" + user_id + "/info", function(user){
 
+			if(user){
+				$('#'+user_id).append("<a href='/users/" + user._id + "'>" + user.first_name + " " + user.last_name + "</a>");
+			}else{
+				$('#'+user_id).append("Error");
+			}
+		});
+	});
+	
 
-			// var event_marker=new google.maps.Marker({
-			//   position: new google.maps.LatLng(lat,lon),
-			//   map: map,
-			//   title: event_obj.name
-			//   //icon:'/images/someting.png'
-			//   });
+		//loading the carpool rider information
+	$(".driver-riders").each(function(index){
+		var carpool_id = $(this).attr("id");
+		$.get("/carpools/" + carpool_id + "/riders", function(riders){
+			if(riders){
 
-			// var stepDisplay = new google.maps.InfoWindow();
-			// function attachInstructionText(marker, text) {
-			//   google.maps.event.addListener(marker, 'click', function() {
-			//     // Open an info window when the marker is clicked on,
-			//     // containing the text of the step.
-			//     stepDisplay.setContent(text);
-			//     stepDisplay.open(map, marker);
-			//   });
-			// }
+				var ryders = "<ul>";
 
+				riders.forEach(function(rider){
+					ryders+="<li><a href='/players/"+rider._id+"'>"+rider.first_name+" "+rider.last_name+"</a></li>"
+				})
+
+				ryders+="</ul>"
+
+				$('#'+carpool_id).append(ryders).trigger('create');
+			}else{
+				$('#'+carpool_id).append("no riders");
+			}
+		});
+	});
 
 });
 

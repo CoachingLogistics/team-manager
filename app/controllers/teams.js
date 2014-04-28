@@ -1,12 +1,14 @@
 var mongoose = require('mongoose'),
   Team = mongoose.model('Team');
-  Player = mongoose.model('Player');
-  User = mongoose.model('User');
-  Family = mongoose.model('Family');
-  RosterSpot = mongoose.model('RosterSpot');
-  Event = mongoose.model('Event');
-  Coach = mongoose.model('Coach');
-  Attendance = mongoose.model('Attendance');
+Player = mongoose.model('Player');
+User = mongoose.model('User');
+Family = mongoose.model('Family');
+RosterSpot = mongoose.model('RosterSpot');
+Event = mongoose.model('Event');
+Coach = mongoose.model('Coach');
+Attendance = mongoose.model('Attendance');
+Carpool = mongoose.model('Carpool');
+Rider = mongoose.model('Rider');
 
 var mailer = require('../mailers/team_mailer.js');
 var NewUserAdded = require('../mailers/new_added_user');
@@ -14,6 +16,7 @@ var ExistingPlayer = require('../mailers/existing_player');
 var NewPlayer = require('../mailers/new_player');
 var NewCoach = require('../mailers/new_coach');
 var ExistingCoach = require('../mailers/existing_coach');
+var async = require('async');
 
 
 //in production, but should it be?
@@ -33,8 +36,13 @@ exports.show = function(req, res){
 	//remember to put the id of the team in the request data
   	Team.findById(req.params.id, function(err, team){	//get team
   		Coach.getUsersForTeam(team._id, function(err, coaches){	//get coachs
+  			var members = [];
+  			var drivers = [];
   			var access = false;
+  			var coach_emails = [];
   			coaches.forEach(function(c){	//check to see if the user is a coach
+  				coach_emails.push(c.email);
+  				drivers.push(c);
   				if(req.user){
 	  				if(req.user._id.equals(c._id)){
 	  					access = true;
@@ -64,24 +72,94 @@ exports.show = function(req, res){
 				    events.push(noob);
 				});
 
-
-
   				RosterSpot.getPlayersForTeam(team._id, function(players){	//get players to show roster
 
-					if(err) {
-						throw new Error(err);
-						//res.status(404).render('404');
-					}else{
+  					async.each(players, function(player, innerCallback) {
+						player.getUsers(function(users){
+							users.forEach(function(user){
 
-				    	res.render('team/show', {
-				    	  team: team,
-				    	  user:req.user,
-				    	  events: events,
-				    	  players: players,
-				    	  coaches: coaches,
-				    	  access: access
-				    	});		
-					}
+								var listed = false;
+								coach_emails.forEach(function(c){
+									if(user.email==c){
+										listed = true;
+									}
+								})
+								if(listed==false){ drivers.push(user)};
+								innerCallback();
+							})
+						})
+					}, function(err){
+
+						async.each(drivers, function(driver, innerCallback1) {
+							var carpool_num = 0;
+							var rider_num = 0;
+
+							Carpool.getByTeamAndUserId(team._id, driver._id, function(err, carpools){
+								carpool_num = carpools.length;
+
+								async.each(carpools, function(carpool, innerCallback2) {
+									Rider.getByCarpoolId(carpool._id, function(err, riders){
+										rider_num += riders.length;
+										innerCallback2();
+									})
+
+								}, function(err){
+
+									var dr = {
+										_id: driver._id,
+										carpools: carpool_num,
+										riders: rider_num,
+										first_name: driver.first_name,
+										last_name: driver.last_name,
+										email: driver.email,
+										phone: driver.phone
+									}
+
+									members.push(dr);
+
+									innerCallback1();
+								});
+							});//carpool
+
+						}, function(err){
+							
+							members.sort(function (a, b){
+							    if (a.carpools < b.carpools){
+							      return 1;
+							  	}
+							    else if (a.carpools > b.carpools){
+							      return -1;
+							  	} else {
+							    	if(a.riders>b.riders) return 1;
+							    	if(a.riders<b.riders) return -1;
+							    	return 0;
+							    }
+							});
+
+
+							if(err) {
+								throw new Error(err);
+								//res.status(404).render('404');
+							}else{
+
+						    	res.render('team/show', {
+						    	  team: team,
+						    	  user:req.user,
+						    	  events: events,
+						    	  players: players,
+						    	  coaches: coaches,
+						    	  access: access,
+						    	  drivers: members
+						    	});		
+							}
+						});
+					});//async
+
+
+
+
+
+
 
 				});
 			});
@@ -167,10 +245,10 @@ exports.new = function(req, res){
 //post
 exports.update = function(req, res){
 	Team.findById(req.params.id, function(error, team){
-		Coach.getUsersForTeam(team._id, function(err, coaches){
+		Coach.getUsersForTeam(team._id, function(err, coachez){
 
   			var access = false;
-  			coaches.forEach(function(c){	//check to see if the user is a coach
+  			coachez.forEach(function(c){	//check to see if the user is a coach
   				if(req.user){
 	  				if(req.user._id.equals(c._id)){
 	  					access = true;
@@ -187,7 +265,22 @@ exports.update = function(req, res){
 				team.name = req.body.name;
 				team.sport = req.body.sport;
 
+				var coaches = [];
+
+				if(req.param('coaches')){	//string of comma separated emails, to be given coach status
+					var co = req.param('coaches').split(",");
+					
+					co.forEach(function(c){
+						c = c.replace(' ', '');
+						coaches.push(c);
+					})
+					//split the string to get individual emails
+				}
+
+
+
 				team.save(function(err, team){
+
 					if(err){
 						res.render('team/edit', {
 							team: oldTeam,
@@ -195,6 +288,58 @@ exports.update = function(req, res){
 							user: req.user
 						});
 					}else{
+
+							if(coaches.length>0){			//more coaches
+								coaches.forEach(function(cmail){
+
+									User.getByEmail(cmail, function(err, user){	//see if the email is linke to a user
+										if(err) console.log(err);
+
+										if(user){	//user exists
+											
+											var manager = new Coach({	//create new coach
+												user_id: user._id,
+												team_id: team._id
+											});
+
+											manager.save(function(err, manager){
+												//email
+												ExistingCoach.sendMail(req.user, team, user, function(){
+														//nothing
+												});
+											});
+
+										}else{	//user must be created
+
+											var random_password = User.generateRandomPassword();
+
+											var new_user = new User({		//user's password needs to be sent to them
+												email: cmail,
+												active: false,
+												password: random_password
+											});
+
+											new_user.save(function(error, usr){	//new user created
+												
+
+												var manager = new Coach({
+													user_id: usr._id,
+													team_id: team._id
+												});
+												manager.save(function(err, manager){//new coach saved
+													//email
+													NewCoach.sendMail(req.user, team, usr, random_password, function(){
+															//nothing
+													});
+
+												});
+											})				
+
+										}//else
+									})
+								})
+							}//coaches.length
+							
 						res.redirect('/teams/' + team._id);	
 					}
 				})
