@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+var RosterSpot = mongoose.model('RosterSpot');
 var requestMailer = require('../mailers/ride_request.js');
 
 var Team = mongoose.model('Team');
@@ -205,23 +206,38 @@ exports.submitRideRequestForEvent = function(req, res) {
     var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
     players.forEach(function(player) {
       RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
-        if(!err && theRosterSpot) {
-          var newRider = new Rider({
-            roster_spot_id: theRosterSpot._id,
-            event_id: theEvent._id,
-            location: location,
-            time: rideDate,
-            confirmed: false
-          });
-          newRider.save(function(error, saved) {
-            // rider is saved
-            if(error) {
-              console.log('rider not saved');
-            } else {
-              console.log('rider saved');
-            }
-          });
-        }
+        Player.findById(player, function(err, thePlayer) {
+          if(!err && theRosterSpot) {
+            var newRider = new Rider({
+              roster_spot_id: theRosterSpot._id,
+              event_id: theEvent._id,
+              location: location,
+              time: rideDate,
+              confirmed: false
+            });
+            newRider.save(function(error, saved) {
+              // rider is saved
+              if(error) {
+                console.log('rider not saved');
+              } else {
+                console.log('rider saved');
+                Team.findById(theEvent.team_id, function(err, theTeam) {
+                  RosterSpot.getByTeamId(theTeam._id, function(err, rosters) {
+                    rosters.forEach(function(rosterSpot) {
+                      Family.getUsersForPlayer(rosterSpot.player_id, function(users) {
+                        users.forEach(function(user) {
+                          requestMailer.send_mail(user, theTeam, thePlayer, theEvent, saved, function(err, response) {
+                            console.log('mail attempting to send...');
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              }
+            });
+          }
+        });
       });
     });
     //redirect to show page

@@ -135,7 +135,6 @@ module.exports = function(app){
 	app.post('/riders/createForCarpool/:carpool_id', riders.create);	//what is auth logic here?, coach and parents?  if so check out carpools.create
 
 	app.get('/riders/:event_id/riderequest', riders.request);			//auth logic here?
-	app.post('/riders/:event_id/request', riders.createRequest);
 	app.get('/riders/:event_id/request/:carpool_id', riders.requestForCarpool);
 	app.post("/riders/:event_id/request/:carpool_id", riders.createRequestForCarpool);
 	app.get('/events/:event_id/rideRequest', ensureAuthenticated, riders.rideRequestForEvent);
