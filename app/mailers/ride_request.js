@@ -25,19 +25,19 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
  */
 exports.send_mail = function(user, team, player, event, rider, callback) {
   // make this variable so it doesn't say "needs a ride to the other" which wouldn't make sense
-  var type = event.type.equalsIgnoreCase("other") ? "upcoming event" : event.type;
+  var type = event.type == "Other" ? "upcoming event" : event.type;
 
   // the text and html for the email
   var text = "Hello " + user.name + ",\n\t You are receiving this email because " + player.full_name + " has requested a ride for ";
       text += " the upcoming " + type + " for " + team.name + " " + team.sport + ". The event is taking place on ";
-      text += dateFormat(event.date) + " at " + timeFormat(date) + ", and will be held at " + event.location + ".";
+      text += dateFormat(event.date) + " at " + timeFormat(event.date) + ", and will be held at " + event.location + ".";
       text += "\n\t" + player.full_name + " would like to be picked up at " + rider.location + " by " + rider.time + ".";
       text += "If you are able to drive " + player.full_name + " to the " + type + ", please add them to a carpool at ";
       text += "http://production-teammanager.rhcloud.com/events/" + event._id + " .";
       text += "\nThank you,\n " + team.name + " at Team Manager";
   var html = "Hello " + user.name + ",<br /> You are receiving this email because " + player.full_name + " has requested a ride for ";
       html += " the upcoming " + type + " for " + team.name + " " + team.sport + ". The event is taking place on ";
-      html += dateFormat(event.date) + " at " + timeFormat(date) + ", and will be held at " + event.location + ".";
+      html += dateFormat(event.date) + " at " + timeFormat(event.date) + ", and will be held at " + event.location + ".";
       html += "<br />" + player.full_name + " would like to be picked up at " + rider.location + " by " + rider.time + ".";
       html += "If you are able to drive " + player.full_name + " to the " + type + ", please add them to a carpool at ";
       html += "<a href='http://production-teammanager.rhcloud.com/events/" + event._id + "'>On the Team Manager site</a>.";
