@@ -10,7 +10,7 @@
 <!--************************CONTENT**************************-->
 
 <h1>Request a ride for your team's <%= event.type %></h1>
-<form action="/riders/<%=event._id%>/request/<%=carpool._id%>" method="POST">
+<form action="/riders/<%=event._id%>/request/<%=carpool._id%>" method="POST" data-ajax="false">
   <b>Who needs a ride?</b> <br />
   <% players.forEach(function(player, index) { %>
     <input type="checkbox" name="players[<%=index%>]" value="<%=player._id%>"> <%= player.full_name %> <br />
