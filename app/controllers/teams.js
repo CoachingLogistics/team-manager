@@ -21,6 +21,7 @@ exports.index = function(req, res){
   Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('team/index', {
+    	title: "Teams",
       teams: teams,
       user: req.user
     });
@@ -74,6 +75,7 @@ exports.show = function(req, res){
 					}else{
 
 				    	res.render('team/show', {
+				    		title: team,
 				    	  team: team,
 				    	  user:req.user,
 				    	  events: events,
@@ -147,6 +149,7 @@ exports.edit = function(req, res){
 					//res.status(404).render('404');
 				}else{
 					res.render('team/edit', {
+						title: "Edit " + team,
 						team: team,
 						user: req.user,
 						coaches: coaches
@@ -160,6 +163,7 @@ exports.edit = function(req, res){
 //get
 exports.new = function(req, res){
 	res.render('team/new',{
+		title: "New Team",
 		user: req.user
 	});
 }
@@ -190,6 +194,7 @@ exports.update = function(req, res){
 				team.save(function(err, team){
 					if(err){
 						res.render('team/edit', {
+							title: "Edit " + oldTeam,
 							team: oldTeam,
 							message: err,
 							user: req.user
@@ -212,6 +217,7 @@ exports.create = function(req, res){
 	newTeam.save(function(err, team){
 		if(err){
 			res.render('team/new', {
+				title: "New Team",
 				team: team,
 				message: err,
 				user: req.user
@@ -339,6 +345,7 @@ exports.roster_fill = function(req, res){
 					res.redirect("/404");
 				}else{
 			    	res.render('team/roster_fill', {
+			    		title: "Add players",
 			    	  team: team,
 			    	  user: req.user
 			    	});			

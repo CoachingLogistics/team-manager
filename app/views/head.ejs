@@ -3,7 +3,7 @@
 <div data-role="page">
 
 <div data-role="header" class="jqm-header">
-    <h2>Team Manager</h2>
+    <h2><%= title %></h2>
     <a href="#navpanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
     <%if(user!=null){%>
 
@@ -41,7 +41,7 @@
 
 </div>
 
-      <!--div data-role="panel" data-position="left" data-display="reveal" id="navpanel">
+      <div data-role="panel" data-position="left" data-display="reveal" id="navpanel">
           <ul data-role="listview" data-count-theme="c" data-inset="false">
             <li><a href="/">Home</a></li>
             <% if(user){%>
@@ -59,27 +59,7 @@
             </li>
             <% } %>
           </ul>
-      </div-->
-
-<div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a" id="navpanel">
-<ul data-role="listview" class="jqm-list ui-alt-icon ui-nodisc-icon">
-<li data-filtertext="demos homepage" data-icon="home"><a href="/">Home</a></li>
-            <% if(user){%>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="/teams">Teams</a></li>
-            <li><a href="/players">Players</a></li>
-            <li><a href="/events">Events</a></li>
-            <li data-role="collapsible" class="nav-collapsible" data-iconpos="right">
-                <h4 class="nav-collapsible">Teams</h4>
-                <ul data-role="listview">
-                  <li><a href="#">List item 1</a></li>
-                  <li><a href="#">List item 2</a></li>
-                  <li><a href="#">List item 3</a></li>
-                </ul>
-            </li>
-            <% } %>
-</ul>
-</div>
+      </div>
 
 
 
@@ -87,7 +67,7 @@
 <div data-role="panel" class="jqm-navmenu-panel" data-position="right" data-display="overlay" data-theme="a" id="popupMenu">
   <ul data-role="listview" class="jqm-list ui-alt-icon ui-nodisc-icon">
     <li data-filtertext="demos homepage" data-icon="home"><a href=".././">Home</a></li>
-    <li><a href="/account%>">My Profile</a></li>
+    <li><a href="/account">My Profile</a></li>
     <li><a href="#">Nothing</a></li>
     <li><a href="/logout">Log Out</a></li>
   </ul>

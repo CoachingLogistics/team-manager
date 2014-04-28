@@ -23,6 +23,7 @@ exports.index = function(req, res){	//not used in production
   Event.find(function(err, events){
     if(err) throw new Error(err);
     res.render('event/index', {
+    	title: "Events",
       events: events,
       user:req.user
     });
@@ -33,6 +34,7 @@ exports.new = function(req, res){	//not used in production
 	Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('event/new', {
+    	title: "New Event",
       teams: teams,
       user:req.user
     });
@@ -59,6 +61,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 
 			    if(err) throw new Error(err);
 			    res.render('event/team_event', {
+			    	title: "New Event for team " + team,
 			      team: team,
 			      user:req.user
 			    });
@@ -239,6 +242,7 @@ exports.show = function(req, res){
                         var driving = !err && aCarpool;
 
                         res.render('event/show', {
+                        	title: "Event for " + team,
                           event: event,
                           team: team,
                           user:req.user,
@@ -257,6 +261,7 @@ exports.show = function(req, res){
                       }
                       else {
                         res.render('event/show', {
+                        	title: "Event for " + team,
                           event: event,
                           team: team,
                           user:req.user,
@@ -329,6 +334,7 @@ exports.edit = function(req, res) {
 							}
 
 							return res.render('event/edit', {
+								title: "Edit Event for " + team,
 								event: event,
 								month: month_name,
 								team: team,

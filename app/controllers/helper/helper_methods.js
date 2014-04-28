@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
-	User = require('User'),
-	Coach = require('Coach');
+	User = mongoose.model('User'),
+	Coach = mongoose.model('Coach');
 
 exports.is_coach = function(user_id, callback){
 	Coach.getByUserId(user_id, function(err, coaches){

@@ -33,6 +33,7 @@ exports.index = function(req, res){			//delete this later
 	User.find({}, function(error, users) {
 
 		res.render('user/index', {
+			title: "All Users",
 			user: req.user,
 			users: users
 		});
@@ -46,6 +47,7 @@ exports.show = function(req, res){
 		Family.getPlayersForUser(user._id, function(players){
 
 			res.render('user/show', {
+				title: "User Details",
 				user: req.user,
 				user_show: user,
 			  	players: players
@@ -202,6 +204,7 @@ exports.delete = function(req, res){
 //the "forgot my password" page
 exports.forget = function(req, res){
   	res.render('user/forget', {
+  		title: "Forget Password",
 		user: req.user,
 		message: req.session.messages
 	});
@@ -215,6 +218,7 @@ exports.remember = function(req, res){
 
   		if(err){
   			res.render('user/login', {
+  				title: "Remember Password",
 				user: req.user,
 			  	message: err 		//should probably tell them if email is not found
 			});
@@ -233,6 +237,7 @@ exports.remember = function(req, res){
 			ForgottenEmail.sendMail(email, usr, random_password, function(){
 
 					res.render('user/login', {
+						title: "Login",
 					user: req.user,
 				  	message: 'Your new password has been sent.'
 				});
@@ -251,6 +256,7 @@ exports.password_form = function(req, res){
 	User.findById(req.params.id, function(error, user) {
 
 			res.render('user/password', {
+				title: "Change Password",
 				user: user//or should this be req.user???
 			});
 	});
@@ -271,6 +277,7 @@ exports.password_change = function(req, res){
 		user.comparePassword(old, function(err, isMatch){	//old password must match the one they gave
 			if(err || isMatch == false){
 				res.render('user/password', {
+					title: "Change Password",
 					user: req.user,
 					message: "Old password was wrong"
 				});
@@ -281,6 +288,7 @@ exports.password_change = function(req, res){
 				user.save(function(err, usr){
 					Family.getPlayersForUser(usr._id, function(players){
 						res.render('user/account', {
+							title: "Change Password",
 							user: req.user,
 							message: "New password set",
 							players: players
