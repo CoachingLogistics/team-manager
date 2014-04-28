@@ -13,7 +13,7 @@
     <% if(notice) { %>
       <p><%= notice %></p>
     <% } %>
-      <form id="user_form" class="form-horizontal" action="/players/<%=player._id%>/addUser" method="post" role="form">
+      <form id="user_form" class="form-horizontal" action="/players/<%=player._id%>/addUser" method="post" role="form" data-ajax="false">
 
           <div class="form-group">
               <label for="inputEmail" class="col-sm-2 control-label">Email</label>
