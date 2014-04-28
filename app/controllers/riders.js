@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Rider = mongoose.model('Rider');
 var Carpool = mongoose.model('Carpool');
 var Event = mongoose.model('Event');
+var requestMailer = require('../mailers/ride_request.js');
 
 var Team = mongoose.model('Team');
 
@@ -98,13 +99,6 @@ exports.request = function(req, res) {
       }
     });
   });
-}
-
-/*
- * we need to talk about ride requests, no way to tie them to an event if there is no carpool
- */
-exports.createRequest = function(req, res) {
-  res.redirect('/events/' + req.param('event_id'));
 }
 
 /*
