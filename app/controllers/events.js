@@ -5,11 +5,16 @@ var  Attendance = mongoose.model('Attendance');
 var  RosterSpot = mongoose.model('RosterSpot');
 var  Coach = mongoose.model('Coach');
 var  Carpool = mongoose.model('Carpool');
-
+var Rider = mongoose.model('Rider');
 //for automated emails
 var schedule = require('node-schedule');
 var mailer = require('../mailers/team_mailer.js');
 var EventReminder = require('../mailers/event_attendance');
+
+//for googlemaps
+var gmaps = require('googlemaps');
+var async = require('async');
+gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 
 
@@ -105,28 +110,34 @@ exports.create = function(req, res){
 						console.log(err);
 					}else{//no err
 
-							//*********************************************************************************************CHANGE
-							var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//set for 2 days before event at noon
-							// var now = new Date();
-							// var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
 
-							console.log("check your email at "+remind);
+							// //there is a huge issue here, if the event is changed/deleted we'll need to change/delete the job, but I dont know how to do that
 
-							var job = schedule.scheduleJob(remind, function(){	//this gets carried out whenever the job is scheduled
 
-								Event.findById(event._id, function(error, ev){
-									if(ev){
-										Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
-											EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
-												console.log("email reminder sent now");
-											});
-										});
-									}else{
-										//nothing, the event got deleted so don't do anything
-										
-									}
-								});
-							});
+							// var remind = new Date(req.param('year'), req.param('month'), req.param('day')-2, 12, 0, 0);	//sends out RSVP reminder 2 days in advance
+							// var results = new Date(req.param('year'), req.param('month'), req.param('day')-1, 12, 0, 0);	//set for 1 day before event at noon
+							// // var now = new Date();
+							// // var remind = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes()+1, 0);	//set for 3 minutes from now
+
+							// var job_remind = schedule.scheduleJob(remind, function(){	//need to send reminders to parents about RSVPing
+
+								
+							// });//job
+
+							// var job_results = schedule.scheduleJob(results, function(){	//this gets carried out whenever the job is scheduled
+
+							// 	Event.findById(event._id, function(error, ev){
+							// 		if(ev){
+							// 			Attendance.getPlayerAttendanceForEvent(event._id, function(err, attending, skipping, none){
+							// 				EventReminder.sendMail(coaches, team, event, dateFormat(date), attending, skipping, none, function(){
+							// 					console.log("email reminder sent now");
+							// 				});
+							// 			});
+							// 		}else{
+							// 			//nothing, the event got deleted so don't do anything
+							// 		}
+							// 	});
+							// });//job
 
 
 
@@ -212,23 +223,60 @@ exports.show = function(req, res){
 
 	    			RosterSpot.getPlayersForTeam(team._id, function(players){
 	    				Carpool.getByEventId(event._id, function(err, carpools){
-					    	res.render('event/show', {
-					    	  event: event,
-					    	  team: team,
-					    	  user:req.user,
-					    	  time: timeFormat(event.date),
-					    	  players: players,
-					    	  access: access,
-					    	  date: dateFormat(event.date),
-	                		  loggedIn: loggedIn,
-	                		  upcoming: upcoming,
-	                		  carpools: carpools
+                Rider.needRideForEvent(event._id, function(err, riders) {
+                  var needingRides = [];
+                  async.each(riders, function(rider, innerCallback) {
+                    RosterSpot.findById(rider.roster_spot_id, function(err, rs) {
+                      Player.findById(rs.player_id, function(err, player) {
+                        needingRides.push(player);
+                        innerCallback();
+                      });
+                    });
+                  }, function(error){
+                    // see if logged in user is driving to display the 'offer ride' button
+                    if(loggedIn) {
+                      Carpool.getByIds(req.user._id, event._id, function(err, aCarpool) {
+                        var driving = !err && aCarpool;
 
-					    	});
-					    })
-	    			})
-		    	})
-		    })
+                        res.render('event/show', {
+                          event: event,
+                          team: team,
+                          user:req.user,
+                          time: timeFormat(event.date),
+                          players: players,
+                          access: access,
+                          date: dateFormat(event.date),
+                                loggedIn: loggedIn,
+                                upcoming: upcoming,
+                                carpools: carpools,
+                                playersNeedingRides: needingRides,
+                                driving: driving
+                          });
+
+                        });
+                      }
+                      else {
+                        res.render('event/show', {
+                          event: event,
+                          team: team,
+                          user:req.user,
+                          time: timeFormat(event.date),
+                          players: players,
+                          access: access,
+                          date: dateFormat(event.date),
+                                loggedIn: loggedIn,
+                                upcoming: upcoming,
+                                carpools: carpools,
+                                playersNeedingRides: needingRides,
+                                driving: false
+                          });
+                      }
+                  });
+                });
+					    });
+	    			});
+		    	});
+		    });
 		}
   	});
 }
@@ -350,7 +398,7 @@ exports.update = function(req, res){
 
 
 exports.delete = function(req, res) {
-	Event.findById(req.params.id, function(error, event){
+	Event.findOne({_id : req.params.id}, function(error, event){
 		if(event){
 		Team.findById(event.team_id, function(err, team){
 			if(err) throw new Error(err);
@@ -368,7 +416,8 @@ exports.delete = function(req, res) {
 	  				res.redirect('/');
 			  	}else{
 
-					Event.remove({_id: req.params.id}, function(err, docs) {
+					event.remove(function(err, docs) {
+						//console.log(docs);
 						if(err) {
 							return res.redirect('/events/' + req.params.id);
 						}
@@ -392,7 +441,7 @@ exports.delete = function(req, res) {
 
 //event_id and player_id is passed in, returns the attendance for that player & event
 exports.attendance = function(req, res){
-	
+
 	Event.findById(req.params.event_id, function(err, event){
 		Team.findById(event.team_id, function(err, team){
 			RosterSpot.getByIds(team._id, req.params.player_id, function(err, spot){
@@ -418,6 +467,17 @@ exports.next_event = function(req, res){
 
 }
 
+//returns coordinates for an event's location, to be used in google maps
+exports.coordinates = function(req,res){
+	Event.findById(req.params.id, function(err, event){
+
+		var object = {
+			latitude : event.latitude,
+			longitude : event.longitude
+		}
+		res.send(object);
+	});
+}
 
 
 //helpers

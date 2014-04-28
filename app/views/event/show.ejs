@@ -1,6 +1,7 @@
 <html>
 
 <head>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA1Vn-NXh1hZ3SVBpn1djoR41qKTSr5aqU&sensor=true"></script>
 <% include ../head_scripts %>
 <script type='text/javascript' src='/js/event_show.js'></script>
 </head>
@@ -14,8 +15,11 @@
 	<div class="col-md-8">
 
 		<h1> <%= event.type %> for team <%= team.name %>  <small><%= date %></small></h1>
+		<% if(driving) { %>
+		<h1>driving</h1>
+		<% } %>
 
-		<div id="googleMap"></div>
+		<div id="googleMap" style="width:100%; height:50%"></div>
 	</div>
 	<div class="col-md-4">
 		<table class="table">
@@ -81,7 +85,7 @@
 <hr>
 <div class="row">
 	<div class="col-md-8">
-		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/riders/<%=event._id%>/riderequest">Request Ride</a> <%}%></h3>
+		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/events/<%=event._id%>/rideRequest">Request Ride</a> <%}%></h3>
 
 		<% if(carpools.length>0){ %>
 
@@ -95,7 +99,29 @@
 
 		<% } %>
 
-
+		<h3>Players needing rides</h3>
+		<% if(playersNeedingRides.length > 0) {%>
+			<table>
+				<thead>
+					<th>Name</th>
+					<% if(driving) {%>
+						<th>Offer Ride</th>
+					<%}%>
+				</thead>
+				<tbody>
+			<% playersNeedingRides.forEach(function(player) { %>
+				<tr>
+					<td><%= player.full_name %></td>
+					<%if(driving) {%>
+						<td><a href="/events/<%=event._id%>/pickupPlayer/<%=player._id%>">Offer ride</a></td>
+					<%}%>
+				</tr>
+			<% }) %>
+				</tbody>
+			</table>
+		<% } else { %>
+			<b>No players need a ride</b>
+		<% } %>
 
 	</div>
 </div>
