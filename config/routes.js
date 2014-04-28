@@ -143,6 +143,9 @@ module.exports = function(app){
 	app.get('/events/:event_id/pickupPlayer/:player_id', ensureAuthenticated, riders.pickupPlayer);
 	app.get("/riders/remove/:carpool_id/:player_id", ensureAuthenticated, riders.removeRider);
 
+	// from the email so they won't be logged in.. king of hacky for now but it is what it is
+	app.get('/riders/confirm/:carpool_id/:player_id/email', riders.confirmForCarpool);
+
 
 
 	//

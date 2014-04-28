@@ -157,9 +157,16 @@ exports.createRequestForCarpool = function(req, res) {
             });
             newRider.save(function(err, saved) {
               // hope it saved
+              Player.findById(player, function(err, thePlayer) {
+                User.findById(theCarpool.user_id, function(err, theUser) {
+                  requestMailer.send_for_carpool(req.user, theUser, thePlayer, theTeam, theEvent, saved, function(error, response) {
+                    console.log('email sent to the driver');
+                  });
+                });
+              });
             });
           });
-        }); // here
+        });
       });
       // redirect to the carpool show page
       return res.redirect('/carpools/' + carpool_id);
