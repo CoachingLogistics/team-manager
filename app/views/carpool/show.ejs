@@ -19,12 +19,17 @@
 		<div id="googleMap" style="width:100%; height:50%"></div>
 	</div>
 	<div class="col-md-4">
-		<table class="table" id="directions">
-			<thead>
-				<th class="text-left">Directions</th>
-			</thead>
-			<!--directions loaded here-->
-		</table>
+		<div id="carpool-direction-message">
+			<button id="direction-button" data-role="directions">Show Directions</button>
+		</div>
+		<div id="carpool-directions">
+			<table data-role="table" class="table" id="directions">
+				<thead>
+					<th class="text-left">Directions</th>
+				</thead>
+				<!--directions loaded here-->
+			</table>
+		</div>
 	</div>
 </div>
 
@@ -43,20 +48,20 @@
 
 		<% if(access){ %>
 		<br>
-		<a type="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
+		<a type="button" data-role="button" class="btn btn-default" href="/carpools/<%=carpool._id%>/edit">Edit Carpool Info</a>
 
 			<% if(spotsLeft > 0) {%>
-				<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
+				<a type="button" data-role="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
 			<% } %>
 
 		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> data-ajax="false">
-			<input type="Submit" value="Delete" />
+			<input data-role="button" class="form-danger wide-button" data-theme="a" type="Submit" value="Delete" />
 		</form>
 
 		<% } %>
 
 		<% if(user && !access && spotsLeft > 0) { %>
-			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" class="btn btn-info" >Request a ride</a>
+			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" data-role="button" class="btn btn-info" >Request a ride</a>
 		<% } %>
 
 	</div>
@@ -80,14 +85,13 @@ Riders
 			<tr>
 
 				<td><%= rider.player.full_name %></td>
-				<td><%= rider.confirmed ? "Confirmed": "Unconfirmed" %></td>
 				<% if(access) { %>
 					<%if(!rider.confirmed) {%>
-						<td><a href="/riders/confirm/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-success">Confirm</a></td>
+						<td><a href="/riders/confirm/<%=carpool._id%>/<%=rider.player._id%>" data-role="button" class="btn btn-tiny btn-success">Confirm</a></td>
 					<%} else {%>
-						<td></td>
+						<td>Confirmed</td>
 					<% } %>
-					<td><a href="/riders/remove/<%=carpool._id%>/<%=rider.player._id%>" class="btn btn-tiny btn-danger">Remove</a></td>
+					<td><a href="/riders/remove/<%=carpool._id%>/<%=rider.player._id%>" data-role="button" data-theme="b">Remove</a></td>
 				<% } %>
 
 			</tr>
