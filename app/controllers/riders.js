@@ -73,6 +73,7 @@ exports.create = function(req, res) {
                 });
                 // save them
                 newRider.save(function(err, saved) {
+                  console.log(err);
                   if(err) {
                     return res.redirect('back');
                   }
