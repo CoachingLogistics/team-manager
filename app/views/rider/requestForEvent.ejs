@@ -9,7 +9,7 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
   <h1>Request a Ride</h1>
-  <form action='/events/<%=event._id%>/rideRequest' method='POST'>
+  <form action='/events/<%=event._id%>/rideRequest' method='POST' data-ajax="false">
     <b>Who needs a ride?</b><br />
     <% players.forEach(function(player, index) { %>
       <input type='checkbox' value="<%=player._id%>" name="players[<%=index%>]"><%=player.full_name%> <br />
