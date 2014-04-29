@@ -64,6 +64,7 @@ module.exports = function(app){
 	app.get('/teams/:id/edit', ensureAuthenticated, teams.edit);
 	app.post('/teams/:id/edit', ensureAuthenticated, teams.update);
 	//app.post('/teams/:id/delete', teams.delete);
+	app.get('/teams/:id/calendar_events', teams.calendar_events);
 
 	app.get('/teams/:id/event', ensureAuthenticated, events.team_event);
 	app.get('/teams/:id/calendar', teams.calendar);

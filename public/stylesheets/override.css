@@ -119,7 +119,17 @@ body {
 
 .center-this{
   text-align: center;
+  margin: 0 auto;
   
+}
+
+.team-tab{
+  width: 80%;
+  margin: 0 auto;
+}
+
+.calendar-tab{
+  height: 420px;
 }
 
 
