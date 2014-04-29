@@ -2,7 +2,6 @@
 
 <head>
 <% include ../head_scripts %>
-<script type='text/javascript' src='/js/match.js'></script>
 </head>
 
 <body>
@@ -13,72 +12,58 @@
 <p><%= message %></p>
 <% } %>
 
-    <form id="user_form" class="form-horizontal" action="/register" method="post" data-ajax="false" role="form">
+<div class="med-form center-this">
 
+    <form id="user_form" class="med-form center-this" action="/register" method="post" data-ajax="false" role="form">
+        <h1>Register for a User Account</h1>
 
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-10">
-              <input type="email" class="email form-control" id="email" placeholder="Email" name="email" required>
-            </div>
+            <input type="email" class="email form-control" id="email" placeholder="Email" name="email" required>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="confirmEmail" class="col-sm-2 control-label">Confirm Email</label>
-            <div class="col-sm-10">
                 <input type="email" class="email form-control" id="email_confirm" placeholder="Confirm Email" name="email_confirm">
                 <div class="email_alert" ></div>
-            </div>
         </div>
 
 
         <hr>
 
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-            <div class="col-sm-10">
-              <input type="password" class="password form-control" id="password" placeholder="Password" name="password" required>
-            </div>
+            <input type="password" class="password form-control" id="password" placeholder="Password" name="password" required>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="confirmPassword" class="col-sm-2 control-label">Confirm Password</label>
-            <div class="col-sm-10">
               <input type="password" class="password form-control" id="password_confirm" placeholder="Confirm Password" name="password_confirm">
               <div class="pw_alert" ></div>
-            </div>
         </div>
         <hr>
 
 
 
 
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputFirstName" placeholder="Jesse" name="first_name" required>
-            </div>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputLastName" class="col-sm-2 control-label">Last Name</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputLastName" placeholder="Pinkman" name="last_name" required>
-            </div>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputPhone" class="col-sm-2 control-label">Phone Number</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputPhone" placeholder="888-867-5309" name="phone" required>
-            </div>
         </div>
 
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10 text-center">
-              <button id="submit" type="submit" class="btn btn-default">Create an Account</button>
-            </div>
+        <div data-role="fieldcontain">
+              <button id="submit-match" disabled="true" type="submit" class="btn btn-default">Create an Account</button>
         </div>
 
     </form>
-
+</div>
 
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>
