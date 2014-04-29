@@ -49,7 +49,7 @@
 				<a type="button" class="btn btn-info" href="/carpools/<%= carpool._id%>/addRider">Add Rider</a>
 			<% } %>
 
-		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> >
+		<form method='POST' action=<%= '/carpools/' + carpool._id + '/delete'%> data-ajax="false">
 			<input type="Submit" value="Delete" />
 		</form>
 

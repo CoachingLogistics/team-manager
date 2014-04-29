@@ -12,21 +12,18 @@
 <% if(warning) {%>
   <b><%= warning %></b>
 <% } %>
-<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
+<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST' data-ajax="false">
   <b>Players:</b> <br />
   <% players.forEach(function(player, index) { %>
-    <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %><br />
+    <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %>
+    <b>Where will you pick them up?</b><input type="text" name="locations[<%=index%>]">
+    <b>Time</b><input type="number" name="hours[<%=index%>]">:<input type="number" name="minutes[<%=index%>]">
+    <select name="ampms[<%=index%>]">
+      <option></option>
+      <option value="am">AM</option>
+      <option value="pm">PM</option>
+    </select><br />
   <% })%>
-
-  <b>Where will you pick them up?</b>
-  <input type="text" name="location">
-  <b>Time</b>
-  <input type="number" name="hour">:<input type="number" name="minute">
-  <select name="ampm">
-    <option></option>
-    <option value="am">AM</option>
-    <option value="pm">PM</option>
-  </select>
 
   <input type="submit" value="Add Riders">
 
