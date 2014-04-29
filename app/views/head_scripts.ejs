@@ -4,11 +4,18 @@
 
 <meta name="viewport" content="width=device-width">
 
-
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).bind("mobileinit", function () {
+        $.mobile.ajaxEnabled = false;
+    });
+    </script>
+
 <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+<<<<<<< HEAD
 <!-- Datepicker scripts -->
 
 <script type="text/javascript" src="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.core.min.js"></script>
@@ -16,6 +23,19 @@
 <script type="text/javascript" src="http://dev.jtsage.com/cdn/datebox/i18n/jquery.mobile.datebox.i18n.en_US.utf8.js"></script>
 
 <!-- stylesheets -->
+<!--page scripts, all loaded in here-->
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA1Vn-NXh1hZ3SVBpn1djoR41qKTSr5aqU&sensor=true"></script>
+<script type='text/javascript' src='/js/account.js'></script>
+<script type='text/javascript' src='/js/carpool_show.js'></script>
+<script type='text/javascript' src='/js/event_show.js'></script>
+<script type='text/javascript' src='/js/match.js'></script>
+<script type='text/javascript' src='/js/roster.js'></script>
+<script type='text/javascript' src='/js/roster_update.js'></script>
+<script type='text/javascript' src='/js/team_show.js'></script>
+
+<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
+
 
 <link media="all" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.min.css"> 

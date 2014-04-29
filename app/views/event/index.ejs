@@ -7,33 +7,45 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
-
-
-<h1>Events Page</h1>
-<table>
+<h2 class="center-this">Events Coaching</h2>
+<table class='team-index-table'>
 	<thead>
-		<th>Team Name</th>
-		<th>Date</th>
-		<th>Time</th>
-		<th>Location</th>
+		<th>Team</th>
 		<th>Type</th>
+		<th>Date</th>
+		<th></th>
 	</thead>
 	<tbody>
-		<% for(var i = 0; i < events.length; i++) { %>
+		<% coachEvents.forEach(function(coachEvent) { %>
 			<tr>
-				<td><%= events[i].team_id %></td>
-				<td><%= events[i].date %></td>
-				<td><%= events[i].time %></td>
-				<td><%= events[i].location %></td>
-				<td><%= events[i].type %></td>
-				<td></td>
-				<td><a href=<%= '/events/' + events[i]._id %>>Show</a></td>
+				<td><%=coachEvent.team.name%></td>
+				<td><%=coachEvent.event.type%></td>
+				<td><%=coachEvent.date + " " + coachEvent.time%></td>
+				<td><a href="/events/<%=coachEvent.event._id%>" data-role="button">Show</a></td>
 			</tr>
-		<% } %>
+		<% }) %>
 	</tbody>
 </table>
-
-<a href='/events/new'>New Event</a>
+<h2 class="center-this">Kids' Events</h2>
+<table class='team-index-table'>
+	<thead>
+		<th>Team</th>
+		<th>Type</th>
+		<th>Date</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% playerEvents.forEach(function(playerEvent) { %>
+			<tr>
+				<td><%=playerEvent.team.name%></td>
+				<td><%=playerEvent.event.type%></td>
+				<td><%=playerEvent.date + " " + playerEvent.time%></td>
+				<td><a href="/events/<%=playerEvent.event._id%>" data-role="button">Show</a></td>
+			</tr>
+		<% }) %>
+	</tbody>
+</table>
+<a href='/events/new' data-role="button" data-theme="b">New Event</a>
 
 
 <!--***********************END OF CONTENT************************-->

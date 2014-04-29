@@ -8,26 +8,46 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
-
-<h1>Teams</h1>
-<table>
+<h2 class='center-this'>Teams Coaching</h2>
+<table class="team-index-table">
 	<thead>
 		<th>Name</th>
 		<th>Sport</th>
-		<th>Number of Players</th>
+		<th></th>
 	</thead>
 	<tbody>
-		<% for(var i = 0; i < teams.length; i++) { %>
+		<% coachedTeams.forEach(function(team) { %>
 			<tr>
-				<td><%= teams[i].name %></td>
-				<td><%= teams[i].sport %></td>
-				<td></td>
-				<td><a href="<%= '/teams/' + teams[i]._id %>">Show</a></td>
+				<td><%= team.name %></td>
+				<td><%= team.sport %></td>
+				<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
 			</tr>
-		<% } %>
+		<% })%>
 	</tbody>
 </table>
-<a href='/teams/new'>New Team</a>
+
+<hr />
+
+<h2 class='center-this'>Kids' Teams</h2>
+<table class="team-index-table">
+	<thead>
+		<th>Name</th>
+		<th>Sport</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% playerTeams.forEach(function(team) { %>
+				<tr>
+					<td><%= team.name %></td>
+					<td><%= team.sport %></td>
+					<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
+				</tr>
+		<% }) %>
+	</tbody>
+</table>
+<hr />
+
+<a href='/teams/new' data-role="button" data-theme="b">New Team</a>
 
 
 <!--***********************END OF CONTENT************************-->

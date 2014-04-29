@@ -2,7 +2,6 @@
 
 <head>
 <% include ../head_scripts %>
-<script src="/js/roster.js"></script>
 </head>
 
 <body>
@@ -12,45 +11,31 @@
 
 <h1>Create your Team Roster</h1>
 
-   		<div cid="roster" lass="form-inline">
-	    	<table class="table" id="roster-table">
-	    		<thead>
-	    			<tr>
-	    				<th>First Name</th>
-	    				<th>Last Name</th>
-	    				<th>Email</th>
-	    			</tr>
-	    		</thead>
-	    	</table>
-	    	<div id="roster-list">
+   		<div id="roster">
+					<div class="ui-grid-b">
+						    <div class="ui-block-a"><div class="ui-bar" style="height:60px">First Name</div></div>
+						    <div class="ui-block-b"><div class="ui-bar" style="height:60px">Last Name</div></div>
+						    <div class="ui-block-c"><div class="ui-bar" style="height:60px">Email</div></div>
+					</div>	
 
-	    			<form class="form-inline row roster-form" id="roster_form1" method="post" action="/teams/<%=team._id%>/roster-create" data-ajax="false" role="form">
-					        <div class="form-group roster-spot">
-					            <div class="full-width">
-					              <input type="text" class="form-control" placeholder="First Name" name="first_name" style="width:100%">
-					            </div>
-					        </div>
-					        <div class="form-group roster-spot">
-					            <div class="full-width">
-					              <input type="text" class="form-control" placeholder="Last Name" name="last_name" style="width:100%">
-					            </div>
-					        </div>
-					        <div class="form-group roster-spot">
-					            <div class="full-width">
-					              <input type="email" class="form-control" placeholder="Email" name="email" style="width:100%">
-					            </div>
-					        </div>
+	    	<div id="roster-list1">
+					<form class='form-inline row roster-form' id='roster_form1' method='post' action="/teams/<%=team._id%>/roster-create" role='form' data-ajax="false">
+						<div class="ui-grid-b">
+						    <div class="ui-block-a"><div class="ui-bar" style="height:60px"><input type='text' placeholder='First Name' name='first_name' data-inline="true"></div></div>
+						    <div class="ui-block-b"><div class="ui-bar" style="height:60px"><input type='text' placeholder='Last Name' name='last_name' data-inline="true"></div></div>
+						    <div class="ui-block-c"><div class="ui-bar" style="height:60px"><input type='email' placeholder='Email' name='email' data-inline="true"></div></div>
+						</div>			
 					</form>
 			</div>
 		</div>
 
-        <div class="form-group text-center">
-              <button type="button" id="add_row" class="btn btn-default">Add More Players</button>
+        <div class="center-this">
+              <button type="button" id="add_row1" data-inline="true" data-theme="b">Add More Players</button>
               <hr>
         </div>
 
-        <div class="form-group text-center">
-              <button type="button" id="submit" class="btn btn-default">Submit Roster</button>
+        <div class="center-this">
+              <button type="button" id="submit1" data-inline="true">Submit Roster</button>
         </div>
 
 
