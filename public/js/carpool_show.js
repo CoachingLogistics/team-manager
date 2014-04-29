@@ -3,6 +3,7 @@
 
 $(function(){
 	$('#carpool-directions').hide();
+	$("#carpool-riders-list").hide();
 
 	var carpool_id = $(location).attr('pathname').replace('/carpools/', '');
 
@@ -153,6 +154,16 @@ $(function(){
 				}
 			});
 
+		$("#rider-toggle-button").click(function() {
+			if($("#carpool-riders-list").is(":visible")) {
+				$("#carpool-riders-list").hide();
+				$("#rider-toggle-button").text("Show Riders");
+			}
+			else {
+				$("#carpool-riders-list").show();
+				$("#rider-toggle-button").text("Hide Riders");
+			}
+		});
 });
 
 //google.maps.event.addDomListener(window, 'load', initialize);
