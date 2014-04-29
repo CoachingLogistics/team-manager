@@ -1,4 +1,4 @@
-$(function(){
+$(document).bind("pageinit", function(){
 
 	//this generates teams for each player
 	$(".teams").children().each(function(){
