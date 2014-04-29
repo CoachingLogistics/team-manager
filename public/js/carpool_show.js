@@ -1,10 +1,12 @@
 //must include the below on the page to make a google map?
 //<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI&sensor=true"></script>
 
-$(function(){
+$(document).bind("pageinit", function(){
+
+	// hide directions and riders list so the page isn't overwhelmingly large
+	// when it's loaded
 	$('#carpool-directions').hide();
 	$("#carpool-riders-list").hide();
-
 	var carpool_id = $(location).attr('pathname').replace('/carpools/', '');
 
 
@@ -143,6 +145,7 @@ $(function(){
 			//   });
 			// }
 
+			console.log('here');
 			$('#direction-button').click(function() {
 				if(!$('#carpool-directions').is(':visible')) {
 					$('#carpool-directions').show();
