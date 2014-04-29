@@ -1,4 +1,4 @@
-$(function(){
+$(document).bind("pageinit", function(){
 
 	var team_id = $(location).attr('pathname').replace('/teams/', '');
 
@@ -20,11 +20,11 @@ $(function(){
 				$.get('/events/'+ev._id+'/players/'+player_id+'/attendance', function(doc, err){
 
 					if(doc[0].attending == true){
-						$('#'+player_id).addClass("glyphicon-ok").trigger('create');
+						$('#'+player_id).html("Attending").trigger('create');
 					}else if(doc[0].attending == false){
-						$('#'+player_id).addClass("glyphicon-remove").trigger('create');
+						$('#'+player_id).html("Not attending").trigger('create');
 					}else if(doc[0].attending == null){
-						$('#'+player_id).addClass("glyphicon-minus").trigger('create');
+						$('#'+player_id).html("No response").trigger('create');
 						$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + ev._id + "/" + player_id + "' class='btn btn-info btn-tiny glyphicon glyphicon-envelope'></a>");
 					}else{
 						console.log(player_id+ " has not been invited");

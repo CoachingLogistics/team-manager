@@ -1,4 +1,4 @@
-$(function(){
+$(document).bind("pageinit", function(){
 
 	var post_url = $(location).attr('pathname').replace('/roster-fill', '/roster-create');
 	//should get "/teams/:id/roster-create"
