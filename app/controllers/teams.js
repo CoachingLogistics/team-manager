@@ -18,11 +18,10 @@ var NewCoach = require('../mailers/new_coach');
 var ExistingCoach = require('../mailers/existing_coach');
 var async = require('async');
 
-
 /*
- *
- *
- *
+ * This renders the team's index page
+ * The teams are populated by the teams the user coaches and the
+ * teams the user's players are on
  */
 exports.index = function(req, res) {
   if(!req.user) {

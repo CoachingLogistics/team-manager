@@ -18,13 +18,57 @@ gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
 
 
-
-exports.index = function(req, res){	//not used in production
-  Event.find(function(err, events){
-    if(err) throw new Error(err);
-    res.render('event/index', {
-      events: events,
-      user:req.user
+/*
+ * This renders the index page for events, which is populated with
+ * Events the logged in user is associated with
+ */
+exports.index = function(req, res) {
+  // get the teams the coach is coaching
+  Coach.getTeamsForUser(req.user._id, function(err, coachedTeams) {
+    var coachEvents = [];
+    // go through each team
+    async.each(coachedTeams, function(coachTeam, innerCallback) {
+      Event.getByTeamId(coachTeam._id, function(err, events) {
+        // add each event to the array we are sending to views
+        async.each(events, function(oneEvent, innerCallbackTwo) {
+          coachEvents.push({'team': coachTeam, 'event': oneEvent, 'date': dateFormat(oneEvent.date), 'time': timeFormat(oneEvent.date)});
+          innerCallbackTwo();
+        }, function(asyncErrorTwo) {
+          innerCallback();
+        });
+      });
+    }, function(asyncError) {
+      // now that we have all of the coach events, we need the player events
+      var playerEvents = [];
+      // get the players for the logged in user
+      Family.getPlayerIdsForUser(req.user._id, function(players) {
+        // for each player get their teams
+        async.each(players, function(player, innerCallbackThree) {
+          RosterSpot.getTeamsForPlayer(player, function(teams) {
+            // for each team get its events
+            async.each(teams, function(team, innerCallbackFour) {
+              Event.getByTeamId(team._id, function(err, oneTeamsEvents) {
+                // for each event, add it to the playerEvents array
+                async.each(oneTeamsEvents, function(oneTeamEvent, innerCallbackFive) {
+                  playerEvents.push({'team': team, 'event': oneTeamEvent, 'date': dateFormat(oneTeamEvent.date), 'time': timeFormat(oneTeamEvent.date)});
+                  innerCallbackFive();
+                }, function(lastAsyncError) {
+                  innerCallbackFour();
+                });
+              });
+            }, function(asyncErrorAgain) {
+              innerCallbackThree();
+            })
+          });
+        }, function(asyncError){
+          // now that the nightmareish async function is over, render the view
+          return res.render('event/index', {
+            'user': req.user,
+            'coachEvents': coachEvents,
+            'playerEvents': playerEvents
+          });
+        });
+      });
     });
   });
 };
