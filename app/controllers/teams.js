@@ -715,6 +715,32 @@ exports.roster = function(req, res){
 };
 
 
+//AJAX
+exports.calendar_events = function(req, res){
+	Event.getByTeamId(req.params.id, function(err, evs){	//get events
+  				var events = [];
+  				//formatting the event objects to be displayed in the calendar (fullcalendar.js -- google it)
+				evs.forEach(function(obj){
+					var noob = {};
+				    noob.title = obj.type+'\n'+timeFormat(obj.date)+'\n'+obj.location;
+				    noob.start = obj.date;
+				    noob.url = '/events/'+obj._id;
+				    noob.color = "#FFFFCC";
+
+				    if(obj.type == 'Practice'){
+				    	noob.color = "#C3EBFF";
+				    }else if(obj.type == 'Game'){
+				    	noob.color = "#ADEBAD";
+				    }else if(obj.type == 'Meeting'){
+				    	noob.color = "#CCCCFF";
+				    }else{
+				    	noob.color = "#FFFFCC";
+				    }
+				    events.push(noob);
+				});
+				res.send(events);
+	})
+}
 
 //helpers
 var dateFormat = function(date) {

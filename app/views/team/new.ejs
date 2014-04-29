@@ -13,32 +13,24 @@
 
     <form id="team_form" method="post" action="/teams/new" data-ajax="false" class="form-horizontal" role="form">
 
-        <div class="form-group">
-            <label for="inputName" class="col-sm-2 control-label">Team Name</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputName" placeholder="Purple Cobras" name="name">
-            </div>
+        <div data-role="fieldcontain">
+            <label for="name">Team Name:</label>
+            <input type="text" name="name" id="name" value="" Purple Cobras/>
         </div>
 
-        <div class="form-group">
-            <label for="inputSport" class="col-sm-2 control-label">Sport</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputSport" placeholder="Dodgeball" name="sport">
-            </div>
+        <div data-role="fieldcontain">
+            <label for="inputSport">Sport</label>
+            <input type="text" class="form-control" id="inputSport" placeholder="Dodgeball" name="sport">
         </div>
 
-        <div class="form-group">
-            <label for="coaches" class="col-sm-2 control-label">Managers</label>
-            <div class="col-sm-10">
-                <p class="help-block">You will be listed as this team's manager, giving you access to create events, set the roster, and edit the team information.  If you wish to add other users as managers enter their emails, separated by commas:</p>
+        <div data-role="fieldcontain">
+            <label for="coaches">Managers:</label>
               <input type="text" class="form-control" id="coaches" placeholder="manager emails (separated by commas)" name="coaches">
-            </div>
+              <p class="help-block">You will be listed as this team's manager, giving you access to create events, set the roster, and edit the team information.  If you wish to add other users as managers enter their emails, separated by commas.</p>
         </div>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10 text-center">
-              <button id="submit" type="submit" class="btn btn-default">Create Team</button>
-            </div>
+        <div data-role="fieldcontain" class="center-this">
+              <button id="submit" type="submit" data-theme="a" data-inline="true">Create Team</button>
         </div>
 
     </form>
