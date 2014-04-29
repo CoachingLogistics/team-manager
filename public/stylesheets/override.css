@@ -2,8 +2,8 @@
 /***************GENERAL LAYOUT STYLING******************/
 
 .nav-collapsible {
-    margin: 0 !important; 
-    padding: 0 !important;  
+    margin: 0 !important;
+    padding: 0 !important;
     border-radius: 0 !important;
     border-width:0 !important;
 }
@@ -119,8 +119,14 @@ body {
 
 .center-this{
   text-align: center;
+<<<<<<< HEAD
+}
+
+.wide-button {
+  width: 100%;
+}
   margin: 0 auto;
-  
+
 }
 
 .team-tab{
@@ -133,4 +139,28 @@ body {
 }
 
 
+.form-danger {
+  background: #f54444;
+  background-image: -webkit-linear-gradient(top, #f54444, #a83131);
+  background-image: -moz-linear-gradient(top, #f54444, #a83131);
+  background-image: -ms-linear-gradient(top, #f54444, #a83131);
+  background-image: -o-linear-gradient(top, #f54444, #a83131);
+  background-image: linear-gradient(to bottom, #f54444, #a83131);
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 12px 20px 12px 20px;
+  text-decoration: none;
+}
 
+.white-text {
+  color: #FFFFFF;
+}
+
+.team-index-table {
+  width: 100%;
+  text-align: center;
+}
