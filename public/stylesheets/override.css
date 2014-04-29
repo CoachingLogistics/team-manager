@@ -146,3 +146,8 @@ body {
 .white-text {
   color: #FFFFFF;
 }
+
+.team-index-table {
+  width: 100%;
+  text-align: center;
+}

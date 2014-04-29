@@ -19,16 +19,37 @@ var ExistingCoach = require('../mailers/existing_coach');
 var async = require('async');
 
 
-//in production, but should it be?
-exports.index = function(req, res){
-  Team.find(function(err, teams){
-    if(err) throw new Error(err);
-    res.render('team/index', {
-      teams: teams,
-      user: req.user
+/*
+ *
+ *
+ *
+ */
+exports.index = function(req, res) {
+  if(!req.user) {
+    return res.redirect('/');
+  }
+  var playerTeams = [];
+  Coach.getTeamsForUser(req.user.id, function(err, coachedTeams) {
+    Family.getPlayerIdsForUser(req.user.id, function(playerIds) {
+      async.each(playerIds, function(playerId, innerCallback) {
+        RosterSpot.getTeamsForPlayer(playerId, function(rosterSpotTeams) {
+          async.each(rosterSpotTeams, function(oneTeam, innerCallbackSecond) {
+            playerTeams.push(oneTeam);
+            innerCallbackSecond();
+          }, function(asyncError2) {
+            innerCallback();
+          });
+        });
+      }, function(asyncError){
+        return res.render('team/index', {
+          'user': req.user,
+          'coachedTeams': coachedTeams,
+          'playerTeams': playerTeams
+        });
+      });
     });
   });
-};
+}
 
 
 //get
@@ -122,7 +143,7 @@ exports.show = function(req, res){
 							});//carpool
 
 						}, function(err){
-							
+
 							members.sort(function (a, b){
 							    if (a.carpools < b.carpools){
 							      return 1;
@@ -150,7 +171,7 @@ exports.show = function(req, res){
 						    	  coaches: coaches,
 						    	  access: access,
 						    	  drivers: members
-						    	});		
+						    	});
 							}
 						});
 					});//async
@@ -259,7 +280,7 @@ exports.update = function(req, res){
   				//not authorized
   				res.redirect('/');
   			}else{
-		
+
 				var oldTeam = JSON.parse(JSON.stringify( team ));
 
 				team.name = req.body.name;
@@ -269,7 +290,7 @@ exports.update = function(req, res){
 
 				if(req.param('coaches')){	//string of comma separated emails, to be given coach status
 					var co = req.param('coaches').split(",");
-					
+
 					co.forEach(function(c){
 						c = c.replace(' ', '');
 						coaches.push(c);
@@ -296,7 +317,7 @@ exports.update = function(req, res){
 										if(err) console.log(err);
 
 										if(user){	//user exists
-											
+
 											var manager = new Coach({	//create new coach
 												user_id: user._id,
 												team_id: team._id
@@ -320,7 +341,7 @@ exports.update = function(req, res){
 											});
 
 											new_user.save(function(error, usr){	//new user created
-												
+
 
 												var manager = new Coach({
 													user_id: usr._id,
@@ -333,14 +354,14 @@ exports.update = function(req, res){
 													});
 
 												});
-											})				
+											})
 
 										}//else
 									})
 								})
 							}//coaches.length
-							
-						res.redirect('/teams/' + team._id);	
+
+						res.redirect('/teams/' + team._id);
 					}
 				})
 			}//else
@@ -372,15 +393,15 @@ exports.create = function(req, res){
 
 			if(req.param('coaches')){	//string of comma separated emails, to be given coach status
 				var co = req.param('coaches').split(",");
-				
+
 				co.forEach(function(c){
 					c = c.replace(' ', '');
 					coaches.push(c);
 				})
 				//split the string to get individual emails
 			}
-			
-			
+
+
 
 			coach.save(function(err, coach){	//save the original coach
 				if(coaches.length>0){			//more coaches
@@ -390,7 +411,7 @@ exports.create = function(req, res){
 							if(err) console.log(err);
 
 							if(user){	//user exists
-								
+
 								var manager = new Coach({	//create new coach
 									user_id: user._id,
 									team_id: team._id
@@ -414,7 +435,7 @@ exports.create = function(req, res){
 								});
 
 								new_user.save(function(error, usr){	//new user created
-									
+
 
 									var manager = new Coach({
 										user_id: usr._id,
@@ -427,7 +448,7 @@ exports.create = function(req, res){
 										});
 
 									});
-								})				
+								})
 
 							}//else
 						})
@@ -486,7 +507,7 @@ exports.roster_fill = function(req, res){
 			    	res.render('team/roster_fill', {
 			    	  team: team,
 			    	  user: req.user
-			    	});			
+			    	});
 				}
 			}
 		});
@@ -595,12 +616,12 @@ exports.roster_create = function(req, res){
 
 												})
 											})//event upcoming
-											
+
 												console.log("new player");
 												NewPlayer.sendMail(req.user, team, player, usr, function(){
 														res.redirect('teams/'+req.params.id);
-												});								 
-											
+												});
+
 										});
 									});
 								});
@@ -608,7 +629,7 @@ exports.roster_create = function(req, res){
 						});
 
 					}else{	//user does not exist, so make one so we can email them through the system
-						
+
 						var random_password = User.generateRandomPassword();
 
 						var new_user = new User({		//user's password needs to be sent to them
@@ -659,7 +680,7 @@ exports.roster_create = function(req, res){
 											NewUserAdded.sendMail(req.user, team, player, usr, random_password, function(){
 													res.redirect('teams/'+req.params.id);
 											});
-											
+
 										});
 									});
 								});
@@ -687,7 +708,7 @@ exports.roster = function(req, res){
 	  				}
 	  			}
   			});
-  			
+
 
   			Event.getByTeamId(team._id, function(err, events){	//get events
 
@@ -704,7 +725,7 @@ exports.roster = function(req, res){
 				    	  players: players,
 				    	  coaches: coaches,
 				    	  access: access
-				    	});		
+				    	});
 					}
 
 				});
@@ -744,10 +765,3 @@ var timeFormat = function(date) {
 
 	return hour+":"+minutes+" "+time;
 };
-
-
-
-
-
-
-
