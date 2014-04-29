@@ -61,7 +61,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 
 			    if(err) throw new Error(err);
 			    res.render('event/team_event', {
-			    	title: "New Event for team " + team,
+			    	title: "New Event for team " + team.name,
 			      team: team,
 			      user:req.user
 			    });
@@ -209,7 +209,7 @@ exports.show = function(req, res){
                         var driving = !err && aCarpool;
 
                         res.render('event/show', {
-                        	title: "Event for " + team,
+                        	title: "Event for " + team.name,
                           event: event,
                           team: team,
                           user:req.user,
@@ -228,7 +228,7 @@ exports.show = function(req, res){
                       }
                       else {
                         res.render('event/show', {
-                        	title: "Event for " + team,
+                        	title: "Event for " + team.name,
                           event: event,
                           team: team,
                           user:req.user,
@@ -299,9 +299,9 @@ exports.edit = function(req, res) {
 								}
 								time="PM";
 							}
-
+							console.log(event.date);
 							return res.render('event/edit', {
-								title: "Edit Event for " + team,
+								title: "Edit Event for " + team.name,
 								event: event,
 								month: month_name,
 								team: team,
@@ -325,10 +325,10 @@ exports.edit = function(req, res) {
 exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
-	var hour = req.param('hour');
-	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
-	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+	var date = req.param('date');
+	//if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
+	//if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
+	//var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
 		Event.findById(req.params.id, function(error, event){
 

@@ -249,7 +249,7 @@ exports.addUser = function(req, res) {
       res.redirect('/')
     };
     Player.findById(req.params.id, function(err, foundPlayer) {
-      res.render('player/addUser', {title: "Add Guardian for " + foundPlayer, user: req.user, player: foundPlayer, notice: undefined});
+      res.render('player/addUser', {title: "Add Guardian for " + foundPlayer.first_name, user: req.user, player: foundPlayer, notice: undefined});
     });
   });//family
 }
@@ -352,7 +352,7 @@ exports.createNewFamily = function(req, res) {
           else {
             // user is already a parent
             Player.findById(player_id, function(err, foundPlayer) {
-              res.render('player/addUser', {title: "Add Guardian for Player " + foundPlayer, user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
+              res.render('player/addUser', {title: "Add Guardian for " + foundPlayer.first_name, user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
             });
           }
         });

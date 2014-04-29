@@ -220,7 +220,7 @@ exports.edit = function(req, res){
 					//res.status(404).render('404');
 				}else{
 					res.render('team/edit', {
-						title: "Edit " + team,
+						title: "Edit " + team.name,
 						team: team,
 						user: req.user,
 						coaches: coaches
@@ -280,7 +280,7 @@ exports.update = function(req, res){
 
 					if(err){
 						res.render('team/edit', {
-							title: "Edit " + oldTeam,
+							title: "Edit " + oldTeam.name,
 							team: oldTeam,
 							message: err,
 							user: req.user
