@@ -2,16 +2,6 @@
 
 <head>
 <% include ../head_scripts %>
-<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
-<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
-<script>$(document).ready(function() {$('#calendar').fullCalendar({
-    	header:{left:   'title', center: 'month basicWeek', right:  'today prev,next'},
-    	weekMode: 'liquid',
-    	events: <%-JSON.stringify(events)%>,
-    	eventTextColor: "#000000",
-        contentHeight:200});});
-</script>
-<script type='text/javascript' src='/js/team_show.js'></script>
 
 </head>
 
@@ -19,7 +9,11 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
-
+    <script type="text/javascript">
+    $(document).bind("mobileinit", function () {
+        $.mobile.ajaxEnabled = false;
+    });
+    </script>
 <div data-role="tabs" id="tabs">
   <div data-role="navbar">
     <ul>
@@ -55,8 +49,9 @@
 
 
 
-  <div id="events">
+  <div id="events" class="team-tab calendar-tab">
   	<div>
+  		<br><br>
     <div id="calendar"></div>
 
     <% if(access){ %>
@@ -102,7 +97,7 @@
 
 
 
-  <div id="drivers" class="team-tab">
+  <div id="drivers" class="team-tab center-this">
   	<h3> Driver Leaderboard</h3>
 
 		<table data-role="table" id="my-table" data-mode="reflow" class="ui-responsive table-stroke">
