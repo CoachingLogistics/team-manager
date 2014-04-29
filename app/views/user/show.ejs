@@ -9,53 +9,56 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
-THIS USER
+<div role="main" class="ui-content jqm-content body-content">
+	<h2>USER ACCOUNT</h2>
 
-<div>
-<%= user_show.email %>
+	<div class="fieldcontain">
+		<label><b>Email:   </b><%= user_show.email %></label>
+	</div>
+
+	<div class="fieldcontain">
+		<label><b>First name:  </b><%= user_show.first_name %></label>
+	</div>
+
+	<div class="fieldcontain">
+		<label><b>Last name:   </b><%= user_show.last_name %></label>
+	</div>
+
+	<div class="fieldcontain">
+		<label><b>Phone number:   </b><%= user_show.phone %></label>
+	</div>
+	<br>
+	<hr>
+
+<h4>Players</h4>
+	<table data-role="table" id="roster-table" data-mode="reflow" class="ui-responsive table-stroke">
+		<thead>
+			<tr>
+				<th>Player</th><th>Teams</th><th></th><th></th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<% players.forEach(function(p){ %>
+				<tr>
+					<td>
+						<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
+					</td>
+					<td class="teams">
+						<div id="<%=p._id%>">
+							none
+						</div>
+					</td>
+					<td>
+					</td>
+					<td>
+					</td>	
+
+			<% }); if(players.length==0) {%> <tr><td>No players</td></tr> <% } %>
+		</tbody>
+	</table>
+
 </div>
-
-<div>
-<%= user_show.first_name %>
-</div>
-
-<div>
-<%= user_show.last_name %>
-</div>
-
-<div>
-<%= user_show.phone %>
-</div>
-
-
-
-
-
-<table class="table">
-<tr>
-	<th>Player</th><th>Teams</th><th></th><th></th>
-</tr>
-
-<!--PLAYERS, can either load these in via ajax, or here with EJS-->
-<% players.forEach(function(p){ %>
-<tr>
-	<td>
-		<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
-	</td>
-	<td class="teams">
-		<div id="<%=p._id%>">
-			none
-		</div>
-	</td>
-	<td>
-	</td>
-	<td>
-	</td>	
-
-<% }); %>
-
-</table>
-
 
 
 

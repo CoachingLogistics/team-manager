@@ -77,7 +77,7 @@ $("#submit-match").on("click", function(e){
 
     if(password == "" || password_confirm== "" || email=="" || email_confirm==""){
         e.preventDefault();
-        alert("Please complete all email and password confirmation fields")
+        alert("Please complete all confirmation fields")
     }
 
 })

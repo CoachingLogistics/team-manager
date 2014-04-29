@@ -119,14 +119,13 @@ body {
 
 .center-this{
   text-align: center;
+  margin: 0 auto;
 }
 
 .wide-button {
   width: 100%;
 }
-  margin: 0 auto;
 
-}
 
 .team-tab{
   width: 80%;
@@ -144,6 +143,11 @@ body {
 
 .med-form{
   width: 80%;
+}
+
+.body-content{
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 .help-block{

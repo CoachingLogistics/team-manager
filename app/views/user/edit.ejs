@@ -12,43 +12,35 @@
 <p><%= message %></p>
 <% } %>
 
-    <form id="user_form" action="/users/<%= user._id%>/edit" method="post" data-ajax="false" class="form-horizontal" role="form">
+    <form class="med-form center-this" id="user_form" action="/users/<%= user._id%>/edit" method="post" data-ajax="false" role="form">
+        <h1>Edit User Information</h1>
 
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-10">
               <input type="email" class="form-control" id="inputEmail" value="<%=user.email%>" name="email">
-            </div>
         </div>
         <hr>
 
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputFirstName" value="<%=user.first_name%>" name="first_name">
-            </div>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputLastName" class="col-sm-2 control-label">Last Name</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputLastName" value="<%=user.last_name%>" name="last_name">
-            </div>
         </div>
-        <div class="form-group">
+        <div data-role="fieldcontain">
             <label for="inputPhone" class="col-sm-2 control-label">Phone Number</label>
-            <div class="col-sm-10">
               <input type="text" class="form-control" id="inputPhone" value="<%=user.phone%>" name="phone">
-            </div>
         </div>
 
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10 text-center">
-              <button type="submit" class="btn btn-default">Update Account Information</button>
-            </div>
+        <div data-role="fieldcontain">
+              <button type="submit" data-inline="true">Update Account Information</button>
         </div>
 
     </form>
+
 
 
 
