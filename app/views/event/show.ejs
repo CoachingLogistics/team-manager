@@ -1,9 +1,7 @@
 <html>
 
 <head>
-<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA1Vn-NXh1hZ3SVBpn1djoR41qKTSr5aqU&sensor=true"></script>
 <% include ../head_scripts %>
-<script type='text/javascript' src='/js/event_show.js'></script>
 </head>
 
 <body>
@@ -12,54 +10,48 @@
 
 
 <div class="row">
-	<div class="col-md-8">
-
-		<h1> <%= event.type %> for team <%= team.name %>  <small><%= date %></small></h1>
 		<% if(driving) { %>
-		<h1>driving</h1>
+		<h3>You are driving for this event</h3>
 		<% } %>
 
-		<div id="googleMap" style="width:100%; height:50%"></div>
-	</div>
-	<div class="col-md-4">
-		<table class="table">
+		<div id="googleMap" style="width:100%; height:500px"></div>
+
+		<table data-role="table" class="ui-responsive table-stroke">
 		<thead>
-			<th class="text-left">Players</th>
-			<th class="text-right">RSVP</th>
+			<tr>
+				<th>Players</th>
+				<th>RSVP</th>
+			</tr>
 		</thead>
-
-		
+		<tbody>
+		<% players.forEach(function(p){ %>
+			<tr>
+				<td>
+					<a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
+				</td>
+				<% if(access && upcoming) {%>
+				<td>
+					<a href="/attendanceUpdate/<%= event._id %>/<%= p._id%>/t" data-role="button" data-inline="inline" data-mini="true" data-icon="check" data-iconpos="notext">Yes</a>
+					<a href='/attendanceUpdate/<%= event._id %>/<%= p._id%>/f' data-role="button" data-inline="inline" data-mini="true" data-icon="delete" data-iconpos="notext">No</a>
+					<span class="buttonPlacement" ></span>
+				</td>
+				<% } else if(loggedIn && upcoming) { %>
+					<td class="guardianButtons"></td>
+				<% } %>
+			</tr>
+		<% }); if(players.length == 0){ %> No players <%}%>
+			<tr>
+			<%if(access && upcoming){%>
+					<form action="/emailAll/<%=event._id%>" method="POST" data-ajax="false">
+						<button type="submit" value="Remind All">Remind All</button>
+					</form>
+			<%} %>
+			</tr>
+		<tbody>
 			
-				<div class="list-group">
-				<% players.forEach(function(p){ %>
-					<tr>
-						<% if(access && upcoming) {%><td><% } else {%><td colspan="2"><%}%>
-
-							<a class="list-group-item playah" id="<%=p._id%>" href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %>
-
-						</a></td>
-						<% if(access && upcoming) {%>
-						<td><a href="/attendanceUpdate/<%= event._id %>/<%= p._id%>/t" class="btn btn-tiny btn-success glyphicon glyphicon-ok"></a><a href='/attendanceUpdate/<%= event._id %>/<%= p._id%>/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a><span class="buttonPlacement"></span></td>
-						<% } else if(loggedIn && upcoming) { %>
-							<td class="guardianButtons"></td>
-						<% } %>
-					</tr>
-				<% }); if(players.length == 0){ %> No players <%}%>
-				</div>
-			
 		
-		<%if(access && upcoming){%>
-		<tr>
-			<th colspan="2">
-				<form action="/emailAll/<%=event._id%>" method="POST">
-					<input type="submit" value="Remind All" class="btn btn-success">
-				</form>
-			</th>
-		</tr>
-		<%} %>
 
 		</table>
-	</div>
 </div>
 
 <div class="row">
@@ -75,9 +67,9 @@
 
 		<% if(access){ %>
 		<br>
-		<a type="button" class="btn btn-default" href="/events/<%=event._id%>/edit">Edit Event Info</a>
-		<form method='POST' action=<%= '/events/' + event._id + '/delete'%> >
-			<input type="Submit" value="Delete" />
+		<a type="button" data-role="button" class="btn btn-default" href="/events/<%=event._id%>/edit">Edit Event Info</a>
+		<form method='POST' action=<%= '/events/' + event._id + '/delete'%> data-ajax="false">
+			<button type="Submit">Delete</button>
 		</form>
 
 		<% } %>
@@ -87,31 +79,32 @@
 <hr>
 <div class="row">
 	<div class="col-md-8">
-		<h3> Carpooling <%if(user){%> <a type="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" href="/events/<%=event._id%>/rideRequest">Request Ride</a> <%}%></h3>
+		<h3> Carpooling <%if(user){%> <a type="button" data-role="button" class="btn btn-default" href="/events/<%=event._id%>/carpools/new">Offer a Carpool</a><a type="button" class="btn btn-info" data-role="button" href="/events/<%=event._id%>/rideRequest">Request Ride</a> <%}%></h3>
 
 		<% if(carpools.length>0){ %>
-			<table class="table">
-			<thead>
-				<th>Driver</th>
-				<th>Spots</th>
-				<th >Riders</th>
-				<th></th>
-			</thead>
-
-			<% carpools.forEach(function(c){ %>
-				<tr>
-					<td class="driver" id="<%=c.user_id%>">
-					</td>
-					<td>
-						<%= c.size %>
-					</td>
-					<td class="driver-riders" id="<%=c._id%>">
-					</td>
-					<td>
-						<a href="/carpools/<%=c._id%>">View Carpool</a>
-					</td>
-				</tr>
-			<% }) %>
+			<table data-role="table" class="ui-responsive table-stroke">
+				<thead>
+					<th>Driver</th>
+					<th>Spots</th>
+					<th>Riders</th>
+					<th></th>
+				</thead>
+				<tbody>
+				<% carpools.forEach(function(c){ %>
+					<tr>
+						<td class="driver" id="<%=c.user_id%>">
+						</td>
+						<td>
+							<%= c.size %>
+						</td>
+						<td class="driver-riders" id="<%=c._id%>">
+						</td>
+						<td>
+							<a href="/carpools/<%=c._id%>">View Carpool</a>
+						</td>
+					</tr>
+				<% }) %>
+				</tbody>
 
 			</table>
 
@@ -121,14 +114,12 @@
 
 		<% } %>
 
-		<h3>Players needing rides</h3>
+		<h3>Needing Rides</h3>
 		<% if(playersNeedingRides.length > 0) {%>
-			<table>
+			<table data-role="table" class="ui-responsive table-stroke">
 				<thead>
 					<th>Name</th>
-					<% if(driving) {%>
-						<th>Offer Ride</th>
-					<%}%>
+					<th></th>
 				</thead>
 				<tbody>
 			<% playersNeedingRides.forEach(function(player) { %>
@@ -145,24 +136,6 @@
 			<b>No players need a ride</b>
 		<% } %>
 
-	</div>
-	<div class="col-md-4">
-		<table class="table">
-		<thead>
-			<th>Players That Need a Ride</th>
-		</thead>
-
-		<tr>
-			<td>
-				Name
-			</td>
-			<td>
-				Offer Ride button
-			</td>
-		</tr>
-
-
-		</table>
 	</div>
 
 </div>

@@ -16,15 +16,58 @@ var gmaps = require('googlemaps');
 var async = require('async');
 gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
-
-
-
-exports.index = function(req, res){	//not used in production
-  Event.find(function(err, events){
-    if(err) throw new Error(err);
-    res.render('event/index', {
-      events: events,
-      user:req.user
+/*
+ * This renders the index page for events, which is populated with
+ * Events the logged in user is associated with
+ */
+exports.index = function(req, res) {
+  // get the teams the coach is coaching
+  Coach.getTeamsForUser(req.user._id, function(err, coachedTeams) {
+    var coachEvents = [];
+    // go through each team
+    async.each(coachedTeams, function(coachTeam, innerCallback) {
+      Event.getByTeamId(coachTeam._id, function(err, events) {
+        // add each event to the array we are sending to views
+        async.each(events, function(oneEvent, innerCallbackTwo) {
+          coachEvents.push({'team': coachTeam, 'event': oneEvent, 'date': dateFormat(oneEvent.date), 'time': timeFormat(oneEvent.date)});
+          innerCallbackTwo();
+        }, function(asyncErrorTwo) {
+          innerCallback();
+        });
+      });
+    }, function(asyncError) {
+      // now that we have all of the coach events, we need the player events
+      var playerEvents = [];
+      // get the players for the logged in user
+      Family.getPlayerIdsForUser(req.user._id, function(players) {
+        // for each player get their teams
+        async.each(players, function(player, innerCallbackThree) {
+          RosterSpot.getTeamsForPlayer(player, function(teams) {
+            // for each team get its events
+            async.each(teams, function(team, innerCallbackFour) {
+              Event.getByTeamId(team._id, function(err, oneTeamsEvents) {
+                // for each event, add it to the playerEvents array
+                async.each(oneTeamsEvents, function(oneTeamEvent, innerCallbackFive) {
+                  playerEvents.push({'team': team, 'event': oneTeamEvent, 'date': dateFormat(oneTeamEvent.date), 'time': timeFormat(oneTeamEvent.date)});
+                  innerCallbackFive();
+                }, function(lastAsyncError) {
+                  innerCallbackFour();
+                });
+              });
+            }, function(asyncErrorAgain) {
+              innerCallbackThree();
+            })
+          });
+        }, function(asyncError){
+          // now that the nightmareish async function is over, render the view
+          return res.render('event/index', {
+          	title: "Events",
+            'user': req.user,
+            'coachEvents': coachEvents,
+            'playerEvents': playerEvents
+          });
+        });
+      });
     });
   });
 };
@@ -33,6 +76,7 @@ exports.new = function(req, res){	//not used in production
 	Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('event/new', {
+    	title: "New Event",
       teams: teams,
       user:req.user
     });
@@ -59,6 +103,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 
 			    if(err) throw new Error(err);
 			    res.render('event/team_event', {
+			    	title: "New Event for team " + team.name,
 			      team: team,
 			      user:req.user
 			    });
@@ -206,6 +251,7 @@ exports.show = function(req, res){
                         var driving = !err && aCarpool;
 
                         res.render('event/show', {
+                        	title: "" + event.type + " for " + team.name + " on " + dateFormat(event.date),
                           event: event,
                           team: team,
                           user:req.user,
@@ -224,6 +270,7 @@ exports.show = function(req, res){
                       }
                       else {
                         res.render('event/show', {
+                        	title: "Event for " + team.name,
                           event: event,
                           team: team,
                           user:req.user,
@@ -294,8 +341,9 @@ exports.edit = function(req, res) {
 								}
 								time="PM";
 							}
-
+							console.log(event.date);
 							return res.render('event/edit', {
+								title: "Edit Event for " + team.name,
 								event: event,
 								month: month_name,
 								team: team,
@@ -319,10 +367,10 @@ exports.edit = function(req, res) {
 exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
-	var hour = req.param('hour');
-	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
-	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+	var date = req.param('date');
+	//if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
+	//if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
+	//var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
 		Event.findById(req.params.id, function(error, event){
 

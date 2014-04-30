@@ -9,7 +9,7 @@
 <!--************************CONTENT**************************-->
 <h1><%= team.name %></h1>
 <h2>Carpool Offer for <%= event.type %> on <%= date %></h2>
-	<form class="form-horizontal" method="post" action="/carpools/new" role="form">
+	<form class="form-horizontal" method="post" action="/carpools/new" role="form" data-ajax="false">
 
 		<input type='hidden' name='event_id' value='<%=event._id%>'>
 		<input type='hidden' name='user_id' value='<%=user._id%>'>
