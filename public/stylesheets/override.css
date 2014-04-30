@@ -216,3 +216,48 @@ font-weight: 300;
   width: 80%;
   margin: 0 auto;
 }
+
+.ui-table-columntoggle-btn{
+  display: none;
+}
+
+/* Show priority 1 at 320px (20em x 16px) */
+@media screen and (min-width: 1px) {
+   .driver-table th.ui-table-priority-1,
+   .driver-table td.ui-table-priority-1 {
+     display: table-cell;
+   }
+}
+/* Show priority 2 at 200px (13em x 16px) */
+@media screen and (min-width: 200px) {
+   .driver-table  th.ui-table-priority-2,
+   .driver-table td.ui-table-priority-2 {
+     display: table-cell;
+   }
+}
+/* Show priority 3 at ???px (16em x 16px) */
+@media screen and (min-width: 210px) {
+   .driver-table  th.ui-table-priority-3,
+   .driver-table td.ui-table-priority-3 {
+     display: table-cell;
+   }
+}
+/* Show priority 4 at 480px (30em x 16px) */
+@media screen and (min-width: 500px) {
+   .driver-table  th.ui-table-priority-4,
+   .driver-table td.ui-table-priority-4 {
+     display: table-cell;
+   }
+}
+
+/* Manually hidden */
+.driver-table th.ui-table-cell-hidden,
+.driver-table td.ui-table-cell-hidden {
+  display: none;
+}
+
+/* Manually shown */
+.driver-table th.ui-table-cell-visible,
+.driver-table td.ui-table-cell-visible {
+   display: table-cell;
+}
