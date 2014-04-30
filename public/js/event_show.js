@@ -100,9 +100,9 @@ $(".playah").each(function(index) {
 		$.get("/users/" + user_id + "/info", function(user){
 
 			if(user){
-				$('#'+user_id).append("<a href='/users/" + user._id + "'>" + user.first_name + " " + user.last_name + "</a>");
+				$('#'+user_id).html("<a href='/users/" + user._id + "'>" + user.first_name + " " + user.last_name + "</a>").trigger('create');
 			}else{
-				$('#'+user_id).append("Error");
+				$('#'+user_id).html("Error");
 			}
 		});
 	});
@@ -114,13 +114,11 @@ $(".playah").each(function(index) {
 		$.get("/carpools/" + carpool_id + "/riders", function(riders){
 			if(riders){
 
-				var ryders = "<ul>";
+				var ryders = "";
 
 				riders.forEach(function(rider){
-					ryders+="<li><a href='/players/"+rider._id+"'>"+rider.first_name+" "+rider.last_name+"</a></li>"
+					ryders+="<a href='/players/"+rider._id+"'>"+rider.first_name+" "+rider.last_name+"</a><br />"
 				})
-
-				ryders+="</ul>"
 
 				$('#'+carpool_id).append(ryders).trigger('create');
 			}else{

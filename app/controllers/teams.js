@@ -41,6 +41,7 @@ exports.index = function(req, res) {
         });
       }, function(asyncError){
         return res.render('team/index', {
+        	title: "Teams",
           'user': req.user,
           'coachedTeams': coachedTeams,
           'playerTeams': playerTeams
@@ -163,6 +164,7 @@ exports.show = function(req, res){
 							}else{
 
 						    	res.render('team/show', {
+						    		title: team.name,
 						    	  team: team,
 						    	  user:req.user,
 						    	  events: events,
@@ -174,13 +176,6 @@ exports.show = function(req, res){
 							}
 						});
 					});//async
-
-
-
-
-
-
-
 				});
 			});
   		});
@@ -245,6 +240,7 @@ exports.edit = function(req, res){
 					//res.status(404).render('404');
 				}else{
 					res.render('team/edit', {
+						title: "Edit " + team.name,
 						team: team,
 						user: req.user,
 						coaches: coaches
@@ -258,6 +254,7 @@ exports.edit = function(req, res){
 //get
 exports.new = function(req, res){
 	res.render('team/new',{
+		title: "New Team",
 		user: req.user
 	});
 }
@@ -303,6 +300,7 @@ exports.update = function(req, res){
 
 					if(err){
 						res.render('team/edit', {
+							title: "Edit " + oldTeam.name,
 							team: oldTeam,
 							message: err,
 							user: req.user
@@ -377,6 +375,7 @@ exports.create = function(req, res){
 	newTeam.save(function(err, team){
 		if(err){
 			res.render('team/new', {
+				title: "New Team",
 				team: team,
 				message: err,
 				user: req.user
@@ -504,6 +503,7 @@ exports.roster_fill = function(req, res){
 					res.redirect("/404");
 				}else{
 			    	res.render('team/roster_fill', {
+			    		title: "Add players",
 			    	  team: team,
 			    	  user: req.user
 			    	});

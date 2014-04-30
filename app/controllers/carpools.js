@@ -41,6 +41,7 @@ exports.show = function(req, res){
 						}, function(err) {
 							res.render('carpool/show', {
 								carpool: carpool,
+									title: 'Carpool Details',
 									event: event,
 									date: dateFormat(carpool.time),
 									time: timeFormat(carpool.time),
@@ -99,6 +100,7 @@ exports.new = function(req, res){
 			  				res.redirect('/');
 			  			}else{
 							res.render('carpool/new', {
+								title: 'New Carpool',
 						      event: event,
 						      date: dateFormat(event.date),
 						      team: team,
@@ -349,6 +351,7 @@ exports.addRider = function(req, res) {
 					}, function(error) {
 						if(error) { return res.redirect('/'); }
 						return res.render('carpool/addRider', {
+							title: "Add a Rider",
 							'user': req.user,
 							'event': theEvent,
 							'rosterSpots': rosterSpots,

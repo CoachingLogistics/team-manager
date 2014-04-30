@@ -14,7 +14,7 @@ var Team = mongoose.model('Team');
  */
 exports.index = function(req, res) {
   Rider.find(function(err, riders) {
-    res.render('rider/index', {'user': req.user, 'riders': riders});
+    res.render('rider/index', {title: "Riders", 'user': req.user, 'riders': riders});
   });
 }
 
@@ -93,7 +93,7 @@ exports.request = function(req, res) {
         return res.redirect('back');
       }
       else {
-        return res.render('rider/request', {'user': req.user, 'event': theEvent, 'players': players});
+        return res.render('rider/request', {title: "Request", 'user': req.user, 'event': theEvent, 'players': players});
       }
     });
   });
@@ -110,7 +110,7 @@ exports.requestForCarpool = function(req, res) {
           return res.redirect('back');
         }
         else {
-          return res.render('rider/requestForCarpool', {'user': req.user, 'event': theEvent, 'carpool': theCarpool, 'players': players});
+          return res.render('rider/requestForCarpool', {title: "Request for Carpool", 'user': req.user, 'event': theEvent, 'carpool': theCarpool, 'players': players});
         }
       });
     });
@@ -177,7 +177,7 @@ exports.rideRequestForEvent = function(req, res) {
         return res.redirect('back');
       }
       else {
-        return res.render('rider/requestForEvent', { 'user':req.user, 'event':theEvent, 'players':players });
+        return res.render('rider/requestForEvent', { title: "Request Ride for Event", 'user':req.user, 'event':theEvent, 'players':players });
       }
     });
   });
