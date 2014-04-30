@@ -17,6 +17,7 @@ var Attendance = mongoose.model('Attendance');
 exports.index = function(req, res) {
 	Player.find(function(err, players) {
 		res.render("player/index", {
+      title: "Players",
 			'players': players,
 			user: req.user
 		});
@@ -31,6 +32,7 @@ exports.index = function(req, res) {
 //functional yet?
 exports.new_player = function(req, res) {
 	res.render("player/new", {
+    title: "New User",
 		user: req.user
 	});
 }
@@ -55,6 +57,7 @@ exports.create_player = function(req, res) {
 		if(err) {
 			res.render('player/new', {
 				error: "Missing required fields",
+        title: "New User",
 				user: req.user
 			});
 		}
@@ -132,6 +135,7 @@ exports.edit = function(req, res) {
           month_name = monthNames[p.date_of_birth.getMonth()];
         }
         return res.render('player/edit', {
+          title: "Edit Player",
           player: p,
           month: month_name,
           error: null,
@@ -245,7 +249,7 @@ exports.addUser = function(req, res) {
       res.redirect('/')
     };
     Player.findById(req.params.id, function(err, foundPlayer) {
-      res.render('player/addUser', {user: req.user, player: foundPlayer, notice: undefined});
+      res.render('player/addUser', {title: "Add Guardian for " + foundPlayer.first_name, user: req.user, player: foundPlayer, notice: undefined});
     });
   });//family
 }
@@ -348,7 +352,7 @@ exports.createNewFamily = function(req, res) {
           else {
             // user is already a parent
             Player.findById(player_id, function(err, foundPlayer) {
-              res.render('player/addUser', {user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
+              res.render('player/addUser', {title: "Add Guardian for " + foundPlayer.first_name, user: req.user, player: foundPlayer, notice: "Email is already associated with this player"});
             });
           }
         });

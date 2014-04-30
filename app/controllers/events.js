@@ -16,8 +16,6 @@ var gmaps = require('googlemaps');
 var async = require('async');
 gmaps.config('key', 'AIzaSyA645rwcj_NE3CJnO83xX2CQ9ef7n4XWwI');
 
-
-
 /*
  * This renders the index page for events, which is populated with
  * Events the logged in user is associated with
@@ -63,6 +61,7 @@ exports.index = function(req, res) {
         }, function(asyncError){
           // now that the nightmareish async function is over, render the view
           return res.render('event/index', {
+          	title: "Events",
             'user': req.user,
             'coachEvents': coachEvents,
             'playerEvents': playerEvents
@@ -77,6 +76,7 @@ exports.new = function(req, res){	//not used in production
 	Team.find(function(err, teams){
     if(err) throw new Error(err);
     res.render('event/new', {
+    	title: "New Event",
       teams: teams,
       user:req.user
     });
@@ -103,6 +103,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 
 			    if(err) throw new Error(err);
 			    res.render('event/team_event', {
+			    	title: "New Event for team " + team.name,
 			      team: team,
 			      user:req.user
 			    });
@@ -250,6 +251,7 @@ exports.show = function(req, res){
                         var driving = !err && aCarpool;
 
                         res.render('event/show', {
+                        	title: "" + event.type + " for " + team.name + " on " + dateFormat(event.date),
                           event: event,
                           team: team,
                           user:req.user,
@@ -268,6 +270,7 @@ exports.show = function(req, res){
                       }
                       else {
                         res.render('event/show', {
+                        	title: "Event for " + team.name,
                           event: event,
                           team: team,
                           user:req.user,
@@ -338,15 +341,18 @@ exports.edit = function(req, res) {
 								}
 								time="PM";
 							}
-
+							console.log(event.date);
 							return res.render('event/edit', {
+								title: "Edit Event for " + team.name,
 								event: event,
 								month: month_name,
 								team: team,
 								user:req.user,
 								'error': null,
+								dateStr: dateRFCFormat(event.date),
 								date: dateFormat(event.date),
 								time: time,
+								timeStr: timeRFCFormat(event.date),
 								hour: hour,
 								minutes: minutes
 							});
@@ -363,10 +369,10 @@ exports.edit = function(req, res) {
 exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
-	var hour = req.param('hour');
-	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
-	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+	var date = req.param('date');
+	//if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
+	//if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
+	//var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
 
 		Event.findById(req.params.id, function(error, event){
 
@@ -498,6 +504,32 @@ var dateFormat = function(date) {
     var year = date.getFullYear();
     return month+"/"+day+"/"+year;
 };
+
+var dateRFCFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    if (day < 10){
+    	day = "0" + day;
+    }
+    if (month < 10){
+    	month = "0" + month;
+    }
+    return year+"-"+month+"-"+day;
+};
+
+var timeRFCFormat = function(date){
+	var hour = date.getHours();
+	var minutes = date.getMinutes();
+
+	if (hour < 10){
+		hour = "0" + hour;
+	}
+	if (minutes < 10){
+		minutes = "0" + minutes;
+	}
+	return hour + ":" + minutes + ":00";
+}
 
 var timeFormat = function(date) {
     var time = "AM";

@@ -36,7 +36,7 @@ exports.email_all = function(req, res) {
         });
       }
     }); // end attendances for each
-    return res.render('attendance/emailSent', {user: req.user});
+    return res.render('attendance/emailSent', {title: "Email All", user: req.user});
   });
 }
 
@@ -68,7 +68,7 @@ exports.send_email = function(req, res) {
         });
       });
     });
-    res.render('attendance/emailSent', {user: req.user});
+    res.render('attendance/emailSent', {title: "Remind Player", user: req.user});
   });
 }
 
@@ -89,7 +89,7 @@ exports.record_response = function(req, res) {
       }
       a.attending = true;
       a.save(function(err, saved_attendance) {
-        res.render('attendance/emailReturn', {user: req.user, attendance: a});
+        res.render('attendance/emailReturn', {title: "Record Response", user: req.user, attendance: a});
       });
     });
   }
@@ -98,7 +98,7 @@ exports.record_response = function(req, res) {
       // find attendance and update the response to be false
       a.attending = false;
       a.save(function(err, saved_attendance) {
-        res.render('attendance/emailReturn', {user: req.user});
+        res.render('attendance/emailReturn', {title: "Record Response", user: req.user});
       });
     });
   }

@@ -65,7 +65,7 @@ exports.index = function(req, res){
     }, function(asyncError) {
       var playerEvents = [];
       Family.getPlayerIdsForUser(req.user._id, function(players) {
-        async.each(players, function(player, innerCallbackThree) { //asyncError
+        async.each(players, function(player, innerCallbackThree) {
           RosterSpot.getTeamsForPlayer(player, function(teams) {
             async.each(teams, function(team, innerCallbackFour) {
               Event.getByTeamId(team._id, function(err, oneTeamsEvents) {

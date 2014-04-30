@@ -41,8 +41,11 @@ exports.show = function(req, res){
 						}, function(err) {
 							res.render('carpool/show', {
 								carpool: carpool,
+									title: 'Carpool Details',
 									event: event,
 									date: dateFormat(carpool.time),
+									dateStr: dateRFCFormat(carpool.time),
+									timeStr: timeRFCFormat(carpool.time),
 									time: timeFormat(carpool.time),
 									team: team,
 									driver: driver,
@@ -99,6 +102,7 @@ exports.new = function(req, res){
 			  				res.redirect('/');
 			  			}else{
 							res.render('carpool/new', {
+								title: 'New Carpool',
 						      event: event,
 						      date: dateFormat(event.date),
 						      team: team,
@@ -349,6 +353,7 @@ exports.addRider = function(req, res) {
 					}, function(error) {
 						if(error) { return res.redirect('/'); }
 						return res.render('carpool/addRider', {
+							title: "Add a Rider",
 							'user': req.user,
 							'event': theEvent,
 							'rosterSpots': rosterSpots,
@@ -431,4 +436,30 @@ var timeFormat = function(date) {
 	}
 
 	return hour+":"+minutes+" "+time;
+};
+
+var dateRFCFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    if (day < 10){
+    	day = "0" + day;
+    }
+    if (month < 10){
+    	month = "0" + month;
+    }
+    return year+"-"+month+"-"+day;
+};
+
+var timeRFCFormat = function(date){
+	var hour = date.getHours();
+	var minutes = date.getMinutes();
+
+	if (hour < 10){
+		hour = "0" + hour;
+	}
+	if (minutes < 10){
+		minutes = "0" + minutes;
+	}
+	return hour + ":" + minutes + ":00";
 };

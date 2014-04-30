@@ -1,17 +1,16 @@
-// var mongoose = require('mongoose'),
-//   Article = mongoose.model('Article');
+var helper = require('./helper/helper_methods');
 
 
 exports.index = function(req, res){
   res.render('home/index', {
-    title: 'Generator-Express MVC',
+    title: 'Team Manager',
     user: req.user
   });
 };
 
 exports.err = function(req, res){
   res.render('404', {
-    title: 'Generator-Express MVC',
+    title: 'Team Manager',
     user: req.user
   });
 };
