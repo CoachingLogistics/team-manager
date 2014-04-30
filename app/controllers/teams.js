@@ -41,6 +41,7 @@ exports.index = function(req, res) {
         });
       }, function(asyncError){
         return res.render('team/index', {
+        	title: "Teams",
           'user': req.user,
           'coachedTeams': coachedTeams,
           'playerTeams': playerTeams
@@ -163,7 +164,7 @@ exports.show = function(req, res){
 							}else{
 
 						    	res.render('team/show', {
-						    		title: team,
+						    		title: team.name,
 						    	  team: team,
 						    	  user:req.user,
 						    	  events: events,

@@ -61,6 +61,7 @@ exports.index = function(req, res) {
         }, function(asyncError){
           // now that the nightmareish async function is over, render the view
           return res.render('event/index', {
+          	title: "Events",
             'user': req.user,
             'coachEvents': coachEvents,
             'playerEvents': playerEvents
@@ -250,7 +251,7 @@ exports.show = function(req, res){
                         var driving = !err && aCarpool;
 
                         res.render('event/show', {
-                        	title: "Event for " + team.name,
+                        	title: "" + event.type + " for " + team.name + " on " + dateFormat(event.date),
                           event: event,
                           team: team,
                           user:req.user,
