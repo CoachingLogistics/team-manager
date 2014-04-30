@@ -12,18 +12,20 @@
   <form action='/events/<%=event._id%>/rideRequest' method='POST' data-ajax="false">
     <b>Who needs a ride?</b><br />
     <% players.forEach(function(player, index) { %>
-      <input type='checkbox' value="<%=player._id%>" name="players[<%=index%>]"><%=player.full_name%> <br />
+      <div class='ui-block-a'>
+        <input type='checkbox' value="<%=player._id%>" name="players[<%=index%>]">
+      </div>
+      <div class='ui-block-b'>
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%=player.full_name%>
+      </div>
     <% }) %>
+    <br />
     <b>Location</b> <br />
     <input type="text" name="location"> <br />
     <b>Time</b> <br />
-    <input type="number" name="hour">:<input type="number" name="minute">
-    <select name="ampm">
-      <option></option>
-      <option value="am">AM</option>
-      <option value="pm">PM</option>
-    </select> <br />
-    <input type="submit" value="Request Ride">
+    <input type="time" name="time">
+    <br />
+    <input type="submit" value="Request Ride" data-role="button" data-role="button" class="form-control wide-button">
   </form>
 <!--***********************END OF CONTENT************************-->
 <% include ../footer %>

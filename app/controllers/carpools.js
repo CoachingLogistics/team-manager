@@ -44,6 +44,8 @@ exports.show = function(req, res){
 									title: 'Carpool Details',
 									event: event,
 									date: dateFormat(carpool.time),
+									dateStr: dateRFCFormat(carpool.time),
+									timeStr: timeRFCFormat(carpool.time),
 									time: timeFormat(carpool.time),
 									team: team,
 									driver: driver,
@@ -435,4 +437,30 @@ var timeFormat = function(date) {
 	}
 
 	return hour+":"+minutes+" "+time;
+};
+
+var dateRFCFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    if (day < 10){
+    	day = "0" + day;
+    }
+    if (month < 10){
+    	month = "0" + month;
+    }
+    return year+"-"+month+"-"+day;
+};
+
+var timeRFCFormat = function(date){
+	var hour = date.getHours();
+	var minutes = date.getMinutes();
+
+	if (hour < 10){
+		hour = "0" + hour;
+	}
+	if (minutes < 10){
+		minutes = "0" + minutes;
+	}
+	return hour + ":" + minutes + ":00";
 };
