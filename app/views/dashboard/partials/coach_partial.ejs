@@ -10,7 +10,10 @@
 
   <div id="dashboard" class="dashboard-tab">
   	  <!-- UPCOMING EVENTS -->
-  	  <h2 class="center-this">Events Coaching</h2>
+  	  <h2 class="center-this">Announcements</h2>
+  	  There are currently no announcements.
+
+  	  <h2 class="center-this">Upcoming Events</h2>
 <table class='team-index-table'>
 	<thead>
 		<th>Team</th>
@@ -19,13 +22,18 @@
 		<th></th>
 	</thead>
 	<tbody>
+	<% var currentDate = new Date() %>
 		<% coachEvents.forEach(function(coachEvent) { %>
+		<% var eventDate = new Date(coachEvent.date) %>
+		<% if (eventDate > currentDate) { %>
+
 			<tr>
 				<td><%=coachEvent.team.name%></td>
 				<td><%=coachEvent.event.type%></td>
 				<td><%=coachEvent.date + " " + coachEvent.time%></td>
 				<td><a href="/events/<%=coachEvent.event._id%>" data-role="button">Show</a></td>
 			</tr>
+			<% } %>
 		<% }) %>
 	</tbody>
 </table>
@@ -39,16 +47,18 @@
 	</thead>
 	<tbody>
 		<% playerEvents.forEach(function(playerEvent) { %>
+		<% var playerEventDate = new Date(playerEvent.date) %>
+		<% if (playerEventDate > currentDate) { %>
 			<tr>
 				<td><%=playerEvent.team.name%></td>
 				<td><%=playerEvent.event.type%></td>
 				<td><%=playerEvent.date + " " + playerEvent.time%></td>
 				<td><a href="/events/<%=playerEvent.event._id%>" data-role="button">Show</a></td>
 			</tr>
+			<% } %>
 		<% }) %>
 	</tbody>
 </table>
-<a href='/events/new' data-role="button" data-theme="b">New Event</a>
   </div>
 
 
@@ -94,21 +104,7 @@
 	</tbody>
 </table>
 <hr />
-
-<a href='/teams/new' data-role="button" data-theme="b">New Team</a>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div>
