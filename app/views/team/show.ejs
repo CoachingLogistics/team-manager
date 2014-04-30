@@ -12,7 +12,7 @@
   <div data-role="navbar">
     <ul>
       <li><a href="#team" data-ajax="false">Team Info</a></li>
-      <li><a href="#events" data-ajax="false">Calendar</a></li>
+      <li><a href="#events" data-ajax="false">Events</a></li>
       <li><a href="#roster" data-ajax="false">Roster</a></li>
       <li><a href="#drivers" data-ajax="false">Drivers</a></li>
     </ul>
@@ -58,7 +58,7 @@
 
     <% if(access){ %>
 		<br>
-		<a type="button" class="pull-right btn btn-primary" href="/teams/<%=team._id%>/event">Create Event</a>
+		<a data-role="button" data-inline="true" data-theme="b" href="/teams/<%=team._id%>/event">Create Event</a>
 	<% } %>
 	</div>
   </div>
