@@ -13,48 +13,21 @@
 	<b><%= error %></b>
 <% } %>
 <form method="POST", action=<%= "/players/"+player._id+"/update" %> data-ajax="false">
-	First Name:<input type="text" name="first_name" value="<%= player.first_name %>"  /> <br />
-	Last Name:<input type="text" name="last_name" value="<%= player.last_name %>" /> <br />
-	<b>Date of birth</b> <br />
-	<% if(month) { %>
-		Month: <select name="month" class="formlist">
-		<option value=<%= player.date_of_birth.getMonth() + 1 %>><%= month%></option>
-		<option value = "1">January</option>
-		<option value = "2">February</option>
-		<option value = "3">March</option>
-		<option value = "4">April</option>
-		<option value = "5">May</option>
-		<option value = "6">June</option>
-		<option value = "7">July</option>
-		<option value = "8">August</option>
-		<option value = "9">September</option>
-		<option value = "10">October</option>
-		<option value = "11">November</option>
-		<option value = "12">December</option> 
-		</select>
-		Day:<input type="number" max="31" min="1" name="day", value=<%= player.date_of_birth.getDate() %> />
-		Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year" value=<%= player.date_of_birth.getFullYear() %>> <br />
-	<% } %>
-	<% if(!month) { %>
-			Month: <select name="month" class="formlist">
-			<option></option>
-			<option value = "1">January</option>
-			<option value = "2">February</option>
-			<option value = "3">March</option>
-			<option value = "4">April</option>
-			<option value = "5">May</option>
-			<option value = "6">June</option>
-			<option value = "7">July</option>
-			<option value = "8">August</option>
-			<option value = "9">September</option>
-			<option value = "10">October</option>
-			<option value = "11">November</option>
-			<option value = "12">December</option> 
-			</select>
-			Day:<input type="number" max="31" min="1" name="day"/>
-			Year:<input type="number" max=<%= "" + new Date().getFullYear()%> min="1950" name="year"> <br />
-	<% } %>
-	<input type="submit" value="Update" />
+	<div data-role="fieldcontain">
+		<label for="first_name" class="col-sm-2 control-label">First Name:</label>
+		<input type="text" name="first_name" value="<%= player.first_name %>"/> <br />
+	</div>
+	<div data-role="fieldcontain">
+		<label for="last_name" class="col-sm-2 control-label">Last Name:</label>
+		<input type="text" name="last_name" value="<%= player.last_name %>" /> <br />
+	</div>
+	<div data-role="fieldcontain">
+		<label for="dob">Date of birth</label>
+		<input type="date" name="date", value="<%= dobStr %>" />
+	</div>
+	<div data-role="fieldcontain">
+		<button type="submit" class="btn btn-default">Update Player</button>
+	</div>
 </form>
 
 

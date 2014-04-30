@@ -8,8 +8,9 @@
 <% include ../head %>
 <!--************************CONTENT**************************-->
 
-<h2 class='center-this'>Teams Coaching</h2>
-<table class="team-index-table">
+<% if (coachedTeams.length != 0){ %>
+<h2>Teams Coaching</h2>
+<table data-role="table" class="ui-responsive table-stroke">
 	<thead>
 		<th>Name</th>
 		<th>Sport</th>
@@ -20,16 +21,17 @@
 			<tr>
 				<td><%= team.name %></td>
 				<td><%= team.sport %></td>
-				<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
+				<td><a href="/teams/<%= team._id %>" data-role="button" data-inline="true" data-mini="true">Details</a></td>
 			</tr>
 		<% })%>
 	</tbody>
 </table>
+<%}%>
 
-<hr />
 
-<h2 class='center-this'>Kids' Teams</h2>
-<table class="team-index-table">
+<% if (playerTeams.length != 0){ %>
+<h2>Personal Teams</h2>
+<table data-role="table" class="ui-responsive table-stroke">
 	<thead>
 		<th>Name</th>
 		<th>Sport</th>
@@ -40,12 +42,12 @@
 				<tr>
 					<td><%= team.name %></td>
 					<td><%= team.sport %></td>
-					<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
+					<td><a href="/teams/<%= team._id %>" data-role="button" data-inline="true" data-mini="true">Details</a></td>
 				</tr>
 		<% }) %>
 	</tbody>
 </table>
-<hr />
+<%}%>
 
 <a href='/teams/new' data-role="button" data-theme="b">New Team</a>
 

@@ -48,7 +48,7 @@ exports.index = function(req, res) {
               Event.getByTeamId(team._id, function(err, oneTeamsEvents) {
                 // for each event, add it to the playerEvents array
                 async.each(oneTeamsEvents, function(oneTeamEvent, innerCallbackFive) {
-                  playerEvents.push({'team': team, 'event': oneTeamEvent, 'date': dateFormat(oneTeamEvent.date), 'time': timeFormat(oneTeamEvent.date)});
+                  playerEvents.push({'player': player, 'team': team, 'event': oneTeamEvent, 'date': dateFormat(oneTeamEvent.date), 'time': timeFormat(oneTeamEvent.date)});
                   innerCallbackFive();
                 }, function(lastAsyncError) {
                   innerCallbackFour();
