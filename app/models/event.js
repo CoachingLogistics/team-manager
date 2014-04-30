@@ -122,6 +122,7 @@ EventSchema.pre('save', function(next){
 	if(event.reminder) schedule.cancelJob(event.reminder.name);
 	if(event.results) schedule.cancelJob(event.results.name);
 
+
 	var two_days_before = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate()-2, 12, 0, 0);	//sends out RSVP reminder 2 days in advance
 	var one_day_before = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate()-1, 12, 0, 0);	//set for 1 day before event at noon
 

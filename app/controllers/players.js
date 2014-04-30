@@ -85,7 +85,10 @@ exports.show = function(req, res) {
 	// will make this do more when we get more added
 	Player.findById(req.params.id, function(err, p) {
 		if(err) {
-			res.status(404).render("404", {user:req.user});
+			res.status(404).render("404", {
+        title: 'Team Manager',
+        user:req.user
+      });
 		}
 		else {
 
@@ -127,7 +130,10 @@ exports.edit = function(req, res) {
 
     Player.findById(req.params.id, function(err, p) {
       if(err) {
-        res.status(404).render("404", {user:req.user});
+        res.status(404).render("404", {
+          title: 'Team Manager',
+          user:req.user
+        });
       }
       else {
         var month_name;

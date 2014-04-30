@@ -1,0 +1,132 @@
+<div data-role="tabs" id="tabs">
+  <div data-role="navbar">
+    <ul>
+      <li><a href="#dashboard" data-ajax="false">Dashboard</a></li>
+      <li><a href="#teams" data-ajax="false">Teams</a></li>
+    </ul>
+  </div>
+
+
+
+  <div id="dashboard" class="dashboard-tab">
+  	  <!-- UPCOMING EVENTS -->
+  	  <h2 class="center-this">Announcements</h2>
+  	  There are currently no announcements.
+
+  	  <h2 class="center-this">Upcoming Events</h2>
+<table class='team-index-table'>
+	<thead>
+		<th>Team</th>
+		<th>Type</th>
+		<th>Date</th>
+		<th></th>
+	</thead>
+	<tbody>
+	<% var currentDate = new Date() %>
+		<% coachEvents.forEach(function(coachEvent) { %>
+		<% var eventDate = new Date(coachEvent.date) %>
+		<% if (eventDate > currentDate) { %>
+
+			<tr>
+				<td><%=coachEvent.team.name%></td>
+				<td><%=coachEvent.event.type%></td>
+				<td><%=coachEvent.date + " " + coachEvent.time%></td>
+				<td><a href="/events/<%=coachEvent.event._id%>" data-role="button">Show</a></td>
+			</tr>
+			<% } %>
+		<% }) %>
+	</tbody>
+</table>
+<h2 class="center-this">Kids' Events</h2>
+<table class='team-index-table'>
+	<thead>
+		<th>Team</th>
+		<th>Type</th>
+		<th>Date</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% playerEvents.forEach(function(playerEvent) { %>
+		<% var playerEventDate = new Date(playerEvent.date) %>
+		<% if (playerEventDate > currentDate) { %>
+			<tr>
+				<td><%=playerEvent.team.name%></td>
+				<td><%=playerEvent.event.type%></td>
+				<td><%=playerEvent.date + " " + playerEvent.time%></td>
+				<td><a href="/events/<%=playerEvent.event._id%>" data-role="button">Show</a></td>
+			</tr>
+			<% } %>
+		<% }) %>
+	</tbody>
+</table>
+  </div>
+
+
+
+
+  <div id="teams" class="teams-tab">
+  	<br><br>
+  	<h2 class='center-this'>Teams Coaching</h2>
+<table class="team-index-table">
+	<thead>
+		<th>Name</th>
+		<th>Sport</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% coachedTeams.forEach(function(team) { %>
+			<tr>
+				<td><%= team.name %></td>
+				<td><%= team.sport %></td>
+				<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
+			</tr>
+		<% })%>
+	</tbody>
+</table>
+
+<hr />
+
+<h2 class='center-this'>Kids' Teams</h2>
+<table class="team-index-table">
+	<thead>
+		<th>Name</th>
+		<th>Sport</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% playerTeams.forEach(function(team) { %>
+				<tr>
+					<td><%= team.name %></td>
+					<td><%= team.sport %></td>
+					<td><a href="/teams/<%= team._id %>" data-role="button">Details</a></td>
+				</tr>
+		<% }) %>
+	</tbody>
+</table>
+<hr />
+  </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

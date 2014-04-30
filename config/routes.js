@@ -2,6 +2,7 @@ module.exports = function(app){
 
 	//home route
 	var home = require('../app/controllers/home');
+	var dashboard = require('../app/controllers/dashboard');
 	var events = require('../app/controllers/events')
 	var teams = require('../app/controllers/teams');
 	var users = require('../app/controllers/users');
@@ -19,7 +20,12 @@ module.exports = function(app){
 	//home stuff
 	app.get('/', home.index);
 	app.get('/404', home.err);
+	app.get('/about', home.about);
+	app.get('/features', home.features);
+	app.get('/starting', home.starting);
 
+	//dashboard
+	app.get('/dashboard', ensureAuthenticated, dashboard.index);
 
 	//users
 	app.get('/account', ensureAuthenticated, users.account);
@@ -152,8 +158,6 @@ module.exports = function(app){
 
 	// from the email so they won't be logged in.. king of hacky for now but it is what it is
 	app.get('/riders/confirm/:carpool_id/:player_id/email', riders.confirmForCarpool);
-
-
 
 	//
 	app.get('*', home.err);

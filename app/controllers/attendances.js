@@ -117,13 +117,13 @@ exports.web_update = function(req, res) {
         if(response == 't') {
           theAttendance.attending = true;
           theAttendance.save(function(saveError, saved) {
-            return res.redirect('/events/' + event_id);
+            return res.redirect('/events/' + event_id+'#attendance');
           });
         }
         else {
           theAttendance.attending = false;
           theAttendance.save(function(saveError, saved) {
-            return res.redirect('/events/' + event_id);
+            return res.redirect('/events/' + event_id+'#attendance');
           });
         }
       });

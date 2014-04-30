@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-  Team = mongoose.model('Team');
+Team = mongoose.model('Team');
 Player = mongoose.model('Player');
 User = mongoose.model('User');
 Family = mongoose.model('Family');
@@ -723,7 +723,8 @@ exports.roster = function(req, res){
 				    	  events: events,
 				    	  players: players,
 				    	  coaches: coaches,
-				    	  access: access
+				    	  access: access,
+				    	  title: team.name
 				    	});
 					}
 

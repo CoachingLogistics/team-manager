@@ -1,5 +1,10 @@
 
 /***************GENERAL LAYOUT STYLING******************/
+#off_screen {
+    position: absolute;
+    left: -1000px;
+    top: -1000px;
+}
 
 .nav-collapsible {
     margin: 0 !important;
@@ -119,27 +124,47 @@ body {
 
 .center-this{
   text-align: center;
-<<<<<<< HEAD
+  margin: 0 auto;
 }
 
 .wide-button {
   width: 100%;
 }
-  margin: 0 auto;
 
-}
 
 .team-tab{
   width: 80%;
   margin: 0 auto;
 }
 
+.driver-tab{
+  width: 90%;
+}
+
 .calendar-tab{
   height: 420px;
 }
 
+.skinny-form{
+  width: 60%;
+}
 
-.form-danger {
+
+.med-form{
+  width: 80%;
+}
+
+.body-content{
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.help-block{
+  text-align: left;
+  padding-left: 20%;
+}
+
+.form-danger{
   background: #f54444;
   background-image: -webkit-linear-gradient(top, #f54444, #a83131);
   background-image: -moz-linear-gradient(top, #f54444, #a83131);
@@ -163,4 +188,31 @@ body {
 .team-index-table {
   width: 100%;
   text-align: center;
+}
+
+.static-content > h2 {
+color: #3eb249;
+background-color: transparent;
+border-bottom: 1px solid #ddd;
+font-size: 1.6em;
+padding-bottom: .2em;
+margin: 0 0 .7375em;
+font-family: 'Open Sans', sans-serif;
+font-weight: 300;
+}
+
+.border-img{
+  height: 40%;
+  border-style: solid;
+  border-width: 1px;
+  margin-left: 10%;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.gmap{
+  height: 500px;
+  width: 80%;
+  margin: 0 auto;
 }

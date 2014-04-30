@@ -19,7 +19,7 @@ if( !password || !password_confirm){
 
         $(".pw_alert").html("Passwords do not match!").css("color", "#a94442");
 
-        $("#submit").prop('disabled', true).trigger('create');
+        $("#submit-match").prop('disabled', true).trigger('create');
         //deny button
     }else{
     	$(".pw_alert").empty();
@@ -28,7 +28,7 @@ if( !password || !password_confirm){
 
         $(".pw_alert").html("Passwords match.").css("color", "#3c763d");
 
-        $("#submit").prop('disabled', false).trigger('create');
+        $("#submit-match").prop('disabled', false).trigger('create');
 
 }
 
@@ -53,7 +53,7 @@ if( !email || !email_confirm){
 
         $(".email_alert").html("emails do not match!").css("color", "#a94442");
 
-        $("#submit").prop('disabled', true).trigger('create');
+        $("#submit-match").prop('disabled', true).trigger('create');
         //deny button
     }else{
     	$(".email_alert").empty();
@@ -62,11 +62,25 @@ if( !email || !email_confirm){
 
         $(".email_alert").html("emails match.").css("color", "#3c763d");
 
-        $("#submit").prop('disabled', false).trigger('create');
+        $("#submit-match").prop('disabled', false).trigger('create');
 
 }
 
 });
+
+$("#submit-match").on("click", function(e){
+    var email = $("#email").val();
+    var email_confirm = $("#email_confirm").val();
+
+    var password = $("#password").val();
+    var password_confirm = $("#password_confirm").val();
+
+    if(password == "" || password_confirm== "" || email=="" || email_confirm==""){
+        e.preventDefault();
+        alert("Please complete all confirmation fields")
+    }
+
+})
 
 
 

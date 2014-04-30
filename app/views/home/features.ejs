@@ -1,0 +1,59 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+<script>
+$(function(){
+	$("#panelbutton").on('click', function(){
+		$("#mypanel").panel('open');
+	});
+});
+</script>
+</head>
+		
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+<div role="main" class="ui-content jqm-content body-content static-content">
+	<h1>TeamManager App Features</h1>
+
+		<p>Team Manager is an application that helps coaches and parents of youth sports leagues coordinate all the team events, attendance tracking, and carpooling.</p>
+
+		<br>
+		<h2>Team Management</h2>
+		<div class="ui-grid-a">
+		    <div class="ui-block-a"><p>TeamManager lets you create a team, add players by name and email, and manage that team within its own web space.  Other managers can be added to help run a team.  Parents of players are added by their email address, and can interact with the application through the website or through email.  Through TeamManager you can run mutliple teams at the same time too.</p></div>
+		    <div class="ui-block-b"><img src="/img/team-page.png" class="border-img" ></div>
+		</div>
+
+		<br>
+		<h2>Event Scheduling and Attendance</h2>
+		<div class="ui-grid-a">
+		    <div class="ui-block-a"><p>As a coach, you can schedule events for your team. Take attendance by sending out email RSVPs to parents, or mark off players in the application. View a calendar of your team's upcoming events, and the attendance for each one individually.</p></div>
+		    <div class="ui-block-b"><img src="" class="border-img" ></div>
+		</div>
+
+		<br>
+		<h2>Automatic Emailing</h2>
+		<div class="ui-grid-a">
+		    <div class="ui-block-a"><p>Two days before a scheduled event, TeamManager automatically sends out an RSVP request to parents who have not responded yet.  One day before an event, TeamManager sends all the coaches an email with the reported attendance to let them know their player numbers.</p></div>
+		    <div class="ui-block-b"><img src="" class="border-img" ></div>
+		</div>
+
+		<br>
+		<h2>Carpool Coordinating</h2>
+		<div class="ui-grid-a">
+		    <div class="ui-block-a"><p>Parents can use TeamManager to coordinate carpooling for each event. Offer to drive players, see maps and directions, and recieve alerts if someone needs a ride.</p></div>
+		    <div class="ui-block-b"><img src="" class="border-img" ></div>
+		</div>
+
+</div>
+
+
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+</html>
