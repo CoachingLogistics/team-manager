@@ -17,12 +17,12 @@ $(document).bind("pageinit", function(){
 			console.log($('this'));
 
 			if(doc[0].attending == true){
-				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-ok'></span>").trigger('create');
+				$('#'+player_id+"-response").html("Attending").trigger('create');
 			}else if(doc[0].attending == false){
-				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-remove'></span>").trigger('create');
+				$('#'+player_id+"-response").html("Not attending").trigger('create');
 			}else if(doc[0].attending == null){
-				$('#'+player_id).append("<span class='pull-right glyphicon glyphicon-minus'></span>").trigger('create');
-				$($('.buttonPlacement')[index]).append("<a href='/attendanceRemind/" + event_id + "/" + player_id + "' class='btn btn-info btn-tiny glyphicon glyphicon-envelope'></a>");
+				$('#'+player_id+"-response").html("No response").trigger('create');
+				$($('.buttonPlacement')[index]).html("<a href='/attendanceRemind/" + event_id + "/" + player_id + "'>Email Reminder</a>");
 			}else{
 				console.log(player_id+ " has not been invited");
 			}
@@ -43,7 +43,7 @@ $(".playah").each(function(index) {
 		var attendance_id = data.attendance_id;
 		// add the buttons if the user is a guardian and the attendance exists
 		if(guardians.indexOf(user_id) != -1 && attendance_id) {
-			$($('.guardianButtons')[index]).append("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' class='btn btn-tiny btn-success glyphicon glyphicon-ok'></a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' class='btn btn-danger btn-tiny glyphicon glyphicon-remove'></a>");
+			$($('.guardianButtons')[index]).html("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' data-role='button' data-inline='inline' data-mini='true' data-icon='check' data-iconpos='notext'>Yes</a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' data-role='button' data-inline='inline' data-mini='true' data-icon='delete' data-iconpos='notext'>No</a>").trigger('create');
 		}
 	});
 });
@@ -53,8 +53,6 @@ $(".playah").each(function(index) {
 			var lat=coords.latitude;
 			var lon=coords.longitude;
 
-			console.log(lat);
-			console.log(lon);
 
 			var mapProp = {
 			  center:new google.maps.LatLng(lat,lon),
@@ -63,6 +61,13 @@ $(".playah").each(function(index) {
 			  };
 
 			 //initializing the map object
+			//  			var $mapCanvas = $("#map-canvas");
+			// map = new google.maps.Map($mapCanvas.get(0), mapProp);
+
+			// var listenerHandle = google.maps.event.addListener(map, 'idle', function() {
+			//     $mapCanvas.appendTo($("#googleMap"));
+			//     google.maps.event.removeListener(listenerHandle);
+			// });
 			var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
 
@@ -87,9 +92,11 @@ $(".playah").each(function(index) {
 			}
 
 			//attachInstructionText(event_marker, "Hi");//event_obj.name + "<br>" + event_obj.location);
+			//$('#tabs').tabs();
 
 
 		});
+
 
 
 

@@ -8,17 +8,11 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
-
-    <script type="text/javascript">
-    $(document).bind("mobileinit", function () {
-        $.mobile.ajaxEnabled = false;
-    });
-    </script>
 <div data-role="tabs" id="tabs">
   <div data-role="navbar">
     <ul>
       <li><a href="#team" data-ajax="false">Team Info</a></li>
-      <li><a href="#events" data-ajax="false">Calendar</a></li>
+      <li><a href="#events" data-ajax="false">Events</a></li>
       <li><a href="#roster" data-ajax="false">Roster</a></li>
       <li><a href="#drivers" data-ajax="false">Drivers</a></li>
     </ul>
@@ -27,9 +21,15 @@
 
   <div id="team" class="team-tab">
     <h1>Team <%= team.name %></h1>
-				<b>Name: </b><%= team.name %><br />
-				<b>Sport: </b><%= team.sport %><br />
-				<b>Managed by: </b><% coaches.forEach(function(c, index, arr){ %>
+    <br>
+    	<div data-role="fieldcontain">
+			<label><b>Name:   </b></label><%= team.name %>
+		</div>
+		<div data-role="fieldcontain">
+			<label><b>Sport:   </b></label><%= team.sport %>
+		</div>
+		<div data-role="fieldcontain">
+			<label><b>Managed By:   </b></label><p><% coaches.forEach(function(c, index, arr){ %>
 
 					<% if(index == arr.length-1){ %>
 						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %></a>
@@ -37,12 +37,14 @@
 						<a href="/users/<%=c._id%>"><%= c.first_name + " " + c.last_name %></a> , 
 					<% } %>
 				<% }); %>
+			</p>
+		</div>
 
 		<% if(access){ %>
 		<br>
-		<a href="/teams/<%=team._id%>/edit" data-role="button" data-inline="true" data-theme="b">Edit Team Info</a>
-
-		<a href="/teams/<%= team._id %>/templates" data-role="button" data-inline="true" data-theme="b">Email Templates</a>
+		<div data-role="fieldcontain">
+			<a href="/teams/<%=team._id%>/edit" data-role="button" data-inline="true" data-theme="b">Edit Team Info</a>
+		</div>
 
 		<% } %>
   </div>
@@ -56,7 +58,7 @@
 
     <% if(access){ %>
 		<br>
-		<a type="button" class="pull-right btn btn-primary" href="/teams/<%=team._id%>/event">Create Event</a>
+		<a data-role="button" data-inline="true" data-theme="b" href="/teams/<%=team._id%>/event">Create Event</a>
 	<% } %>
 	</div>
   </div>
@@ -97,7 +99,7 @@
 
 
 
-  <div id="drivers" class="team-tab center-this">
+  <div id="drivers" class="driver-tab center-this">
   	<h3> Driver Leaderboard</h3>
 
 		<table data-role="table" id="my-table" data-mode="reflow" class="ui-responsive table-stroke">

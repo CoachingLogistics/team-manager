@@ -13,19 +13,30 @@
 <% } %>
 
 
-<form class="form-signin" role="form" action="/login" data-ajax="false" method="post">
-	<h2 class="form-signin-heading text-center">Please sign in</h2>
-        <input type="email" class="form-control" placeholder="Email address" required autofocus name="username">
-        <input type="password" class="form-control" placeholder="Password" required name="password">
+<h2 class="ui-bar ui-bar-a ui-corner-all center-this skinny-form">Please sign in</h2>
+
+<div class="ui-body ui-body-a ui-corner-all skinny-form center-this">
+<form role="form" action="/login" data-ajax="false" method="post" class="skinny-form center-this">
+	<div data-role="fieldcontain">
+        <input type="email" placeholder="Email address" required autofocus name="username">
+    </div>
+    <div data-role="fieldcontain">
+        <input type="password" placeholder="Password" required name="password">
+    </div>
+    <div data-role="fieldcontain">
         <label class="checkbox">
           <input type="checkbox" name="rememberme"> Remember me
         </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-</form>
-<h5 class="text-center"><a href="/forget">Forgot your password?</a></h5>
-<br>
-<h3 class="text-center"><a href="/register">Not registered? Get an account now!</a></h3>
+    </div>
+    <div data-role="fieldcontain" class="center-this">
+        <button type="submit">Sign in</button>
+    </div>
 
+</form>
+<h5 class="center-this"><a href="/forget">Forgot your password?</a></h5>
+<br>
+<h3 class="center-this"><a href="/register">Not registered? Get an account now!</a></h3>
+</div>
 
 
 

@@ -242,7 +242,8 @@ exports.edit = function(req, res){
 					      user:req.user,
 					      event: event,
 					      date: dateFormat(carpool.time),
-					      team: team
+					      team: team,
+					      title: "Edit Carpool"
 					    });
 					})
 				})

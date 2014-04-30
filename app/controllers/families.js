@@ -44,6 +44,7 @@ exports.index = function(req, res){
   Family.find({}, function(error, families) {
 
     res.render('./families_index', {
+      title: "Families",
       user: req.user,
       families: families
     });

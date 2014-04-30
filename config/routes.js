@@ -20,6 +20,9 @@ module.exports = function(app){
 	//home stuff
 	app.get('/', home.index);
 	app.get('/404', home.err);
+	app.get('/about', home.about);
+	app.get('/features', home.features);
+	app.get('/starting', home.starting);
 
 	//dashboard
 	app.get('/dashboard', ensureAuthenticated, dashboard.index);

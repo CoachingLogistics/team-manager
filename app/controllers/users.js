@@ -81,7 +81,7 @@ exports.register = function(req, res){
 			console.log(err);
 			return res.render('user/register', {
 				user: req.user,
-				title: 'Registration',
+				title: 'Register',
 				message: err
 			});
 		}

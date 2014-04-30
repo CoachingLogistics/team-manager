@@ -8,79 +8,94 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
-MY ACCOUNT
+<div role="main" class="ui-content jqm-content body-content">
+	<h2>MY ACCOUNT</h2>
 
-<div>
-<%= user.email %>
+	<div data-role="fieldcontain">
+		<label><b>Email:   </b><%= user.email %></label>
+	</div>
+
+	<div data-role="fieldcontain">
+		<label><b>First name:  </b><%= user.first_name %></label>
+	</div>
+
+	<div data-role="fieldcontain">
+		<label><b>Last name:   </b><%= user.last_name %></label>
+	</div>
+
+	<div data-role="fieldcontain">
+		<label><b>Phone number:   </b><%= user.phone %></label>
+	</div>
+
+
+	<a type="button" class="ui-btn ui-btn-inline" href="/users/<%=user._id%>/edit">Edit info</a>
+	<a type="button" class="ui-btn ui-btn-inline" href="/users/<%=user._id%>/password-change">Change Password</a>
+	<br><br>
+	<form action="/users/<%=user._id%>/delete" data-ajax="false" method="post" data-inline="true" data-theme="b">
+		<button type="submit" data-inline="true" data-theme="b">Delete</button>
+	</form>
+	<br>
+	<hr>
+	<br>
+
+	<h4>Players</h4>
+	<table data-role="table" id="roster-table" data-mode="reflow" class="ui-responsive table-stroke">
+		<thead>
+			<tr>
+				<th>Player</th><th>Teams</th><th></th><th></th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<% players.forEach(function(p){ %>
+			<tr>
+				<td>
+					<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
+				</td>
+				<td class="teams">
+					<div id="<%=p._id%>">
+						none
+					</div>
+				</td>
+				<td>
+					<a type="button" class="ui-btn ui-btn-inline" href="/players/<%=p._id%>/edit">Edit</a>
+				</td>
+				<td>
+					<form method='POST' action='/players/<%= p._id%>/delete' data-ajax="false"><button type="submit" data-inline="true" data-theme="b">Delete</button></form>
+				</td>	
+
+			<% }); %>
+		</tbody>
+
+	</table>
+
+	<br>
+	<hr>
+	<br>
+
+	<h4>Your Managed Teams</h4>
+	<table data-role="table" id="roster-table" data-mode="reflow" class="ui-responsive table-stroke">
+		<thead>
+			<tr>
+				<th>Team name</th><th>Sport</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% teams.forEach(function(t){ %>
+			<tr>
+				<td>
+					<a href="/teams/<%=t._id%>"><%= t.name%></a>
+				</td>
+				<td>
+					<%= t.sport%>
+				</td>
+			</tr>
+
+			<% }); %>
+		</tbody>
+
+	</table>
 </div>
-
-<div>
-<%= user.first_name %>
-</div>
-
-<div>
-<%= user.last_name %>
-</div>
-
-<div>
-<%= user.phone %>
-</div>
-
-<a type="button" class="btn btn-default"href="/users/<%=user._id%>/edit">Edit</a>
-<a type="button" class="btn btn-default" href="/users/<%=user._id%>/password-change">Change Password</a>
-<form action="/users/<%=user._id%>/delete" data-ajax="false" method="post">
-	<input type="submit" value="Delete"/>
-</form>
-
-
-
-<table class="table">
-<tr>
-	<th>Player</th><th>Teams</th><th></th><th></th>
-</tr>
-
-
-<% players.forEach(function(p){ %>
-<tr>
-	<td>
-		<a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a>
-	</td>
-	<td class="teams">
-		<div id="<%=p._id%>">
-			none
-		</div>
-	</td>
-	<td>
-		<a href="/players/<%=p._id%>/edit">edit</a>
-	</td>
-	<td>
-		<form method='POST' action='/players/<%= p._id%>/delete' data-ajax="false"><input type="Submit" value="Delete" /></form>
-	</td>	
-
-<% }); %>
-
-</table>
-
-<table class="table">
-<tr>
-	<th>Managing Team</th><th>Sport</th>
-</tr>
-
-
-<% teams.forEach(function(t){ %>
-<tr>
-	<td>
-		<a href="/teams/<%=t._id%>"><%= t.name%></a>
-	</td>
-	<td>
-		<%= t.sport%>
-	</td>
-</tr>
-
-<% }); %>
-
-</table>
-
 
 
 <!--***********************END OF CONTENT************************-->
