@@ -73,8 +73,8 @@ module.exports = function(app){
 
 	// events
 	app.get('/events', ensureAuthenticated, events.index);
-	app.get('/events/:id', events.show);
 	app.get('/events/new', ensureAuthenticated, events.new);
+	app.get('/events/:id', events.show);
 	app.post('/events/new', ensureAuthenticated, events.create);
 	app.get('/events/:id/edit', ensureAuthenticated, events.edit);
 	app.post('/events/:id/edit', ensureAuthenticated, events.update);

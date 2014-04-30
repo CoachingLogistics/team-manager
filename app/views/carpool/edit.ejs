@@ -12,51 +12,29 @@
 	<form class="form-horizontal" method="post" action="/carpools/<%= carpool._id %>/edit" role="form" data-ajax="false">
 
 
-	<div class="form-group">
+	<div data-role="fieldcontain">
 		<label for="size" class="col-sm-2 control-label">Number you can drive</label>
-		<div class="col-sm-10">
-			<input type="number" class="form-control" placeholder="1" name="size" value="<%= carpool.size %>">
-		</div>
+		<input type="number" class="form-control" placeholder="1" name="size" value="<%= carpool.size %>">
 	</div>
 
-	<div class="form-group">
-			<label for="location" class="col-sm-2 control-label">Your Location</label>
-			<div class="col-sm-10">
-				<input type="string" class="form-control" placeholder="123 Main St." name="location" value="<%= carpool.location %>">
-			</div>
+	<div data-role="fieldcontain">
+		<label for="location" class="col-sm-2 control-label">Your Location</label>
+		<input type="text" class="form-control" placeholder="123 Main St." name="location" value="<%= carpool.location %>">
 	</div>
 
-
-
-
-	<div class="form-group">
+	<div data-role="fieldcontain">
 		<label for="time" class="col-sm-2 control-label">Time</label>
-		<div class="col-sm-4">
-			<input type="number" max="23" min="0" class="form-control" placeholder="hour" name="hour" value="<%= hour %>" required/>
-		</div>
-		<div class="col-sm-4">
-			<input type="number" max="59" min="0" name="minute" placeholder="minute" class="form-control" value="<%= minutes %>" required>
-		</div>
-		<div class="col-sm-2">
-			<select name="time" class="form-control" value="<%= carpool.size %>" required>
-				<option value="am">AM</option>
-				<option <%if(time == "PM"){%> selected="selected" <%}%> value = "pm">PM</option>
-			</select>
-		</div>
+		<input type="time" class="form-control" name="time" value="<%= timeStr %>" required/>
 	</div>
 
-	<div class="form-group">
-			<label for="details" class="col-sm-2 control-label">Notes</label>
-			<div class="col-sm-10">
-				<textarea name='notes' class="form-control" rows="3"><%=carpool.notes%></textarea>
-			</div>
+	<div data-role="fieldcontain">
+		<label for="notes" class="col-sm-2 control-label">Notes</label>
+		<textarea name='notes' class="form-control" rows="3"><%=carpool.notes%></textarea>
 	</div>
 
 
-	<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10 text-center">
-				<button type="submit" class="btn btn-default">Update Carpool</button>
-			</div>
+	<div data-role="fieldcontain">
+		<button type="submit" class="btn btn-default">Update Carpool</button>
 	</div>
 
 </form>
