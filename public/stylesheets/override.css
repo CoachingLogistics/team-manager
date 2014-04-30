@@ -221,6 +221,8 @@ font-weight: 300;
   display: none;
 }
 
+
+/*DRIVER TABLE ON THE TEAM SHOW PAGE*/
 /* Show priority 1 at 320px (20em x 16px) */
 @media screen and (min-width: 1px) {
    .driver-table th.ui-table-priority-1,
@@ -261,3 +263,15 @@ font-weight: 300;
 .driver-table td.ui-table-cell-visible {
    display: table-cell;
 }
+
+
+
+/*CALENDAR RESPONSIVENESS*/
+
+
+
+
+
+
+
+
