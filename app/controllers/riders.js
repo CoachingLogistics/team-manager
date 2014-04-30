@@ -196,17 +196,13 @@ exports.submitRideRequestForEvent = function(req, res) {
   var event_id = req.param('event_id');
   var players = req.body.players;
   var location = req.body.location;
-  var hour = parseInt(req.body.hour);
-  var minute = parseInt(req.body.minute);
-  var specifier = req.body.ampm;
-
+  var time = req.body.time;
   Event.findById(event_id, function(err, theEvent) {
     var date = theEvent.date;
-    if(hour == 12 && specifier == "am") {
-      hour = 0;
-    } else if(hour != 12 && specifier == "pm") {
-      hour += 12;
-    }
+    // more hacky time setting
+    var hour = parseInt("" + time[0] +"" + time[1] + "");
+    var minute = parseInt("" + time[3] +""+ time[4] + "");
+    var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
     var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
     players.forEach(function(player) {
       RosterSpot.getByIds(theEvent.team_id, player, function(err, theRosterSpot) {
