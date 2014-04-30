@@ -4,6 +4,7 @@
 
 <div data-role="header" class="jqm-header">
     <a href="#navpanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+    <h2><%=title%></h2>
     <%if(user!=null){%>
 
       <a href="#popupMenu" data-rel="popup" class="jqm-search-link ui-btn ui-corner-all ui-icon-search ui-nodisc-icon ui-alt-icon ui-btn-right" data-transition="slidedown" data-theme="b"><small><%=user.first_name+ " " + user.last_name %></small></a>
