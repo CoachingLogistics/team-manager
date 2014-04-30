@@ -3,7 +3,6 @@
 <div data-role="page">
 
 <div data-role="header" class="jqm-header">
-    <h2><%= title %></h2>
     <a href="#navpanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
     <%if(user!=null){%>
 
@@ -35,7 +34,7 @@
           <ul data-role="listview" data-count-theme="c" data-inset="false">
             <li><a href="/">Home</a></li>
             <% if(user){%>
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/teams">Teams</a></li>
             <li><a href="/players">Players</a></li>
             <li><a href="/events">Events</a></li>
