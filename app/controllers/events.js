@@ -349,8 +349,10 @@ exports.edit = function(req, res) {
 								team: team,
 								user:req.user,
 								'error': null,
+								dateStr: dateRFCFormat(event.date),
 								date: dateFormat(event.date),
 								time: time,
+								timeStr: timeRFCFormat(event.date),
 								hour: hour,
 								minutes: minutes
 							});
@@ -502,6 +504,32 @@ var dateFormat = function(date) {
     var year = date.getFullYear();
     return month+"/"+day+"/"+year;
 };
+
+var dateRFCFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    if (day < 10){
+    	day = "0" + day;
+    }
+    if (month < 10){
+    	month = "0" + month;
+    }
+    return year+"-"+month+"-"+day;
+};
+
+var timeRFCFormat = function(date){
+	var hour = date.getHours();
+	var minutes = date.getMinutes();
+
+	if (hour < 10){
+		hour = "0" + hour;
+	}
+	if (minutes < 10){
+		minutes = "0" + minutes;
+	}
+	return hour + ":" + minutes + ":00";
+}
 
 var timeFormat = function(date) {
     var time = "AM";

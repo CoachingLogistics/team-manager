@@ -18,9 +18,8 @@
 <h2>New Event</h2>
 	<form class="form-horizontal" method="post" action="/events/new" role="form" data-ajax="false">
 	<input type="hidden" name="team_id" value="<%=team._id%>"/>
-	<div class="form-group">
+	<div data-role="fieldcontain">
 			<label for="type" class="col-sm-2 control-label">Event Type</label>
-			<div class="col-sm-10">
 				<select name="type" class="form-control" placeholder="event type" required>
 				  <option></option>
 				  <option value="Practice">Practice</option>
@@ -28,65 +27,25 @@
 				  <option value="Meeting">Meeting</option>
 				  <option value="Other Event">Other Event</option>
 				</select>
-			</div>
 	</div>
-	<div class="form-group">
+	<div data-role="fieldcontain">
 			<label for="location" class="col-sm-2 control-label">Location</label>
-			<div class="col-sm-10">
 				<input type="string" class="form-control" placeholder="123 Main St." name="location">
-			</div>
 	</div>
-	<div class="form-group">
-			<label for="month" class="col-sm-2 control-label">Date</label>
-			<div class="col-sm-4">
-				<select name="month" class="form-control" required>
-				<option></option>
-				<option value = "0">January</option>
-				<option value = "1">February</option>
-				<option value = "2">March</option>
-				<option value = "3">April</option>
-				<option value = "4">May</option>
-				<option value = "5">June</option>
-				<option value = "6">July</option>
-				<option value = "7">August</option>
-				<option value = "8">September</option>
-				<option value = "9">October</option>
-				<option value = "10">November</option>
-				<option value = "11">December</option>
-				</select>
-			</div>
-			<div class="col-sm-3">
-				<input type="number" max="31" min="1" name="day" class="form-control" placeholder="day" required />
-			</div>
-			<div class="col-sm-3">
-				<input type="number" max="<%= new Date().getFullYear()+3 %>" name="year" placeholder="year" class="form-control" required />
-			</div>
+	<div data-role="fieldcontain">
+		<label for="date">Date</label>
+		<input name="date" id="date" type="date" required/>
 	</div>
-	<div class="form-group">
+	<div data-role="fieldcontain">
 		<label for="time" class="col-sm-2 control-label">Time</label>
-		<div class="col-sm-4">
-			<input type="number" max="23" min="0" class="form-control" placeholder="hour" name="hour" required/>
-		</div>
-		<div class="col-sm-4">
-			<input type="number" max="59" min="0" name="minute" placeholder="minute" class="form-control" required>
-		</div>
-		<div class="col-sm-2">
-			<select name="time" class="form-control" required>
-				<option value="am">AM</option>
-				<option value = "pm">PM</option>
-			</select>
-		</div>
+		<input type="time" name="time" id="time" required/>
 	</div>
-	<div class="form-group">
+	<div data-role="fieldcontain">
 			<label for="details" class="col-sm-2 control-label">Details</label>
-			<div class="col-sm-10">
-				<textarea name="description" class="form-control" rows="3"></textarea>
-			</div>
+			<textarea name="description" class="form-control" rows="3"></textarea>
 	</div>
-	<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10 text-center">
+	<div data-role="fieldcontain">
 				<button type="submit" class="btn btn-default">Create Event</button>
-			</div>
 	</div>
 
 </form>
