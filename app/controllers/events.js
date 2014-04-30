@@ -300,7 +300,10 @@ exports.show = function(req, res){
 exports.edit = function(req, res) {
 	Event.findById(req.params.id, function(err, event) {	//get event
 		if(err) {
-			return res.status(404).render('404', {user:req.user});
+			return res.status(404).render('404', {
+				user:req.user,
+				title: 'Team Manager'
+			});
 		}else {
 
 			Team.findById(event.team_id, function(err, team){	//get team

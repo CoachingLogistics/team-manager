@@ -1,5 +1,10 @@
 
 /***************GENERAL LAYOUT STYLING******************/
+#off_screen {
+    position: absolute;
+    left: -1000px;
+    top: -1000px;
+}
 
 .nav-collapsible {
     margin: 0 !important;

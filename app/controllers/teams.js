@@ -723,7 +723,8 @@ exports.roster = function(req, res){
 				    	  events: events,
 				    	  players: players,
 				    	  coaches: coaches,
-				    	  access: access
+				    	  access: access,
+				    	  title: team.name
 				    	});
 					}
 

@@ -20,6 +20,7 @@ exports.send_mail = function(req, res) {
 			console.log(err);
 		}
 		return res.render('mail/mail-response', {
+			title: 'Team Manager',
 			error: err,
 			user: req.user
 		});

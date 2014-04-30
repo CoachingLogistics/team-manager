@@ -17,7 +17,7 @@ exports.err = function(req, res){
 
 exports.about = function(req, res){
   res.render('home/about', {
-    title: 'Generator-Express MVC',
+    title: 'Team Manager',
     user: req.user
   });
 };
@@ -25,7 +25,7 @@ exports.about = function(req, res){
 
 exports.features = function(req, res){
   res.render('home/features', {
-    title: 'Generator-Express MVC',
+    title: 'Team Manager',
     user: req.user
   });
 };
@@ -33,7 +33,7 @@ exports.features = function(req, res){
 
 exports.starting = function(req, res){
   res.render('home/starting', {
-    title: 'Generator-Express MVC',
+    title: 'Team Manager',
     user: req.user
   });
 };
