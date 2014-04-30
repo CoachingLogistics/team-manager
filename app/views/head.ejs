@@ -31,26 +31,6 @@
 
 </div>
 
-      <!--div data-role="panel" data-position="left" data-display="reveal" id="navpanel">
-          <ul data-role="listview" data-count-theme="c" data-inset="false">
-            <li><a href="/">Home</a></li>
-            <% if(user){%>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="/teams">Teams</a></li>
-            <li><a href="/players">Players</a></li>
-            <li><a href="/events">Events</a></li>
-            <li data-role="collapsible" class="nav-collapsible" data-iconpos="right">
-                <h4 class="nav-collapsible">Teams</h4>
-                <ul data-role="listview">
-                  <li><a href="#">List item 1</a></li>
-                  <li><a href="#">List item 2</a></li>
-                  <li><a href="#">List item 3</a></li>
-                </ul>
-            </li>
-            <% } %>
-          </ul>
-      </div-->
-
 <div data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a" id="navpanel">
 <ul data-role="listview" class="jqm-list ui-alt-icon ui-nodisc-icon">
 <li data-filtertext="demos homepage" data-icon="home"><a href="/">Home</a></li>
@@ -59,15 +39,17 @@
             <li><a href="/teams">Teams</a></li>
             <li><a href="/players">Players</a></li>
             <li><a href="/events">Events</a></li>
+            <hr>
+            <% } %>
             <li data-role="collapsible" class="nav-collapsible" data-iconpos="right">
-                <h4 class="nav-collapsible">Teams</h4>
+                <h4 class="nav-collapsible">App Info</h4>
                 <ul data-role="listview">
-                  <li><a href="#">List item 1</a></li>
-                  <li><a href="#">List item 2</a></li>
-                  <li><a href="#">List item 3</a></li>
+                  <li><a href="/features">Features</a></li>
+                  <li><a href="/starting">Getting Started</a></li>
                 </ul>
             </li>
-            <% } %>
+            <li><a href="/about">About Us</a></li>
+            
 </ul>
 </div>
 
@@ -76,9 +58,9 @@
 
 <div data-role="panel" class="jqm-navmenu-panel" data-position="right" data-display="overlay" data-theme="a" id="popupMenu">
   <ul data-role="listview" class="jqm-list ui-alt-icon ui-nodisc-icon">
-    <li data-filtertext="demos homepage" data-icon="home"><a href=".././">Home</a></li>
+    <li></li>
     <li><a href="/account">My Profile</a></li>
-    <li><a href="#">Nothing</a></li>
+    <li style="height: 50px"></li>
     <li><a href="/logout" data-ajax="false">Log Out</a></li>
   </ul>
 </div>

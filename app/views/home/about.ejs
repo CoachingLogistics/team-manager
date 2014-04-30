@@ -1,0 +1,32 @@
+<html>
+
+<head>
+<% include ../head_scripts %>
+<script>
+$(function(){
+	$("#panelbutton").on('click', function(){
+		$("#mypanel").panel('open');
+	});
+});
+</script>
+</head>
+		
+
+<body>
+<% include ../head %>
+<!--************************CONTENT**************************-->
+<div role="main" class="ui-content jqm-content body-content static-content">
+	<h1>About Us</h1>
+
+		<p>Team Manager is an application created for the Software Development Project course (67-373) at Carnegie Mellon University.  The project was advised by Joseph Mertz, for our client Mark Schaub.  Below is the project team that created this application.</p>
+		<br>
+		<h2>Project Team</h2>
+		<p>The project team includes Alex Egan, Duan Wang, Logan Watanabe, and Delia Zhao.</p>
+</div>
+
+
+
+<!--***********************END OF CONTENT************************-->
+<% include ../footer %>
+</body>
+</html>

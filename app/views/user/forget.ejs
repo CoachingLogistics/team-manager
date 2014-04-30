@@ -7,22 +7,26 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
+<div class="skinny-form center-this">
 
-<% if (message) { %>
-<p><%= message %></p>
-<% } %>
+	<form role="form" action="/forget" data-ajax="false" method="post">
+		<h4>Forgot your password?</h4>
+		<h6 class="form-signin-heading text-center">Provide your email to recieve a new password</h6>
 
-<div class="well">
-<form class="form-signin" role="form" action="/forget" data-ajax="false" method="post">
-	<h2 class="form-signin-heading text-center">Provide your email to recieve a new password</h2>
-        <input type="email" class="form-control" placeholder="Email address" required autofocus name="email">
-        <br><br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Send A New Password</button>
-</form>
+		<div data-role="fieldcontain">
+		        <label for="old">Email</label>
+		        <input type="email" class="form-control" placeholder="Email address" required autofocus name="email">
+		</div>
+
+        <br>
+        
+        <div data-role="fieldcontain">
+        	<button class="btn btn-lg" type="submit" data-inline="true">Send A New Password</button>
+    	</div>
+	</form>
+
+<h3 class="center-this"><a href="/register">Not registered? Get an account now!</a></h3>
 </div>
-
-<h3 class="text-center"><a href="/register">Not registered? Get an account now!</a></h3>
-
 
 
 
