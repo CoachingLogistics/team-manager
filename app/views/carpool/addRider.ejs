@@ -12,20 +12,37 @@
 <% if(warning) {%>
   <b><%= warning %></b>
 <% } %>
-<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST'>
-  <b>Players:</b> <br />
+<form action='/riders/createForCarpool/<%=carpool._id%>' method='POST' data-ajax="false">
   <% players.forEach(function(player, index) { %>
-    <input type="checkbox" value="<%= player._id%>" name="riders[<%=index%>]"><%= player.full_name %>
-    <b>Where will you pick them up?</b><input type="text" name="locations[<%=index%>]">
-    <b>Time</b><input type="number" name="hours[<%=index%>]">:<input type="number" name="minutes[<%=index%>]">
-    <select name="ampms[<%=index%>]">
+    <div class="ui-block-a">
+      <input type="checkbox" class="form-control" value="<%= player._id%>" name="riders[<%=index%>]">
+    </div>
+    <div class="ui-block-b">
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= player.full_name %>
+      <br />
+      <br />
+    </div>
+    <br />
+    <b>Location</b><input type="text" name="locations[<%=index%>]" class="form-control">
+    <b>Time</b><br />
+    <div class="ui-block-a">
+      <input type="number" name="hours[<%=index%>]" class="form-control" placeholder="hour">
+    </div>
+    <div class="ui-block-b">
+      <input type="number" name="minutes[<%=index%>]" class="form-control" placeholder="minute">
+    </div>
+    <br />
+    <select name="ampms[<%=index%>]" class="form-control">
       <option></option>
       <option value="am">AM</option>
       <option value="pm">PM</option>
-    </select><br />
+    </select>
+    <br />
+    <br />
+    <br />
   <% })%>
 
-  <input type="submit" value="Add Riders">
+  <input type="submit" value="Add Riders" data-role="button" class="form-control wide-button">
 
 </form>
 <!--***********************END OF CONTENT************************-->

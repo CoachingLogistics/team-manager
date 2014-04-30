@@ -57,13 +57,14 @@ module.exports = function(app){
 	app.get('/players/:id/teams', players.teams);//auth?
 
 	// teams
-	app.get('/teams', teams.index);
+	app.get('/teams', ensureAuthenticated, teams.index);
 	app.get('/teams/new', ensureAuthenticated, teams.new);
 	app.post('/teams/new', ensureAuthenticated, teams.create);
 	app.get('/teams/:id', teams.show);
 	app.get('/teams/:id/edit', ensureAuthenticated, teams.edit);
 	app.post('/teams/:id/edit', ensureAuthenticated, teams.update);
 	//app.post('/teams/:id/delete', teams.delete);
+	app.get('/teams/:id/calendar_events', teams.calendar_events);
 
 	app.get('/teams/:id/event', ensureAuthenticated, events.team_event);
 	app.get('/teams/:id/calendar', teams.calendar);
@@ -71,7 +72,7 @@ module.exports = function(app){
 
 
 	// events
-	app.get('/events', events.index);	//tbd
+	app.get('/events', ensureAuthenticated, events.index);
 	app.get('/events/:id', events.show);
 	app.get('/events/new', ensureAuthenticated, events.new);
 	app.post('/events/new', ensureAuthenticated, events.create);

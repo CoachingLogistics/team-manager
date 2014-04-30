@@ -1,4 +1,4 @@
-$(function(){
+$(document).bind("pageinit", function(){
 
 
 
