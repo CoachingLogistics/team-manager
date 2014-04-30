@@ -92,7 +92,7 @@ $(".playah").each(function(index) {
 			}
 
 			//attachInstructionText(event_marker, "Hi");//event_obj.name + "<br>" + event_obj.location);
-			$('#tabs').tabs();
+			//$('#tabs').tabs();
 
 
 		});

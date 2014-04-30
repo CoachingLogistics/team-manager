@@ -7,8 +7,8 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
-<div class="row">
-	<div class="col-md-8">
+<div class="body-content">
+
 		<h2> Team: <%= team.name %></h2>
 		<h4> Carpool for <%= event.type %> on <%= date %></h4>
 
@@ -39,15 +39,13 @@
 			<br /><a href="/riders/<%=event._id%>/request/<%=carpool._id%>" data-role="button" class="btn btn-info" >Request a ride</a>
 		<% } %>
 
-	</div>
-</div>
+
+
 <hr>
-<div class="row">
-	<div class="col-md-8">
+
+
 		<div id="googleMap" style="width:100%; height:420px"></div>
 
-	</div>
-	<div class="col-md-4">
 		<div id="carpool-direction-message">
 			<button id="direction-button" data-role="button" data-theme="b">Show Directions</button>
 		</div>
@@ -59,8 +57,7 @@
 				<!--directions loaded here-->
 			</table>
 		</div>
-	</div>
-</div>
+
 
 <div id="carpool-riders">
 	<button data-role="button" data-theme="b" id="rider-toggle-button">Show Riders</button>
@@ -98,6 +95,7 @@
 		</table>
 		<% } %>
 	</div>
+</div>
 </div>
 
 <!--***********************END OF CONTENT************************-->

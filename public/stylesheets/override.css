@@ -210,3 +210,9 @@ font-weight: 300;
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+.gmap{
+  height: 500px;
+  width: 80%;
+  margin: 0 auto;
+}
