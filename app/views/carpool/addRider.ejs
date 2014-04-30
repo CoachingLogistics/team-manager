@@ -25,21 +25,7 @@
     <br />
     <b>Location</b><input type="text" name="locations[<%=index%>]" class="form-control">
     <b>Time</b><br />
-    <div class="ui-block-a">
-      <input type="number" name="hours[<%=index%>]" class="form-control" placeholder="hour">
-    </div>
-    <div class="ui-block-b">
-      <input type="number" name="minutes[<%=index%>]" class="form-control" placeholder="minute">
-    </div>
-    <br />
-    <select name="ampms[<%=index%>]" class="form-control">
-      <option></option>
-      <option value="am">AM</option>
-      <option value="pm">PM</option>
-    </select>
-    <br />
-    <br />
-    <br />
+    <input type="time" name="times[<%=index%>]" class="form-control">
   <% })%>
 
   <input type="submit" value="Add Riders" data-role="button" class="form-control wide-button">

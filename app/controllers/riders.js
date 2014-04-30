@@ -25,9 +25,10 @@ exports.create = function(req, res) {
   // easy access to necessary params
   var riders = req.body.riders;
   var locations = req.body.locations;
-  var hours = req.body.hours;
-  var minutes = req.body.minutes;
-  var ampms = req.body.ampms;
+  // var hours = req.body.hours;
+  // var minutes = req.body.minutes;
+  // var ampms = req.body.ampms;
+  var times = req.body.times;
   var carpool_id = req.params.carpool_id;
 
   // need the carpool
@@ -53,16 +54,11 @@ exports.create = function(req, res) {
                 // make the date more readable
                 var rosterSpotId = rosterSpot._id;
                 var date = theEvent.date;
-                var curHour = parseInt(hours[index]);
-                var curMinute = parseInt(minutes[index]);
-                var curSpecifier = ampms[index];
-                if(curHour == 12 && curSpecifier == "am") {
-                  curHour = 0;
-                }
-                else if(curHour != 12 && curSpecifier == "pm") {
-                  curHour += 12;
-                }
-                var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), curHour, curMinute);
+                // get the time param and make it into hours and minutes
+                // in perhaps the least elegant way possible
+                var hour = parseInt("" + times[index][0] +"" + times[index][1] + "");
+                var minute = parseInt("" + times[index][3] +""+ times[index][4] + "");
+                var rideDate = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), hour, minute);
                 var newRider = new Rider({
                   roster_spot_id: rosterSpotId,
                   carpool_id: carpool_id,
