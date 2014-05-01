@@ -49,6 +49,8 @@ $(document).bind("pageinit", function(){
 		});
 
 	$('#map-tab').on('click', function(){
+
+		$('#googleMap').empty();
 		//loading the google map
 		$.get('/events/'+event_id+'/coordinates', function(coords, err){
 			var lat=coords.latitude;
