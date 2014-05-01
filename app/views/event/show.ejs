@@ -64,11 +64,12 @@
 
   <div id="attendance" class="team-tab">
   	<br><br>
-  	<table data-role="table" class="ui-responsive table-stroke">
+  	<table data-role="table" data-mode="columntoggle" class="ui-responsive table-stroke">
 		<thead>
 			<tr>
 				<th>Players</th>
 				<th>RSVP</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -111,7 +112,7 @@
  		<%}%>
 
 		<% if(carpools.length>0){ %>
-			<table data-role="table" class="ui-responsive table-stroke">
+			<table data-role="table" data-mode="columntoggle" class="ui-responsive table-stroke">
 				<thead>
 					<th>Driver</th>
 					<th>Spots</th>
