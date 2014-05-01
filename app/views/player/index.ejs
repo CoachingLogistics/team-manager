@@ -10,8 +10,8 @@
 
 
 <!-- May or may not need this later -->
-<h1>Player's Index page</h1>
-<table>
+<h1>Your Players</h1>
+<table data-role="table" class="ui-responsive table-stroke">
 	<thead>
 		<th>Last Name</th>
 		<th>First Name</th>
@@ -23,14 +23,18 @@
 			<tr>
 				<td><%= players[i].last_name %></td>
 				<td><%= players[i].first_name %></td>
-				<td><%= players[i].date_of_birth %></td>
-				<td><a href=<%= '/players/' + players[i]._id %>>Show</a></td>
+				<td><% if(players[i].date_of_birth){ %>
+					<%= players[i].date_of_birth %>
+					<% }else{ %>
+					--
+					<% } %></td>
+				<td><a href=<%= '/players/' + players[i]._id %> data-role="button" data-inline="true" data-mini="true">Details</a></td>
 			</tr>
 		<% } %>
 	</tbody>
 </table>
 
-<a href='/players/new'>Create new player</a>
+<a href='/players/new' data-role="button" data-theme="b">Create new player</a>
 
 
 <!--***********************END OF CONTENT************************-->

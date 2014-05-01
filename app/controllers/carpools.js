@@ -121,11 +121,10 @@ exports.create = function(req, res){
 
 	Event.findById(req.param('event_id'), function(err, event){
 
-		var hour = req.param('hour');
-		if(req.param('time')=="pm"){ hour= +hour + 12; }
-		if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-		var date = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate(), hour, req.param('minute'));
-		Team.findById(event.team_id, function(err, team){
+			var time = req.param('time');
+			var date = new Date(event.date);
+			date.setHours(parseInt(time[0]+time[1]), parseInt(time[3]+time[4]));
+			Team.findById(event.team_id, function(err, team){
 
 			var authorized_users = [];
 
@@ -223,22 +222,9 @@ exports.edit = function(req, res){
 							res.redirect('back');
 						}
 
-						var time = "AM";
-						var hour = carpool.time.getHours();
-						if(carpool.time.getHours()>=12){
-							hour = carpool.time.getHours()-12;
-							time="PM";
-						}
-						var minutes = carpool.time.getMinutes();
-						if(minutes == 0){
-							minutes = "00";
-						}
-
 						res.render('carpool/edit', {
 						  carpool: carpool,
-					      time: time,
-					      hour: hour,
-					      minutes: minutes,
+					      timeStr: timeRFCFormat(carpool.time),
 					      user:req.user,
 					      event: event,
 					      date: dateFormat(carpool.time),
@@ -255,6 +241,7 @@ exports.edit = function(req, res){
 
 //post
 exports.update = function(req, res){
+		
 
 		Carpool.findById(req.params.id, function(error, carpool){
 
@@ -263,10 +250,9 @@ exports.update = function(req, res){
 				res.redirect('/404');
 			}else{
 				//breaking down the time input to  DATETIME format
-				var hour = req.param('hour');
-				if(req.param('time')=="pm"){ hour= +hour + 12; }
-				if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-				var date = new Date(carpool.time.getFullYear(), carpool.time.getMonth(), carpool.time.getMinutes(), hour, req.param('minute'));
+				var time = req.param('time');
+				var date = new Date(carpool.time);
+				date.setHours(parseInt(time[0]+time[1]), parseInt(time[3]+time[4]));
 
 	  			if(!req.user._id.equals(carpool.user_id)){
 	  				//not authorized
