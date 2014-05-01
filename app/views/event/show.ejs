@@ -13,6 +13,7 @@
 <div data-role="tabs" id="tabs">
   <div data-role="navbar">
     <ul>
+    <li><a href="#map" data-ajax="false">Map</a></li>
       <li><a href="#event" data-ajax="false">Event</a></li>
       <li><a href="#attendance" data-ajax="false">Attendance</a></li>
       <li><a href="#carpools" data-ajax="false">Carpooling</a></li>
@@ -20,10 +21,13 @@
   </div>
 
 
-  <div id="event" class="team-tab">
+  <div id="map" class="team-tab">
   	<br><br>
   	<div id="googleMap" class="gmap"></div>
-  	<br>
+  </div>
+
+  <div id="event" class="team-tab">
+  	<br><br>
     <h2><%= event.type %></h2>
     	<% if(driving) { %>
 		<h3>You are driving for this event</h3>
@@ -49,7 +53,7 @@
 		<% if(access){ %>
 		<br>
 		<div data-role="fieldcontain">
-			<a data-inline="true" data-role="button" href="/events/<%=event._id%>/edit">Edit Event Info</a>
+			<a data-inline="true" data-role="button" data-inline="true" href="/events/<%=event._id%>/edit">Edit Event Info</a>
 		</div>
 		<div data-role="fieldcontain">
 			<form method='POST' action=<%= '/events/' + event._id + '/delete'%> data-ajax="false">
@@ -69,6 +73,7 @@
 			<tr>
 				<th>Players</th>
 				<th>RSVP</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>

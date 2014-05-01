@@ -116,10 +116,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 //post create
 exports.create = function(req, res){
 
-	var hour = req.param('hour');
-	if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
-	if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-	var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));
+	var date = new Date((req.param('date')+" "+req.param('time')).replace(/-/g,"/"));
 
 	Team.findById(req.param('team_id'), function(err, team){
 		if(err){
@@ -372,7 +369,7 @@ exports.edit = function(req, res) {
 exports.update = function(req, res){
 
 	//breaking down the time input to  DATETIME format
-	var date = req.param('date');
+	var date = new Date((req.param('date')+" "+req.param('time')).replace(/-/g,"/"));
 	//if(req.param('time')=="pm" && req.param('hour')!=12){ hour= +hour + 12; }
 	//if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
 	//var date = new Date(req.param('year'), req.param('month'), req.param('day'), hour, req.param('minute'));

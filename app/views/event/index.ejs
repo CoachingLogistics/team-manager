@@ -29,7 +29,7 @@
 <h2>Personal Events</h2>
 <table data-role="table" class="ui-responsive table-stroke">
 	<thead>
-		<th>Player</th>
+		<!-- <th>Player</th> -->
 		<th>Team</th>
 		<th>Type</th>
 		<th>Date</th>
@@ -38,7 +38,7 @@
 	<tbody>
 		<% playerEvents.forEach(function(playerEvent) { %>
 			<tr>
-				<td><%=playerEvent.player.first_name + " " + playerEvent.player.last_name%></td>
+				<!-- <td><%=playerEvent.player.first_name + " " + playerEvent.player.last_name%></td> -->
 				<td><%=playerEvent.team.name%></td>
 				<td><%=playerEvent.event.type%></td>
 				<td><%=playerEvent.date + " " + playerEvent.time%></td>

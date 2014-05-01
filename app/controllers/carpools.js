@@ -121,11 +121,8 @@ exports.create = function(req, res){
 
 	Event.findById(req.param('event_id'), function(err, event){
 
-		var hour = req.param('hour');
-		if(req.param('time')=="pm"){ hour= +hour + 12; }
-		if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-		var date = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate(), hour, req.param('minute'));
-		Team.findById(event.team_id, function(err, team){
+			var date = new Date((req.param('date')+" "+req.param('time')).replace(/-/g,"/"));
+			Team.findById(event.team_id, function(err, team){
 
 			var authorized_users = [];
 
@@ -263,10 +260,7 @@ exports.update = function(req, res){
 				res.redirect('/404');
 			}else{
 				//breaking down the time input to  DATETIME format
-				var hour = req.param('hour');
-				if(req.param('time')=="pm"){ hour= +hour + 12; }
-				if(req.param('time')=="am" && req.param('hour')==12){ hour = 0; }
-				var date = new Date(carpool.time.getFullYear(), carpool.time.getMonth(), carpool.time.getMinutes(), hour, req.param('minute'));
+				var date = new Date((req.param('date')+" "+req.param('time')).replace(/-/g,"/"));
 
 	  			if(!req.user._id.equals(carpool.user_id)){
 	  				//not authorized
