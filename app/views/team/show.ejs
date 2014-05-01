@@ -52,32 +52,30 @@
 
 
   <div id="events" class="team-tab calendar-tab">
-  	<div>
-  		<br><br>
-    <div id="calendar"></div>
+  	<br><br>
+    <div id="calendar" style="width: 100%"></div>
 
     <% if(access){ %>
 		<br>
 		<a data-role="button" data-inline="true" data-theme="b" href="/teams/<%=team._id%>/event">Create Event</a>
 	<% } %>
-	</div>
   </div>
 
 
   <div id="roster" class="team-tab">
   	<br><br>
-  	<table data-role="table" id="my-table" data-mode="reflow" class="ui-responsive table-stroke">
+  	<table data-role="table" id="my-table" data-mode="columntoggle" class="ui-responsive table-stroke">
 	  <thead>
 	    <tr>
 			<th>Players</th>
 			<th>Next event</th>
 	    </tr>
-	    <tr>
-			<th></th>
-			<th id="event-name"></th>
-		</tr>
 	  </thead>
 	  <tbody>
+	  	<tr>
+			<td></td>
+			<td id="event-name"></td>
+		</tr>
 				<% players.forEach(function(p){ %>
 					<tr>
 						<td><a href="/players/<%=p._id%>"><%= p.first_name + " " + p.last_name %></a></td>
@@ -102,10 +100,13 @@
   <div id="drivers" class="driver-tab center-this">
   	<h3> Driver Leaderboard</h3>
 
-		<table data-role="table" id="my-table" data-mode="reflow" class="ui-responsive table-stroke">
+		<table data-role="table" id="driver-table" data-mode="columntoggle" class="driver-table">
 			<thead>
 				<tr>
-					<th>Name</th> <th>Email</th> <th>Phone</th> <th>Carpools</th> <th>Rides Given</th>
+					<th data-priority="1">Name</th>
+					<th data-priority="4">Email</th>
+					<th data-priority="2">Carpools</th>
+					<th data-priority="3">Rides Given</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -113,7 +114,6 @@
 					<tr>
 						<td><a href="/users/<%=driver._id%>"><%= driver.first_name + " " + driver.last_name%></a></td>
 						<td><%= driver.email%></td>
-						<td><%= driver.phone%></td>
 						<td><%= driver.carpools%></td>
 						<td><%= driver.riders%></td>
 					</tr>

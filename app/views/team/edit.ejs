@@ -10,7 +10,7 @@
 
 <h1>Edit <%= team.name %></h1>
 
-    <form id="team_form" method="post" action= "/teams/<%= team._id %>/edit" data-ajax="false" role="form">
+    <form id="team_form" method="post" action="/teams/<%= team._id %>/edit" data-ajax="false" role="form">
 
         <div data-role="fieldcontain">
             <label for="name">Team Name:</label>
@@ -23,12 +23,12 @@
         </div>
         <div data-role="fieldcontain">
             <label>Current Managers</label>
-              <div>
+              <div class="help-block">
                <% coaches.forEach(function(c){%>
 
                     <a href="/users/<%=c._id%>"><%= c.first_name%> <%= c.last_name%></a>
                     <%= c.email%>
-                    <form method="post" action="/teams/<%=team._id%>/user/<%=c._id%>/remove"><button id="submit" type="submit" data-inline="true">Remove Manager</button></form>
+                    <button id="<%=c._id%>" class="remove-man" data-inline="true">Remove Manager</button>
                     <br>
                <% }) %>
              </div>
