@@ -15,14 +15,15 @@
           
             <form action="/login" method="post" data-ajax="false">
                 <div style="padding:10px 20px;">
-                    <h3>Please sign in</h3>
+                    <h3>Log In</h3>
                     <label for="email" class="ui-hidden-accessible">Email:</label>
                     <input type="text" name="username" id="email" placeholder="email" data-theme="a">
                     <label for="password" class="ui-hidden-accessible">Password:</label>
                     <input type="password" name="password" id="password" placeholder="password" data-theme="a">
-                    <input type="submit" data-theme="b" data-icon="check" value="Sign in">
                     <div class="center-this">
-                      <a href="/register">Register for an account now</a>
+                      <button type="submit" data-mini="true" data-inline="true" data-theme="b" data-icon="check">Sign in</button>
+                    
+                      <a data-role="button" data-mini="true" data-inline="true" data-theme="b" href="/register">Register</a>
                     </div>
                 </div>
             </form>

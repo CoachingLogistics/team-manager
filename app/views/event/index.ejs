@@ -7,7 +7,7 @@
 <body>
 <% include ../head %>
 <!--************************CONTENT**************************-->
-<h2 class="center-this">Events Coaching</h2>
+<h2>Events Coaching</h2>
 <table data-role="table" class="ui-responsive table-stroke">
 	<thead>
 		<th>Team</th>
@@ -21,14 +21,15 @@
 				<td><%=coachEvent.team.name%></td>
 				<td><%=coachEvent.event.type%></td>
 				<td><%=coachEvent.date + " " + coachEvent.time%></td>
-				<td><a href="/events/<%=coachEvent.event._id%>" data-role="button">Show</a></td>
+				<td><a href="/events/<%=coachEvent.event._id%>" data-role="button" data-inline="true" data-mini="true">Show</a></td>
 			</tr>
 		<% }) %>
 	</tbody>
 </table>
-<h2 class="center-this">Personal Events</h2>
+<h2>Personal Events</h2>
 <table data-role="table" class="ui-responsive table-stroke">
 	<thead>
+		<!-- <th>Player</th> -->
 		<th>Team</th>
 		<th>Type</th>
 		<th>Date</th>
@@ -37,10 +38,11 @@
 	<tbody>
 		<% playerEvents.forEach(function(playerEvent) { %>
 			<tr>
+				<!-- <td><%=playerEvent.player.first_name + " " + playerEvent.player.last_name%></td> -->
 				<td><%=playerEvent.team.name%></td>
 				<td><%=playerEvent.event.type%></td>
 				<td><%=playerEvent.date + " " + playerEvent.time%></td>
-				<td><a href="/events/<%=playerEvent.event._id%>" data-role="button">Show</a></td>
+				<td><a href="/events/<%=playerEvent.event._id%>" data-role="button" data-inline="true" data-mini="true">Show</a></td>
 			</tr>
 		<% }) %>
 	</tbody>

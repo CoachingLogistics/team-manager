@@ -32,7 +32,7 @@ exports.index = function(req, res) {
 //functional yet?
 exports.new_player = function(req, res) {
 	res.render("player/new", {
-    title: "New User",
+    title: "New Player",
 		user: req.user
 	});
 }
@@ -98,7 +98,7 @@ exports.show = function(req, res) {
       } 
 
 				res.render('player/show', {
-          title: p.first_name+" "+p.last_name,
+          title: p.first_name + " " + p.last_name,
 					player: p,
           dob: dob,
 					user: req.user
@@ -144,7 +144,7 @@ exports.edit = function(req, res) {
         return res.render('player/edit', {
           title: "Edit Player",
           player: p,
-          month: month_name,
+          dobStr: dateRFCFormat(p.date_of_birth),
           error: null,
           user: req.user
         });
@@ -385,6 +385,19 @@ var dateFormat = function(date) {
     var month = date.getMonth()+1;
     var year = date.getFullYear();
     return month+"/"+day+"/"+year;
+};
+
+var dateRFCFormat = function(date) {
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    var year = date.getFullYear();
+    if (day < 10){
+      day = "0" + day;
+    }
+    if (month < 10){
+      month = "0" + month;
+    }
+    return year+"-"+month+"-"+day;
 };
 
 var timeFormat = function(date) {
