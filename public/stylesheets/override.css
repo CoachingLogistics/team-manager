@@ -287,6 +287,13 @@ font-weight: 300;
   width:100%;
 }
 
+/*for gmap fix*/
+
+.map-hider{
+  position: absolute;
+  left: -10000px;
+}
+
 
 
 

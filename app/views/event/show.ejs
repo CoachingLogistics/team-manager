@@ -13,18 +13,14 @@
 <div data-role="tabs" id="tabs">
   <div data-role="navbar">
     <ul>
-    <li><a href="#map" data-ajax="false">Map</a></li>
-      <li><a href="#event" data-ajax="false">Event</a></li>
+    	   <li><a href="#event" data-ajax="false">Event</a></li>
+    <li><a id="map-tab" href="#map" data-ajax="false">Map</a></li>
       <li><a href="#attendance" data-ajax="false">Attendance</a></li>
       <li><a href="#carpools" data-ajax="false">Carpooling</a></li>
     </ul>
   </div>
 
 
-  <div id="map" class="team-tab">
-  	<br><br>
-  	<div id="googleMap" class="gmap"></div>
-  </div>
 
   <div id="event" class="team-tab">
   	<br><br>
@@ -62,6 +58,11 @@
 		</div>
 
 		<% } %>
+  </div>
+
+  <div id="map" class="team-tab">
+  	<br><br>
+  	<div id="googleMap" class="gmap"></div>
   </div>
 
 

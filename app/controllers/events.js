@@ -142,7 +142,7 @@ exports.create = function(req, res){
   			}else{
 				var newEvent = new Event({
 					team_id: req.param('team_id'),
-					date: req.body.date,
+					date: date,
 					location: req.body.location,
 					description: req.body.description,
 			  		type: req.param('type')
