@@ -202,7 +202,7 @@ font-weight: 300;
 }
 
 .border-img{
-  height: 40%;
+  width: 70%;
   border-style: solid;
   border-width: 1px;
   margin-left: 10%;
@@ -265,8 +265,27 @@ font-weight: 300;
 }
 
 
+#slideshow { 
+    margin: 50px auto; 
+    position: relative; 
+    width: 65%; 
+    height: 420px; 
+    padding: 5px; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.4); 
+}
 
-/*CALENDAR RESPONSIVENESS*/
+#slideshow > div { 
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
+    right: 10px; 
+    bottom: 10px; 
+    overflow: hidden;
+}
+
+.slide-img{
+  width:100%;
+}
 
 
 

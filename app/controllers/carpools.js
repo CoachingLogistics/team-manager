@@ -74,7 +74,7 @@ exports.new = function(req, res){
 			// need to check if user has a player or is a coach on team
 			Coach.getUsersForTeam(team._id, function(err, coaches){
 				coaches.forEach(function(coach){
-					authorized_users.push()
+					authorized_users.push(coach)
 				});
 
 				RosterSpot.getPlayersForTeam(team._id, function(players){
@@ -132,7 +132,7 @@ exports.create = function(req, res){
 			// need to check if user has a player or is a coach on team
 			Coach.getUsersForTeam(team._id, function(err, coaches){
 				coaches.forEach(function(coach){
-					authorized_users.push()
+					authorized_users.push(coach)
 				});
 
 				RosterSpot.getPlayersForTeam(team._id, function(players){
