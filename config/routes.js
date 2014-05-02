@@ -49,7 +49,7 @@ module.exports = function(app){
 	app.get('/users', users.index);	//to be removed in production
 
 	// players
-	app.get('/players', players.index);
+	app.get('/players', ensureAuthenticated, players.index);
 	app.get('/players/new', ensureAuthenticated, players.new_player);
 	app.post('/players/new', ensureAuthenticated, players.create_player);
 	app.get('/players/:id', players.show);//to be removed

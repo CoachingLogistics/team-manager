@@ -30,24 +30,27 @@ $(document).bind("pageinit", function(){
 		})
 	})
 
-/*
- * Goes through every player and determines if a guardian is logged on. If so it will add buttons
- * that will allow the logged in user to update attendances statuses on the website
- */
-$(".playah").each(function(index) {
-	var player_id = $(this).attr("id");
-	$.get("/players/" + player_id + "/" + event_id + "/guardians", function(data) {
-		// getting the data to easy to use params
-		var guardians = data.guardians;
-		var user_id = data.user_id;
-		var attendance_id = data.attendance_id;
-		// add the buttons if the user is a guardian and the attendance exists
-		if(guardians.indexOf(user_id) != -1 && attendance_id) {
-			$($('.guardianButtons')[index]).html("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' data-role='button' data-inline='inline' data-mini='true' data-icon='check' data-iconpos='notext'>Yes</a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' data-role='button' data-inline='inline' data-mini='true' data-icon='delete' data-iconpos='notext'>No</a>").trigger('create');
-		}
-	});
-});
+		/*
+		 * Goes through every player and determines if a guardian is logged on. If so it will add buttons
+		 * that will allow the logged in user to update attendances statuses on the website
+		 */
+		$(".playah").each(function(index) {
+			var player_id = $(this).attr("id");
+			$.get("/players/" + player_id + "/" + event_id + "/guardians", function(data) {
+				// getting the data to easy to use params
+				var guardians = data.guardians;
+				var user_id = data.user_id;
+				var attendance_id = data.attendance_id;
+				// add the buttons if the user is a guardian and the attendance exists
+				if(guardians.indexOf(user_id) != -1 && attendance_id) {
+					$($('.guardianButtons')[index]).html("<a href='/attendanceUpdate/" + event_id + "/" + player_id + "/t' data-role='button' data-inline='inline' data-mini='true' data-icon='check' data-iconpos='notext'>Yes</a><a href='/attendanceUpdate/" + event_id + "/" + player_id + "/f' data-role='button' data-inline='inline' data-mini='true' data-icon='delete' data-iconpos='notext'>No</a>").trigger('create');
+				}
+			});
+		});
 
+	$('#map-tab').on('click', function(){
+
+		$('#googleMap').empty();
 		//loading the google map
 		$.get('/events/'+event_id+'/coordinates', function(coords, err){
 			var lat=coords.latitude;
@@ -91,15 +94,11 @@ $(".playah").each(function(index) {
 			  });
 			}
 
-			//attachInstructionText(event_marker, "Hi");//event_obj.name + "<br>" + event_obj.location);
-			//$('#tabs').tabs();
 
 
 		});
 
-
-
-
+	})
 
 	//loading the carpool driver information
 	$(".driver").each(function(index) {

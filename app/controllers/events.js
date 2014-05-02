@@ -116,6 +116,7 @@ exports.team_event = function(req, res){	//renders the team-event create page
 //post create
 exports.create = function(req, res){
 
+
 	var date = new Date((req.param('date')+" "+req.param('time')).replace(/-/g,"/"));
 
 	Team.findById(req.param('team_id'), function(err, team){
