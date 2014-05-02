@@ -9,21 +9,20 @@ var Team = mongoose.model('Team');
 var RosterSpot = mongoose.model('RosterSpot');
 var user_added_mailer = require('../mailers/user_added_for_player');
 var Attendance = mongoose.model('Attendance');
-/*
- * Function for the players index page
- * sends all of the players to players/index.ejs
- */
- //not used in production
-exports.index = function(req, res) {
-	Player.find(function(err, players) {
-		res.render("player/index", {
-      title: "Players",
-			'players': players,
-			user: req.user
-		});
-	});
-}
 
+/*
+ * Function for the player index page
+ * Gives all players the logged in user is a user for
+ */
+exports.index = function(req, res) {
+  Family.getPlayersForUser(req.user._id, function(players) {
+    return res.render("player/index", {
+      title: "Players",
+      "players": players,
+      user: req.user
+    });
+  });
+}
 
 
 /*
@@ -94,8 +93,8 @@ exports.show = function(req, res) {
 
 			//teams loaded in via page AJAX
       if (p.date_of_birth){
-        var dob = dateFormat(p.date_of_birth);  
-      } 
+        var dob = dateFormat(p.date_of_birth);
+      }
 
 				res.render('player/show', {
           title: p.first_name + " " + p.last_name,
