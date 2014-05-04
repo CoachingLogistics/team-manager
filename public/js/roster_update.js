@@ -12,12 +12,11 @@ $(document).bind("pageinit", function(){
 		var input = "";
 
 	    		input+= "<form class='form-inline row roster-form' id='roster_form"+rows+"' method='post' action='"+post_url+"' role='form' data-ajax='false'>"
-				input+= "<div class='ui-grid-b'>"
-				input+= "<div class='ui-block-a'><div class='ui-bar' style='height:60px'><input type='text' placeholder='First Name' name='first_name' data-inline='true'></div></div>"
-				input+= "<div class='ui-block-b'><div class='ui-bar' style='height:60px'><input type='text' placeholder='Last Name' name='last_name' data-inline='true'></div></div>"
-				input+= "<div class='ui-block-c'><div class='ui-bar' style='height:60px'><input type='email' placeholder='Email' name='email' data-inline='true'></div></div>"
-				input+= "</div>"
+				input+= "<label for='first_name'>First Name</label><input type='text' placeholder='First Name' name='first_name' data-inline='true'></div></div><br>"
+				input+= "<label for='last_name'>Last Name</label><input type='text' placeholder='Last Name' name='last_name' data-inline='true'></div></div><br>"
+				input+= "<label for='email'>Parent Email</label><input type='email' placeholder='Email' name='email' data-inline='true'></div></div><br>"
 				input+= "</form>"
+				input+= "<hr />"
 
 		$("#roster-list2").append(input).trigger("create");
 		$("#submit2").removeAttr("disabled");

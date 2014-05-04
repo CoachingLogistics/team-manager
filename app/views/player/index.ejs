@@ -15,7 +15,6 @@
 	<thead>
 		<th>Last Name</th>
 		<th>First Name</th>
-		<th>Date of Birth</th>
 		<th></th>
 	</thead>
 	<tbody>
@@ -23,11 +22,6 @@
 			<tr>
 				<td><%= players[i].last_name %></td>
 				<td><%= players[i].first_name %></td>
-				<td><% if(players[i].date_of_birth){ %>
-					<%= players[i].date_of_birth %>
-					<% }else{ %>
-					--
-					<% } %></td>
 				<td><a href=<%= '/players/' + players[i]._id %> data-role="button" data-inline="true" data-mini="true">Details</a></td>
 			</tr>
 		<% } %>

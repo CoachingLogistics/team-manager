@@ -46,11 +46,10 @@ exports.new_player = function(req, res) {
 exports.create_player = function(req, res) {
 	// kind of placeholder for now, may change the name of the params
 	// when writing 'new.ejs'
-	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
 	var player = new Player({
 		first_name: req.body.first_name,
 		last_name: req.body.last_name,
-		date_of_birth: new Date(date_string)
+		date_of_birth: new Date(req.body.dob.replace(/-/g,"/"))
 	});
 	player.save(function(err, created_object) {
 		if(err) {
@@ -90,19 +89,35 @@ exports.show = function(req, res) {
       });
 		}
 		else {
+      req.user.getPlayers(function(players){
+        var access = false;
+        players.forEach(function(player){
+          if(req.user){
+            if(p._id.equals(player._id)){
+              access = true;
+            }
+          }
+        });
+        p.getUsers(function(users){
+          if (p.date_of_birth){
+            var dob = dateFormat(p.date_of_birth);
+          }
 
-			//teams loaded in via page AJAX
-      if (p.date_of_birth){
-        var dob = dateFormat(p.date_of_birth);
-      }
+          res.render('player/show', {
+            title: p.first_name + " " + p.last_name,
+            player: p,
+            dob: dob,
+            user: req.user,
+            users: users,
+            access: access
+          });
+        })
 
-				res.render('player/show', {
-          title: p.first_name + " " + p.last_name,
-					player: p,
-          dob: dob,
-					user: req.user
-				});
-		};
+  			//teams loaded in via page AJAX
+
+
+		  });
+    }
 	});
 }
 
@@ -176,8 +191,7 @@ exports.update = function(req, res) {
       res.redirect('/')
     };
 
-  	var date_string = "" + req.body.month + "/" + req.body.day + "/" + req.body.year;
-  	var d = new Date(date_string);
+  	var d = new Date(req.body.dob.replace(/-/g,"/"));
   	Player.findById(req.params.id, function(err, the_player) {
 
   		the_player.first_name = req.body.first_name;
@@ -185,7 +199,7 @@ exports.update = function(req, res) {
   		the_player.date_of_birth = d;
 
   		the_player.save(function(err, saved_player) {
-  			if(err || !req.body.year) {
+  			if(err) {
             console.log(err);
             res.redirect('back');
   			}

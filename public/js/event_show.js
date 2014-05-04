@@ -22,7 +22,7 @@ $(document).bind("pageinit", function(){
 				$('#'+player_id+"-response").html("Not attending").trigger('create');
 			}else if(doc[0].attending == null){
 				$('#'+player_id+"-response").html("No response").trigger('create');
-				$($('.buttonPlacement')[index]).html("<a data-role='button' data-mini='true' data-inline='true' href='/attendanceRemind/" + event_id + "/" + player_id + "'>Email Reminder</a>");
+				$($('.buttonPlacement')[index]).html("<a href='/attendanceRemind/" + event_id + "/" + player_id + "' data-role='button' data-mini='true' data-inline='true'>Email Reminder</a>");
 			}else{
 				console.log(player_id+ " has not been invited");
 			}
