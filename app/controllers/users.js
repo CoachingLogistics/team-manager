@@ -43,13 +43,13 @@ exports.index = function(req, res){			//delete this later
 
 //should limit the information shown on this page
 exports.show = function(req, res){
-	User.findById(req.params.id, function(error, user) {
-		Family.getPlayersForUser(user._id, function(players){
+	User.findById(req.params.id, function(error, user_show) {
+		Family.getPlayersForUser(user_show._id, function(players){
 
 			res.render('user/show', {
 				title: "User Details",
 				user: req.user,
-				user_show: user,
+				user_show: user_show,
 			  	players: players
 			});
 
